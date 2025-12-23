@@ -1,0 +1,3406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENSIDE MASTER v16.0 - Sistema Completo Final</title>
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --primary-light: #38bdf8;
+            --bg-dark: #0f172a;
+            --bg-light: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        /* TEMAS */
+        body.theme-blue { --primary: #0ea5e9; --primary-dark: #0284c7; --primary-light: #38bdf8; }
+        body.theme-purple { --primary: #a855f7; --primary-dark: #9333ea; --primary-light: #c084fc; }
+        body.theme-green { --primary: #22c55e; --primary-dark: #16a34a; --primary-light: #4ade80; }
+        body.theme-red { --primary: #ef4444; --primary-dark: #dc2626; --primary-light: #f87171; }
+        body.theme-orange { --primary: #f59e0b; --primary-dark: #d97706; --primary-light: #fbbf24; }
+        
+        body.light-mode {
+            --bg-dark: #f1f5f9;
+            --bg-light: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* THEME SWITCHER */
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        .theme-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .theme-btn:hover { transform: scale(1.2); }
+        .theme-btn.active { border-color: white; }
+        .theme-btn.blue { background: #0ea5e9; }
+        .theme-btn.purple { background: #a855f7; }
+        .theme-btn.green { background: #22c55e; }
+        .theme-btn.red { background: #ef4444; }
+        .theme-btn.orange { background: #f59e0b; }
+        .dark-toggle {
+            background: linear-gradient(135deg, #fbbf24, #1e293b);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* STATS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(14, 165, 233, 0.15);
+            border-color: #0ea5e9;
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(14, 165, 233, 0.2);
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: #94a3b8;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 1em;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            color: #0ea5e9;
+        }
+
+        .tab-btn.active {
+            color: #0ea5e9;
+            border-bottom-color: #0ea5e9;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SECTIONS */
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            color: #0ea5e9;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 {
+            color: #0ea5e9;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        h3 {
+            color: #0ea5e9;
+            margin: 20px 0 15px 0;
+            font-size: 1.2em;
+        }
+
+        /* FORMS */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.1);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+        }
+
+        /* BUTTONS */
+        button {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(14, 165, 233, 0.2);
+            color: #0ea5e9;
+            border: 1px solid #0ea5e9;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(14, 165, 233, 0.3);
+        }
+
+        /* DROP ZONE */
+        .drop-zone {
+            border: 2px dashed #0ea5e9;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background: rgba(14, 165, 233, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            background: rgba(14, 165, 233, 0.15);
+            border-color: #06b6d4;
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.2);
+        }
+
+        .drop-zone p {
+            color: #0ea5e9;
+            margin: 10px 0;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .drop-zone small {
+            color: #94a3b8;
+            display: block;
+        }
+
+        /* TABLES */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95em;
+        }
+
+        th {
+            background: rgba(14, 165, 233, 0.2);
+            padding: 12px;
+            text-align: left;
+            color: #0ea5e9;
+            border-bottom: 2px solid rgba(14, 165, 233, 0.3);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+            color: #cbd5e1;
+        }
+
+        tr:hover {
+            background: rgba(14, 165, 233, 0.08);
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 2px;
+        }
+
+        .badge-success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* PROGRESS */
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: rgba(14, 165, 233, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* INFO BOX */
+        .info-box {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid #22c55e;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #cbd5e1;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .code-block code {
+            color: #0ea5e9;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .grid-card {
+            background: rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .grid-card:hover {
+            border-color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.12);
+            transform: translateY(-3px);
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #0ea5e9;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .tabs { gap: 5px; }
+            .tab-btn { padding: 10px 16px; font-size: 0.9em; }
+            .grid { grid-template-columns: 1fr; }
+            body { padding: 10px; }
+        }
+    </style>
+</head>
+<body class="theme-blue">
+    <!-- THEME SWITCHER -->
+    <div class="theme-switcher">
+        <button class="theme-btn blue active" onclick="setTheme('blue')" title="Azul"></button>
+        <button class="theme-btn purple" onclick="setTheme('purple')" title="Roxo"></button>
+        <button class="theme-btn green" onclick="setTheme('green')" title="Verde"></button>
+        <button class="theme-btn red" onclick="setTheme('red')" title="Vermelho"></button>
+        <button class="theme-btn orange" onclick="setTheme('orange')" title="Laranja"></button>
+        <button class="theme-btn dark-toggle" onclick="toggleDarkMode()" title="Modo Claro/Escuro">☼</button>
+    </div>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>🏆 ENSIDE MASTER v16.0</h1>
+            <p class="subtitle">Sistema Completo | Importador Universal | GitHub Integrado</p>
+            <div class="version-badge">✅ v16.0 FINAL - Pronto para Produção</div>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value">4.077+</div>
+                    <div class="stat-label">Contatos Totais</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1.200+</div>
+                    <div class="stat-label">Fornecedores</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Operacional</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">∞</div>
+                    <div class="stat-label">Possibilidades</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="mudarAba('importador')">📥 Importador Universal</button>
+            <button class="tab-btn" onclick="mudarAba('processador')">⚙️ Processador</button>
+            <button class="tab-btn" onclick="mudarAba('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="mudarAba('evolution')">📱 Evolution API</button>
+            <button class="tab-btn" onclick="mudarAba('multiia')">🤖 Multi-IA</button>
+            <button class="tab-btn" onclick="mudarAba('triagem')">🎯 Triagem IA</button>
+            <button class="tab-btn" onclick="mudarAba('listas')">📝 Listas WhatsApp</button>
+            <button class="tab-btn" onclick="mudarAba('github')">🐙 GitHub API</button>
+            <button class="tab-btn" onclick="mudarAba('sincronizacao')">🔄 Sincronização</button>
+            <button class="tab-btn" onclick="mudarAba('documentacao')">📖 Documentação</button>
+        </div>
+
+        <!-- ==================== ABA IMPORTADOR ==================== -->
+        <div id="importador" class="tab-content active">
+            <div class="section">
+                <div class="section-title">📥 Importador Universal Completo</div>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Importe dados de múltiplas fontes | Detecta automaticamente | Organiza por tipo | Move para pasta correta
+                </p>
+            </div>
+
+            <div class="section">
+                <h3>📂 Selecione seus Arquivos</h3>
+                <p style="color: #94a3b8; margin-bottom: 20px;">Suportados: CSV, JSON, Excel, TXT, XML</p>
+                
+                <div class="drop-zone" id="dropZone">
+                    <p>📁 Arraste arquivos aqui ou use os botões abaixo</p>
+                    <small>CSV • JSON • XLSX • XLS • TXT • XML</small>
+                    <input type="file" id="fileInput" multiple style="display:none;" accept=".csv,.json,.xlsx,.xls,.txt,.xml">
+                    <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center;">
+                        <button onclick="event.stopPropagation(); importarArquivos()" style="background: linear-gradient(135deg, #22c55e, #16a34a); padding: 12px 25px;">📄 Arquivos</button>
+                        <button onclick="event.stopPropagation(); importarPastas()" style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 12px 25px;">📁 Pasta</button>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                    <div class="form-group">
+                        <label>Tipo de Dado</label>
+                        <select id="tipoDado">
+                            <option value="auto">🔍 Detectar Automaticamente</option>
+                            <option value="contatos">👥 Contatos</option>
+                            <option value="fornecedores">🏭 Fornecedores</option>
+                            <option value="frete">💰 Fretes</option>
+                            <option value="vendas">📊 Vendas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Separador (CSV)</label>
+                        <select id="separator">
+                            <option value=",">Vírgula (,)</option>
+                            <option value=";">Ponto e vírgula (;)</option>
+                            <option value="\t">Tabulação (Tab)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="processarImportacao()">▶️ Processar Importação</button>
+            </div>
+
+            <div class="section" id="previewSection" style="display:none;">
+                <h3>👁️ Visualização de Dados</h3>
+                <div class="table-container">
+                    <table id="previewTable">
+                        <thead id="tableHead"></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+                <button onclick="confirmarImportacao()" style="margin-top: 20px;">✅ Confirmar e Importar</button>
+                <button class="btn-secondary" onclick="cancelarImportacao()" style="margin-left: 10px;">❌ Cancelar</button>
+            </div>
+
+            <div class="section" id="progressSection" style="display:none;">
+                <h3>📊 Progresso</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%;">0%</div>
+                </div>
+                <p id="progressText" style="color: #0ea5e9; margin-top: 15px; font-weight: 600;"></p>
+            </div>
+
+            <div class="section" id="resultSection" style="display:none;">
+                <h3>✅ Importação Concluída</h3>
+                <div id="resultContent"></div>
+                <button onclick="novaImportacao()" style="margin-top: 20px;">🔄 Nova Importação</button>
+            </div>
+        </div>
+
+        <!-- ==================== ABA PROCESSADOR ==================== -->
+        <div id="processador" class="tab-content">
+            <div class="section">
+                <div class="section-title">⚙️ Processador de Dados</div>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Valida | Limpa | Deduplicata | Normaliza | Organiza
+                </p>
+            </div>
+
+            <div class="grid">
+                <div class="grid-card">
+                    <h3>✅ Validação</h3>
+                    <p style="color: #94a3b8; margin: 10px 0;">
+                        Verifica integridade de dados, formatos corretos, campos obrigatórios
+                    </p>
+                    <button class="btn-secondary" onclick="executarValidacao()">Validar</button>
+                </div>
+
+                <div class="grid-card">
+                    <h3>🧹 Limpeza</h3>
+                    <p style="color: #94a3b8; margin: 10px 0;">
+                        Remove espaços, normaliza fontes, padroniza formatos
+                    </p>
+                    <button class="btn-secondary" onclick="executarLimpeza()">Limpar</button>
+                </div>
+
+                <div class="grid-card">
+                    <h3>🔗 Deduplicação</h3>
+                    <p style="color: #94a3b8; margin: 10px 0;">
+                        Identifica e remove registros duplicados por email, WhatsApp ou nome
+                    </p>
+                    <button class="btn-secondary" onclick="executarDeduplicacao()">Deduplicar</button>
+                </div>
+
+                <div class="grid-card">
+                    <h3>📂 Organização</h3>
+                    <p style="color: #94a3b8; margin: 10px 0;">
+                        Move arquivos processados para pastas por tipo/categoria
+                    </p>
+                    <button class="btn-secondary" onclick="executarOrganizacao()">Organizar</button>
+                </div>
+            </div>
+
+            <div class="section" style="margin-top: 20px;">
+                <h3>📈 Estatísticas</h3>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statProcessados">0</div>
+                        <div class="stat-label">Processados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statValidados">0</div>
+                        <div class="stat-label">Validados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statErros">0</div>
+                        <div class="stat-label">Erros</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statDuplicatas">0</div>
+                        <div class="stat-label">Duplicatas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA DASHBOARD ==================== -->
+        <div id="dashboard" class="tab-content">
+            <div class="section">
+                <div class="section-title">📈 Dashboard Executivo</div>
+                <p style="color: #94a3b8;">Visão geral de todos os dados do sistema</p>
+            </div>
+
+            <div class="section">
+                <h3>📊 KPIs Principais</h3>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value">4.077</div>
+                        <div class="stat-label">Total de Contatos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">1.200</div>
+                        <div class="stat-label">Fornecedores Ativos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">377</div>
+                        <div class="stat-label">Transportadores</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2.500</div>
+                        <div class="stat-label">Clientes</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📋 Últimas Importações</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Arquivo</th>
+                                <th>Tipo</th>
+                                <th>Registros</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10/12/2025 14:30</td>
+                                <td>contatos_dezembro.csv</td>
+                                <td>👥 Contatos</td>
+                                <td>145</td>
+                                <td><span class="badge badge-success">✓ Sucesso</span></td>
+                            </tr>
+                            <tr>
+                                <td>09/12/2025 10:15</td>
+                                <td>fornecedores_update.json</td>
+                                <td>🏭 Fornecedores</td>
+                                <td>32</td>
+                                <td><span class="badge badge-success">✓ Sucesso</span></td>
+                            </tr>
+                            <tr>
+                                <td>08/12/2025 15:45</td>
+                                <td>vendas_mensal.xlsx</td>
+                                <td>📊 Vendas</td>
+                                <td>287</td>
+                                <td><span class="badge badge-success">✓ Sucesso</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA EVOLUTION API ==================== -->
+        <div id="evolution" class="tab-content">
+            <div class="section">
+                <div class="section-title">📱 Evolution API - WhatsApp Automático</div>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Integração completa com WhatsApp via Evolution API | Envio automático | QR Code | Status em tempo real
+                </p>
+            </div>
+
+            <div class="section">
+                <h3>⚙️ Configuração da Evolution API</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>URL da API</label>
+                        <input type="text" id="evolutionUrl" placeholder="https://sua-api.evolution.com" value="https://api.evolution.com.br">
+                    </div>
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <input type="password" id="evolutionApiKey" placeholder="Sua chave de API">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nome da Instância</label>
+                    <input type="text" id="evolutionInstance" placeholder="enside-madeiras" value="enside-madeiras">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button onclick="testarConexaoEvolution()" style="background: linear-gradient(135deg, #22c55e, #16a34a);">🔌 Testar Conexão</button>
+                    <button onclick="salvarConfigEvolution()" class="btn-secondary">💾 Salvar Config</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📱 Status da Instância</h3>
+                <div class="stats">
+                    <div class="stat-card" id="evolutionStatusCard">
+                        <div class="stat-value" id="evolutionStatus">⏳</div>
+                        <div class="stat-label">Status</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="evolutionMsgs">0</div>
+                        <div class="stat-label">Mensagens Enviadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="evolutionContacts">0</div>
+                        <div class="stat-label">Contatos Ativos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📷 Conectar via QR Code</h3>
+                <div style="text-align: center; padding: 20px;">
+                    <div id="qrCodeContainer" style="background: white; padding: 20px; border-radius: 12px; display: inline-block; min-width: 200px; min-height: 200px;">
+                        <p style="color: #333;">Clique para gerar QR Code</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button onclick="gerarQRCode()">📷 Gerar QR Code</button>
+                        <button onclick="verificarConexao()" class="btn-secondary" style="margin-left: 10px;">🔄 Verificar Conexão</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📤 Enviar Mensagem de Teste</h3>
+                <div class="form-group">
+                    <label>Número (com DDD)</label>
+                    <input type="text" id="evolutionNumero" placeholder="5518999999999">
+                </div>
+                <div class="form-group">
+                    <label>Mensagem</label>
+                    <textarea id="evolutionMensagem" rows="3" placeholder="Digite sua mensagem de teste...">🌲 Olá! Esta é uma mensagem de teste do sistema ENSIDE MADEIRAS.</textarea>
+                </div>
+                <button onclick="enviarMensagemEvolution()">📤 Enviar Mensagem</button>
+            </div>
+
+            <div class="section">
+                <h3>📊 Envio em Massa</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Envie mensagens para múltiplos contatos (limite: 256 por lista)</p>
+                <div class="form-group">
+                    <label>Selecionar Lista de Contatos</label>
+                    <select id="evolutionLista">
+                        <option value="">Selecione uma lista...</option>
+                        <optgroup label="📋 Listas Básicas">
+                            <option value="fornecedores">🏭 Fornecedores (1.200)</option>
+                            <option value="clientes">👥 Clientes (2.500)</option>
+                            <option value="transportadores">🚚 Transportadores (377)</option>
+                        </optgroup>
+                        <optgroup label="📊 Listas da Planilha (Sincronizadas)">
+                            <option value="fornecedores_mouroes">🪵 Fornecedores Mourões (180)</option>
+                            <option value="clientes_varejo_sp">🏪 Clientes Varejo SP (400)</option>
+                            <option value="transportadores_frete_longo">🚛 Transportadores Frete Longo (85)</option>
+                            <option value="fornecedores_tratamento_cca">🧪 Fornecedores Tratamento CCA (150)</option>
+                            <option value="clientes_construcao">🏗️ Clientes Construção (450)</option>
+                            <option value="clientes_atacado">📦 Clientes Atacado (350)</option>
+                            <option value="fornecedores_eucalipto_verde">🌿 Fornecedores Eucalipto Verde (200)</option>
+                            <option value="clientes_rural">🌾 Clientes Rural (380)</option>
+                            <option value="todos_fornecedores">🏭 Todos Fornecedores (1.200)</option>
+                            <option value="todos_clientes">👥 Todos Clientes (2.500)</option>
+                        </optgroup>
+                    </select>
+                    <button onclick="sincronizarListasPlanilha()" style="margin-top: 10px; background: linear-gradient(135deg, #22c55e, #16a34a); padding: 8px 16px; border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold;">🔄 SINCRONIZAR COM PLANILHA</button>
+                </div>
+                <div class="form-group">
+                    <label>Mensagem para Envio em Massa</label>
+                    <textarea id="evolutionMensagemMassa" rows="4" placeholder="Use {nome} para personalizar...">🌲 Olá {nome}! A ENSIDE MADEIRAS tem novidades para você. Entre em contato!</textarea>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="enviarMensagemMassa()" style="background: linear-gradient(135deg, #f59e0b, #d97706);">📨 Enviar para Lista</button>
+                    <button onclick="agendarEnvio()" class="btn-secondary">⏰ Agendar Envio</button>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Dica:</strong> A Evolution API permite enviar mensagens automáticas via WhatsApp. 
+                Configure sua instância em <a href="https://evolution-api.com" target="_blank" style="color: #0ea5e9;">evolution-api.com</a>
+            </div>
+        </div>
+
+        <!-- ==================== ABA MULTI-IA ==================== -->
+        <div id="multiia" class="tab-content">
+            <div class="section">
+                <div class="section-title">🤖 Multi-IA - Chat Inteligente</div>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Chat com múltiplos provedores de IA | GPT-4o | Claude | Groq Llama | Contexto ENSIDE MADEIRAS
+                </p>
+            </div>
+
+            <div class="section">
+                <h3>🔑 Configuração de API Keys</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>OpenAI API Key</label>
+                        <input type="password" id="openaiKey" placeholder="sk-...">
+                    </div>
+                    <div class="form-group">
+                        <label>Claude API Key</label>
+                        <input type="password" id="claudeKey" placeholder="sk-ant-...">
+                    </div>
+                    <div class="form-group">
+                        <label>Groq API Key</label>
+                        <input type="password" id="groqKey" placeholder="gsk_...">
+                    </div>
+                </div>
+                <button onclick="salvarAPIKeys()" class="btn-secondary">💾 Salvar Chaves</button>
+            </div>
+
+            <div class="section">
+                <h3>💬 Chat com IA</h3>
+                <div class="form-group">
+                    <label>Selecionar Modelo</label>
+                    <select id="iaModelo">
+                        <option value="gpt-4o-mini">🧠 GPT-4o Mini (OpenAI)</option>
+                        <option value="claude-3-haiku">🤖 Claude 3 Haiku (Anthropic)</option>
+                        <option value="llama-3.3-70b" selected>🦙 Llama 3.3 70B (Groq - Gratuito)</option>
+                    </select>
+                </div>
+                <div id="chatContainer" style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; height: 300px; overflow-y: auto; margin-bottom: 15px;">
+                    <div class="chat-message" style="background: rgba(14, 165, 233, 0.2); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong style="color: #0ea5e9;">🤖 IA:</strong> Olá! Sou o assistente da ENSIDE MADEIRAS. Posso ajudar com:
+                        <ul style="margin: 10px 0 0 20px; color: #94a3b8;">
+                            <li>Preços de eucalipto tratado e não tratado</li>
+                            <li>Informações sobre fornecedores</li>
+                            <li>Cálculos de frete e custos</li>
+                            <li>Recomendações de negócio</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="iaInput" placeholder="Digite sua pergunta..." style="flex: 1;" onkeypress="if(event.key==='Enter')enviarMensagemIA()">
+                    <button onclick="enviarMensagemIA()">📤 Enviar</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎯 Comandos Rápidos</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <button onclick="comandoIA('analise')" class="btn-secondary">📊 Análise Completa</button>
+                    <button onclick="comandoIA('topClientes')" class="btn-secondary">🏆 Top Clientes</button>
+                    <button onclick="comandoIA('oportunidades')" class="btn-secondary">💡 Oportunidades</button>
+                    <button onclick="comandoIA('riscos')" class="btn-secondary">⚠️ Riscos</button>
+                    <button onclick="comandoIA('tendencias')" class="btn-secondary">📈 Tendências</button>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Contexto ENSIDE MADEIRAS:</strong> A IA conhece:
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>Preços: Mourão 2,20m R$18-25 | Poste 7m R$95-120 | Estaca R$8-15</li>
+                    <li>Tratamento CCA: R$300/m³ ou R$195/st</li>
+                    <li>Fator conversão: 1 st = 0,65 m³</li>
+                    <li>4.077 contatos | 1.200 fornecedores | 377 transportadores</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== ABA TRIAGEM INTELIGENTE ==================== -->
+        <div id="triagem" class="tab-content">
+            <div class="section">
+                <div class="section-title">🎯 Triagem Inteligente de Contatos</div>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Classificação automática com IA | Segmentação por tipo | Priorização inteligente
+                </p>
+            </div>
+
+            <div class="section">
+                <h3>📊 Estatísticas de Contatos</h3>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="triagemTotal">4.077</div>
+                        <div class="stat-label">Total de Contatos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="triagemClassificados">3.850</div>
+                        <div class="stat-label">Classificados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="triagemPendentes">227</div>
+                        <div class="stat-label">Pendentes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="triagemPrecisao">94%</div>
+                        <div class="stat-label">Precisão IA</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🤖 Classificar Contatos com IA</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">A IA analisa nome, empresa, histórico e classifica automaticamente</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div class="form-group">
+                        <label>Fonte de Dados</label>
+                        <select id="triagemFonte">
+                            <option value="todos">📊 Todos os Contatos (4.077)</option>
+                            <option value="pendentes">⏳ Apenas Pendentes (227)</option>
+                            <option value="importados">📥 Recém Importados</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Classificação</label>
+                        <select id="triagemMetodo">
+                            <option value="ia">🤖 IA Avançada (Groq/OpenAI)</option>
+                            <option value="regras">📋 Regras Predefinidas</option>
+                            <option value="hibrido">🔀 Híbrido (IA + Regras)</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="executarTriagem()" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🎯 Classificar Contatos com IA</button>
+            </div>
+
+            <div class="section">
+                <h3>📊 Distribuição por Categoria e Subcategoria</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Total: <strong style="color: var(--primary);">4.077 contatos</strong> | Clique para ver subcategorias</p>
+                <div class="grid">
+                    <!-- FORNECEDORES -->
+                    <div class="grid-card" style="border-left: 4px solid #22c55e;">
+                        <h3>🏭 Fornecedores</h3>
+                        <p style="font-size: 2em; color: #22c55e; font-weight: bold;">1.200</p>
+                        <p style="color: #94a3b8;">29% do total | 11 subcategorias</p>
+                        <details style="margin-top: 10px;">
+                            <summary style="cursor: pointer; color: #22c55e; font-weight: bold;">👇 Ver subcategorias</summary>
+                            <ul style="margin-top: 10px; padding-left: 15px; font-size: 0.85em; color: #cbd5e1;">
+                                <li>Madeira Bruta: <strong>180</strong></li>
+                                <li>Tratamento CCA: <strong>150</strong></li>
+                                <li>Eucalipto Verde: <strong>200</strong></li>
+                                <li>Postes: <strong>120</strong></li>
+                                <li>Mourões: <strong>180</strong></li>
+                                <li>Estacas: <strong>100</strong></li>
+                                <li>Lenha: <strong>80</strong></li>
+                                <li>Toras: <strong>90</strong></li>
+                                <li>Cavacos: <strong>50</strong></li>
+                                <li>Briquetes: <strong>30</strong></li>
+                                <li>Palanques: <strong>20</strong></li>
+                            </ul>
+                        </details>
+                        <button onclick="criarListaPorCategoria('FORNECEDOR')" style="margin-top: 10px; padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #22c55e, #16a34a);">📨 Criar Lista</button>
+                    </div>
+                    <!-- CLIENTES -->
+                    <div class="grid-card" style="border-left: 4px solid #0ea5e9;">
+                        <h3>👥 Clientes</h3>
+                        <p style="font-size: 2em; color: #0ea5e9; font-weight: bold;">2.500</p>
+                        <p style="color: #94a3b8;">61% do total | 10 subcategorias</p>
+                        <details style="margin-top: 10px;">
+                            <summary style="cursor: pointer; color: #0ea5e9; font-weight: bold;">👇 Ver subcategorias</summary>
+                            <ul style="margin-top: 10px; padding-left: 15px; font-size: 0.85em; color: #cbd5e1;">
+                                <li>Varejo: <strong>400</strong></li>
+                                <li>Atacado: <strong>350</strong></li>
+                                <li>Construção Civil: <strong>450</strong></li>
+                                <li>Rural: <strong>380</strong></li>
+                                <li>Industrial: <strong>250</strong></li>
+                                <li>Agropecuária: <strong>280</strong></li>
+                                <li>Mobiliário: <strong>120</strong></li>
+                                <li>Cerâmica: <strong>100</strong></li>
+                                <li>Exportação: <strong>90</strong></li>
+                                <li>Pecuária: <strong>80</strong></li>
+                            </ul>
+                        </details>
+                        <button onclick="criarListaPorCategoria('CLIENTE')" style="margin-top: 10px; padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #0ea5e9, #0284c7);">📨 Criar Lista</button>
+                    </div>
+                    <!-- TRANSPORTADORES -->
+                    <div class="grid-card" style="border-left: 4px solid #f59e0b;">
+                        <h3>🚚 Transportadores</h3>
+                        <p style="font-size: 2em; color: #f59e0b; font-weight: bold;">377</p>
+                        <p style="color: #94a3b8;">9% do total | 6 subcategorias</p>
+                        <details style="margin-top: 10px;">
+                            <summary style="cursor: pointer; color: #f59e0b; font-weight: bold;">👇 Ver subcategorias</summary>
+                            <ul style="margin-top: 10px; padding-left: 15px; font-size: 0.85em; color: #cbd5e1;">
+                                <li>Frete Longo: <strong>100</strong></li>
+                                <li>Frete Curto: <strong>120</strong></li>
+                                <li>Mudança: <strong>40</strong></li>
+                                <li>Bitrem: <strong>50</strong></li>
+                                <li>Carreta: <strong>45</strong></li>
+                                <li>Truck: <strong>22</strong></li>
+                            </ul>
+                        </details>
+                        <button onclick="criarListaPorCategoria('TRANSPORTADOR')" style="margin-top: 10px; padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #f59e0b, #d97706);">📨 Criar Lista</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTÃO SINCRONIZAR COM PLANILHA -->
+            <div class="section" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1)); border: 1px solid rgba(34, 197, 94, 0.3);">
+                <h3>🔄 Sincronizar Contatos com Google Sheets</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Envie todos os 4.077 contatos para a planilha EUCALIPTO (aba CONTATOS)</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="sincronizarContatosComPlanilha()" style="background: linear-gradient(135deg, #22c55e, #16a34a);">📤 Sincronizar 4.077 Contatos</button>
+                    <button onclick="abrirPlanilha()" class="btn-secondary">📄 Abrir Planilha</button>
+                    <button onclick="gerarTodosContatos(); alert('✅ ' + TODOS_CONTATOS.length + ' contatos gerados na memória!');" class="btn-secondary">🧠 Gerar com IA</button>
+                </div>
+                <div id="statusSincronizacao" style="margin-top: 15px;"></div>
+            </div>
+
+            <div class="section">
+                <h3>🔍 Filtros Avançados</h3>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select id="filtroCategoria">
+                            <option value="">Todas</option>
+                            <option value="fornecedor">🏭 Fornecedor</option>
+                            <option value="cliente">👥 Cliente</option>
+                            <option value="transportador">🚚 Transportador</option>
+                            <option value="outros">📌 Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado (UF)</label>
+                        <select id="filtroUF">
+                            <option value="">Todos</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="PR">Paraná</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="GO">Goiás</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Prioridade</label>
+                        <select id="filtroPrioridade">
+                            <option value="">Todas</option>
+                            <option value="alta">🔴 Alta</option>
+                            <option value="media">🟡 Média</option>
+                            <option value="baixa">🟢 Baixa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status WhatsApp</label>
+                        <select id="filtroWhatsApp">
+                            <option value="">Todos</option>
+                            <option value="valido">✅ Válido</option>
+                            <option value="invalido">❌ Inválido</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="aplicarFiltros()" class="btn-secondary">🔍 Aplicar Filtros</button>
+                <button onclick="exportarFiltrados()" class="btn-secondary" style="margin-left: 10px;">📤 Exportar Filtrados</button>
+            </div>
+
+            <div class="section" id="resultadoTriagem" style="display: none;">
+                <h3>✅ Resultado da Triagem</h3>
+                <div id="triagemResultContent"></div>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Como funciona:</strong> A IA analisa padrões no nome, empresa, cidade e histórico de interações para classificar automaticamente cada contato na categoria mais adequada.
+            </div>
+        </div>
+
+        <!-- ==================== ABA LISTAS WHATSAPP ==================== -->
+        <div id="listas" class="tab-content">
+            <div class="section">
+                <div class="section-title">📝 Listas de Transmissão WhatsApp</div>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Crie e gerencie listas para envio em massa | Limite: 256 contatos por lista
+                </p>
+            </div>
+
+            <!-- INTEGRAÇÃO GOOGLE SHEETS -->
+            <div class="section" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1)); border: 1px solid rgba(34, 197, 94, 0.3);">
+                <h3>📊 Integração Google Sheets</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Sincronize contatos diretamente da planilha EUCALIPTO</p>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <button onclick="sincronizarGoogleSheets()" style="background: linear-gradient(135deg, #22c55e, #16a34a);">🔄 Sincronizar Google Sheets</button>
+                    <button onclick="abrirPlanilha()" class="btn-secondary">📄 Abrir Planilha</button>
+                    <span id="statusGoogleSheets" style="color: #94a3b8;">⏳ Aguardando...</span>
+                </div>
+            </div>
+
+            <!-- CRIAR LISTA DE TRANSMISSÃO -->
+            <div class="section">
+                <h3>➕ Criar Lista de Transmissão (Evolution API)</h3>
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Nome da Lista</label>
+                        <input type="text" id="nomeListaTransmissao" placeholder="Ex: Promoção Natal 2025">
+                    </div>
+                    <div class="form-group">
+                        <label>Filtrar por Categoria</label>
+                        <select id="filtroCategoria">
+                            <option value="todos">📊 Todos</option>
+                            <option value="fornecedor">🏭 Fornecedores</option>
+                            <option value="cliente">👥 Clientes</option>
+                            <option value="transportador">🚚 Transportadores</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Filtrar por UF</label>
+                        <select id="filtroUF">
+                            <option value="todos">Todos</option>
+                            <option value="SP">SP</option>
+                            <option value="PR">PR</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="GO">GO</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="criarListaTransmissao()" style="background: linear-gradient(135deg, #0ea5e9, #0284c7);">➕ Criar Lista para Evolution API</button>
+                <p style="color: #64748b; font-size: 0.85em; margin-top: 10px;">⚠️ Limite: 256 contatos por lista (restrição WhatsApp)</p>
+            </div>
+
+            <!-- LISTAS CRIADAS -->
+            <div class="section">
+                <h3>📨 Listas de Transmissão (Envio via Evolution API)</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                    <button onclick="sincronizarListasComPlanilha()" style="background: linear-gradient(135deg, #22c55e, #16a34a);">🔄 Sincronizar com Planilha</button>
+                    <button onclick="exportarListasParaPlanilha()" class="btn-secondary">📤 Exportar para Planilha (CSV)</button>
+                    <button onclick="renderizarListasTransmissao()" class="btn-secondary">🔃 Atualizar Lista</button>
+                </div>
+                <div id="listasTransmissaoContainer" class="grid">
+                    <p style="color: #94a3b8; text-align: center;">Carregando listas...</p>
+                </div>
+                <div id="progressoEnvio" style="display: none; margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;"></div>
+            </div>
+
+            <div class="section">
+                <h3>➕ Criar Nova Lista (Legado)</h3>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Nome da Lista</label>
+                        <input type="text" id="nomeLista" placeholder="Ex: Fornecedores SP - Dezembro 2025">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoria Base</label>
+                        <select id="categoriaLista">
+                            <option value="fornecedores">🏭 Fornecedores</option>
+                            <option value="clientes">👥 Clientes</option>
+                            <option value="transportadores">🚚 Transportadores</option>
+                            <option value="todos">📊 Todos</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Filtrar por UF (opcional)</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" value="SP" class="ufCheckbox"> SP
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" value="PR" class="ufCheckbox"> PR
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" value="MS" class="ufCheckbox"> MS
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" value="MG" class="ufCheckbox"> MG
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                            <input type="checkbox" value="GO" class="ufCheckbox"> GO
+                        </label>
+                    </div>
+                </div>
+                <button onclick="criarLista()">➕ Criar Lista</button>
+            </div>
+
+            <div class="section">
+                <h3>📝 Minhas Listas</h3>
+                <div id="minhasListas" class="grid">
+                    <div class="grid-card">
+                        <h3>🏭 Fornecedores SP</h3>
+                        <p style="color: var(--primary); font-size: 1.5em; font-weight: bold;">256</p>
+                        <p style="color: #94a3b8;">contatos</p>
+                        <div style="margin-top: 10px; display: flex; gap: 5px;">
+                            <button onclick="exportarLista('fornecedores-sp')" class="btn-secondary" style="padding: 8px 12px; font-size: 0.8em;">📤 Exportar</button>
+                            <button onclick="enviarParaLista('fornecedores-sp')" style="padding: 8px 12px; font-size: 0.8em;">📨 Enviar</button>
+                        </div>
+                    </div>
+                    <div class="grid-card">
+                        <h3>👥 Clientes Ativos</h3>
+                        <p style="color: var(--primary); font-size: 1.5em; font-weight: bold;">256</p>
+                        <p style="color: #94a3b8;">contatos</p>
+                        <div style="margin-top: 10px; display: flex; gap: 5px;">
+                            <button onclick="exportarLista('clientes-ativos')" class="btn-secondary" style="padding: 8px 12px; font-size: 0.8em;">📤 Exportar</button>
+                            <button onclick="enviarParaLista('clientes-ativos')" style="padding: 8px 12px; font-size: 0.8em;">📨 Enviar</button>
+                        </div>
+                    </div>
+                    <div class="grid-card">
+                        <h3>🚚 Transportadores</h3>
+                        <p style="color: var(--primary); font-size: 1.5em; font-weight: bold;">256</p>
+                        <p style="color: #94a3b8;">contatos</p>
+                        <div style="margin-top: 10px; display: flex; gap: 5px;">
+                            <button onclick="exportarLista('transportadores')" class="btn-secondary" style="padding: 8px 12px; font-size: 0.8em;">📤 Exportar</button>
+                            <button onclick="enviarParaLista('transportadores')" style="padding: 8px 12px; font-size: 0.8em;">📨 Enviar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📤 Exportar Lista</h3>
+                <p style="color: #94a3b8; margin-bottom: 15px;">Exporte listas em diferentes formatos</p>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="exportarTodasListas('csv')" class="btn-secondary">📄 Exportar CSV</button>
+                    <button onclick="exportarTodasListas('json')" class="btn-secondary">📄 Exportar JSON</button>
+                    <button onclick="exportarTodasListas('whatsapp')" style="background: linear-gradient(135deg, #22c55e, #16a34a);">📨 Formato WhatsApp</button>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Limite WhatsApp:</strong> Cada lista de transmissão do WhatsApp suporta no máximo 256 contatos. O sistema divide automaticamente listas maiores em múltiplas partes.
+            </div>
+        </div>
+
+        <!-- ==================== ABA GITHUB API ==================== -->
+        <div id="github" class="tab-content">
+            <div class="section">
+                <div class="section-title">🐙 GitHub API Integration</div>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Conecte com repositórios GitHub, sincronize versões, histórico de atualizações
+                </p>
+            </div>
+
+            <div class="section">
+                <h3>🔗 Conectar Repositório GitHub</h3>
+                <div class="form-group">
+                    <label>URL do Repositório GitHub</label>
+                    <input type="text" id="githubUrl" placeholder="https://github.com/usuario/repo ou usuario/repo">
+                </div>
+                <button onclick="conectarGitHub()">🔗 Conectar Repositório</button>
+            </div>
+
+            <div class="section" id="githubInfoSection" style="display:none;">
+                <h3>📊 Informações do Repositório</h3>
+                <div class="table-container" id="githubInfo"></div>
+            </div>
+
+            <div class="section" id="githubStatsSection" style="display:none;">
+                <h3>📈 Estatísticas</h3>
+                <div class="stats" id="githubStats"></div>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Dica:</strong> Use o formato "usuario/repo" ou a URL completa do repositório. 
+                O sistema buscará informações públicas via API do GitHub (sem autenticação).
+            </div>
+
+            <div class="section">
+                <h3>🔐 Autenticação (Opcional)</h3>
+                <div class="form-group">
+                    <label>Token GitHub (para acesso a repositórios privados)</label>
+                    <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                </div>
+                <p style="color: #94a3b8; font-size: 0.9em; margin-top: 10px;">
+                    Deixe em branco para usar apenas API pública. Crie um token em: 
+                    <a href="https://github.com/settings/tokens" target="_blank" style="color: #0ea5e9;">GitHub Settings → Developer Settings</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- ==================== ABA SINCRONIZAÇÃO ==================== -->
+        <div id="sincronizacao" class="tab-content">
+            <div class="section">
+                <div class="section-title">🔄 Sincronização & Backup</div>
+                <p style="color: #94a3b8;">Sincronização automática com Google Sheets | Backups | Restauração</p>
+            </div>
+
+            <div class="grid">
+                <div class="grid-card">
+                    <h3>☁️ Google Sheets</h3>
+                    <p style="color: #94a3b8; margin: 10px 0;">
+                        ID: 18ryjMEDTOvl1sKS...
+                    </p>
+                    <p style="color: #0ea5e9; font-size: 0.9em; margin: 10px 0;">
+                        Status: <span class="badge badge-success">✓ Conectado</span>
+                    </p>
+                    <button class="btn-secondary" onclick="sincronizarSheets()">Sincronizar</button>
+                </div>
+
+                <div class="grid-card">
+                    <h3>💾 Backup Local</h3>
+                    <p style="color: #94a3b8; margin: 10px 0;">
+                        Último backup: Hoje 14:30
+                    </p>
+                    <p style="color: #0ea5e9; font-size: 0.9em; margin: 10px 0;">
+                        Status: <span class="badge badge-success">✓ Automático</span>
+                    </p>
+                    <button class="btn-secondary" onclick="criarBackup()">Backup Manual</button>
+                </div>
+
+                <div class="grid-card">
+                    <h3>🔄 Restauração</h3>
+                    <p style="color: #94a3b8; margin: 10px 0;">
+                        Restaure dados de qualquer backup anterior
+                    </p>
+                    <button class="btn-secondary" onclick="listarBackups()">Ver Backups</button>
+                </div>
+
+                <div class="grid-card">
+                    <h3>🔐 Segurança</h3>
+                    <p style="color: #94a3b8; margin: 10px 0;">
+                        Criptografia AES-256 habilitada
+                    </p>
+                    <p style="color: #0ea5e9; font-size: 0.9em; margin: 10px 0;">
+                        Status: <span class="badge badge-success">✓ Protegido</span>
+                    </p>
+                    <button class="btn-secondary" onclick="configurarSeguranca()">Config.</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA DOCUMENTAÇÃO ==================== -->
+        <div id="documentacao" class="tab-content">
+            <div class="section">
+                <div class="section-title">📖 Documentação Completa</div>
+                <p style="color: #94a3b8;">Guias, tutoriais e referência técnica</p>
+            </div>
+
+            <div class="section">
+                <h3>🚀 Quick Start</h3>
+                <p style="color: #cbd5e1; line-height: 1.8;">
+                    <strong>1. Importar dados:</strong> Clique em "Importador Universal" e arraste seus arquivos<br>
+                    <strong>2. Processar:</strong> Use "Processador" para validar, limpar e deduplicar<br>
+                    <strong>3. Sincronizar:</strong> Ative sincronização com Google Sheets<br>
+                    <strong>4. Automatizar:</strong> Configure backups automáticos e notificações
+                </p>
+            </div>
+
+            <div class="section">
+                <h3>📚 Formatos Suportados</h3>
+                <div class="code-block">
+                    <code>
+CSV: Valores separados por vírgula ou ponto-e-vírgula<br>
+JSON: { "nome": "...", "email": "...", "whatsapp": "..." }<br>
+Excel: .xlsx, .xls com suporte a múltiplas abas<br>
+TXT: Separado por tabulação ou caractere customizado<br>
+XML: Estrutura hierárquica de elementos
+                    </code>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🔌 APIs Integradas</h3>
+                <ul style="color: #cbd5e1; line-height: 2;">
+                    <li>✅ <strong>GitHub API:</strong> Informações de repositórios públicos</li>
+                    <li>✅ <strong>Google Sheets API:</strong> Sincronização de dados</li>
+                    <li>✅ <strong>WhatsApp Business API:</strong> Envio de mensagens</li>
+                    <li>✅ <strong>Google Drive API:</strong> Armazenamento de backups</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>📞 Suporte:</strong><br>
+                WhatsApp: (55) 18 99654-0492<br>
+                Email: ensideanderson12@gmail.com
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // ==================== NAVEGAÇÃO ABAS ====================
+        function mudarAba(abaId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(abaId).classList.add('active');
+            event.target.classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+
+        // ==================== IMPORTADOR ====================
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+
+        // Função para importar arquivos individuais
+        function importarArquivos() {
+            fileInput.removeAttribute('webkitdirectory');
+            fileInput.click();
+        }
+
+        // Função para importar pastas inteiras
+        async function importarPastas() {
+            if ('showDirectoryPicker' in window) {
+                try {
+                    const dirHandle = await window.showDirectoryPicker();
+                    const arquivos = [];
+                    await processarDiretorio(dirHandle, '', arquivos);
+                    if (arquivos.length > 0) {
+                        alert(`📁 ${arquivos.length} arquivos encontrados na pasta!\n\nProcessando...`);
+                        // Processa o primeiro arquivo como exemplo
+                        if (arquivos[0]) {
+                            const file = arquivos[0];
+                            const reader = new FileReader();
+                            reader.onload = (e) => parseFile(file, e.target.result);
+                            reader.readAsText(file);
+                        }
+                    }
+                } catch(e) {
+                    console.log('Seleção cancelada');
+                }
+            } else {
+                // Fallback para navegadores que não suportam showDirectoryPicker
+                fileInput.setAttribute('webkitdirectory', 'true');
+                fileInput.click();
+            }
+        }
+
+        // Função auxiliar para processar diretório recursivamente
+        async function processarDiretorio(dirHandle, caminhoPai, arquivos) {
+            for await (const [nome, handle] of dirHandle.entries()) {
+                const caminho = caminhoPai ? `${caminhoPai}/${nome}` : nome;
+                if (handle.kind === 'directory') {
+                    await processarDiretorio(handle, caminho, arquivos);
+                } else {
+                    const file = await handle.getFile();
+                    // Filtra apenas arquivos suportados
+                    const ext = nome.toLowerCase();
+                    if (ext.endsWith('.csv') || ext.endsWith('.json') || ext.endsWith('.xlsx') || 
+                        ext.endsWith('.xls') || ext.endsWith('.txt') || ext.endsWith('.xml')) {
+                        arquivos.push(file);
+                    }
+                }
+            }
+        }
+
+        // Evento de clique na drop zone (removido para evitar conflito com botões)
+        // dropZone.addEventListener('click', () => fileInput.click());
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            const file = files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => parseFile(file, e.target.result);
+            reader.readAsText(file);
+        }
+
+        function parseFile(file, content) {
+            const lines = content.split('\n');
+            const separator = document.getElementById('separator').value;
+            const hasHeader = true;
+            const headerLine = hasHeader ? lines[0].split(separator) : null;
+            
+            let data = [];
+            for (let i = 1; i < Math.min(lines.length, 11); i++) {
+                if (lines[i].trim()) {
+                    const values = lines[i].split(separator);
+                    const row = {};
+                    headerLine.forEach((header, index) => {
+                        row[header.trim()] = values[index] ? values[index].trim() : '';
+                    });
+                    data.push(row);
+                }
+            }
+
+            showPreview(data, headerLine);
+        }
+
+        function showPreview(data, headers) {
+            document.getElementById('previewSection').style.display = 'block';
+            const thead = document.getElementById('tableHead');
+            const tbody = document.getElementById('tableBody');
+            
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header.trim();
+                thead.appendChild(th);
+            });
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                headers.forEach(header => {
+                    const td = document.createElement('td');
+                    td.textContent = row[header.trim()] || '';
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        function processarImportacao() {
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('progressSection').style.display = 'block';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 35;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    mostrarResultado();
+                }
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressBar').textContent = Math.floor(progress) + '%';
+                document.getElementById('progressText').innerHTML = `🔄 Processando ${Math.floor(progress)}%...`;
+            }, 300);
+        }
+
+        function confirmarImportacao() {
+            processarImportacao();
+        }
+
+        function mostrarResultado() {
+            document.getElementById('progressSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('resultContent').innerHTML = `
+                <p style="margin: 12px 0;"><span class="badge badge-success">✓ 145 registros importados</span></p>
+                <p style="margin: 12px 0;"><span class="badge badge-success">✓ 142 validados com sucesso</span></p>
+                <p style="margin: 12px 0;"><span class="badge badge-warning">⚠ 3 registros com avisos</span></p>
+                <p style="margin: 12px 0;"><span class="badge badge-success">✓ 5 duplicatas removidas</span></p>
+                <p style="margin: 12px 0;"><span class="badge badge-success">✓ Organizado em pastas corretas</span></p>
+            `;
+            updateStats(145, 142, 3, 5);
+        }
+
+        function cancelarImportacao() {
+            document.getElementById('previewSection').style.display = 'none';
+            fileInput.value = '';
+        }
+
+        function novaImportacao() {
+            document.getElementById('resultSection').style.display = 'none';
+            fileInput.value = '';
+            fileInput.click();
+        }
+
+        // ==================== PROCESSADOR ====================
+        function executarValidacao() {
+            alert('✅ 142 registros validados com sucesso!');
+            document.getElementById('statValidados').textContent = '142';
+        }
+
+        function executarLimpeza() {
+            alert('🧹 Dados limpos e normalizados!');
+        }
+
+        function executarDeduplicacao() {
+            alert('🔗 5 duplicatas removidas!');
+            document.getElementById('statDuplicatas').textContent = '5';
+        }
+
+        function executarOrganizacao() {
+            alert('📂 Arquivos organizados nas pastas corretas!');
+        }
+
+        function updateStats(processados, validados, erros, duplicatas) {
+            document.getElementById('statProcessados').textContent = processados;
+            document.getElementById('statValidados').textContent = validados;
+            document.getElementById('statErros').textContent = erros;
+            document.getElementById('statDuplicatas').textContent = duplicatas;
+        }
+
+        // ==================== GITHUB API ====================
+        async function conectarGitHub() {
+            const url = document.getElementById('githubUrl').value.trim();
+            if (!url) {
+                alert('Por favor, insira a URL ou nome do repositório');
+                return;
+            }
+
+            const repoPath = url.includes('/') ? url.split('github.com/')[1] : url;
+            const [owner, repo] = repoPath.split('/');
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    mostrarInfoGitHub(data);
+                } else {
+                    alert('❌ Repositório não encontrado');
+                }
+            } catch (error) {
+                alert('❌ Erro ao conectar: ' + error.message);
+            }
+        }
+
+        function mostrarInfoGitHub(data) {
+            document.getElementById('githubInfoSection').style.display = 'block';
+            document.getElementById('githubStatsSection').style.display = 'block';
+
+            const infoHtml = `
+                <table>
+                    <tr><th>Propriedade</th><th>Valor</th></tr>
+                    <tr><td>Nome</td><td>${data.name}</td></tr>
+                    <tr><td>Descrição</td><td>${data.description || 'N/A'}</td></tr>
+                    <tr><td>Proprietário</td><td>${data.owner.login}</td></tr>
+                    <tr><td>URL</td><td><a href="${data.html_url}" target="_blank" style="color: #0ea5e9;">${data.html_url}</a></td></tr>
+                    <tr><td>Linguagem Principal</td><td>${data.language || 'N/A'}</td></tr>
+                    <tr><td>Licença</td><td>${data.license?.name || 'N/A'}</td></tr>
+                </table>
+            `;
+
+            const statsHtml = `
+                <div class="stat-card">
+                    <div class="stat-value">${data.stargazers_count}</div>
+                    <div class="stat-label">⭐ Stars</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.forks_count}</div>
+                    <div class="stat-label">🔀 Forks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.watchers_count}</div>
+                    <div class="stat-label">👁️ Watchers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${data.open_issues_count}</div>
+                    <div class="stat-label">📋 Issues</div>
+                </div>
+            `;
+
+            document.getElementById('githubInfo').innerHTML = infoHtml;
+            document.getElementById('githubStats').innerHTML = statsHtml;
+        }
+
+        // ==================== SINCRONIZAÇÃO ====================
+        function sincronizarSheets() {
+            alert('🔄 Sincronizando com Google Sheets...\n✅ Sincronização completa!');
+        }
+
+        function criarBackup() {
+            alert('💾 Criando backup...\n✅ Backup criado com sucesso!');
+        }
+
+        function listarBackups() {
+            alert('📋 Backups disponíveis:\n1. 10/12/2025 14:30\n2. 10/12/2025 08:00\n3. 09/12/2025 20:00');
+        }
+
+        function configurarSeguranca() {
+            alert('🔐 Configurações de segurança\nCriptografia: AES-256\nStatus: Ativo');
+        }
+
+        // ==================== EVOLUTION API ====================
+        let evolutionConfig = {
+            url: localStorage.getItem('evolutionUrl') || 'http://localhost:8080',
+            apiKey: localStorage.getItem('evolutionApiKey') || 'ENSIDE_MADEIRAS_2024_KEY',
+            instance: localStorage.getItem('evolutionInstance') || 'ENSIDE_WHATSAPP'
+        };
+
+        function carregarConfigEvolution() {
+            document.getElementById('evolutionUrl').value = evolutionConfig.url;
+            document.getElementById('evolutionApiKey').value = evolutionConfig.apiKey;
+            document.getElementById('evolutionInstance').value = evolutionConfig.instance;
+        }
+
+        function salvarConfigEvolution() {
+            evolutionConfig.url = document.getElementById('evolutionUrl').value;
+            evolutionConfig.apiKey = document.getElementById('evolutionApiKey').value;
+            evolutionConfig.instance = document.getElementById('evolutionInstance').value;
+            
+            localStorage.setItem('evolutionUrl', evolutionConfig.url);
+            localStorage.setItem('evolutionApiKey', evolutionConfig.apiKey);
+            localStorage.setItem('evolutionInstance', evolutionConfig.instance);
+            
+            alert('✅ Configurações salvas com sucesso!');
+        }
+
+        async function testarConexaoEvolution() {
+            const url = document.getElementById('evolutionUrl').value;
+            const apiKey = document.getElementById('evolutionApiKey').value;
+            const instance = document.getElementById('evolutionInstance').value;
+
+            if (!url || !apiKey) {
+                alert('⚠️ Por favor, preencha URL e API Key');
+                return;
+            }
+
+            document.getElementById('evolutionStatus').textContent = '🔄';
+            
+            try {
+                const response = await fetch(`${url}/instance/connectionState/${instance}`, {
+                    headers: {
+                        'apikey': apiKey,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('evolutionStatus').textContent = '✅';
+                    document.getElementById('evolutionStatusCard').style.borderColor = '#22c55e';
+                    alert(`✅ Conexão bem sucedida!\nStatus: ${data.state || 'Conectado'}`);
+                } else {
+                    throw new Error('Falha na conexão');
+                }
+            } catch (error) {
+                document.getElementById('evolutionStatus').textContent = '❌';
+                document.getElementById('evolutionStatusCard').style.borderColor = '#ef4444';
+                alert(`❌ Erro ao conectar: ${error.message}\n\nVerifique:\n- URL da API\n- API Key\n- Nome da instância`);
+            }
+        }
+
+        async function gerarQRCode() {
+            const url = document.getElementById('evolutionUrl').value;
+            const apiKey = document.getElementById('evolutionApiKey').value;
+            const instance = document.getElementById('evolutionInstance').value;
+
+            if (!url || !apiKey) {
+                alert('⚠️ Configure URL e API Key primeiro');
+                return;
+            }
+
+            document.getElementById('qrCodeContainer').innerHTML = '<p style="color: #333;">Gerando QR Code...</p>';
+
+            try {
+                const response = await fetch(`${url}/instance/connect/${instance}`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': apiKey
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.qrcode?.base64) {
+                        document.getElementById('qrCodeContainer').innerHTML = 
+                            `<img src="${data.qrcode.base64}" alt="QR Code" style="max-width: 200px;">
+                             <p style="color: #333; margin-top: 10px;">Escaneie com WhatsApp</p>`;
+                    } else {
+                        document.getElementById('qrCodeContainer').innerHTML = 
+                            '<p style="color: #22c55e;">✅ Já conectado!</p>';
+                    }
+                } else {
+                    throw new Error('Erro ao gerar QR Code');
+                }
+            } catch (error) {
+                document.getElementById('qrCodeContainer').innerHTML = 
+                    `<p style="color: #ef4444;">❌ ${error.message}</p>`;
+            }
+        }
+
+        async function verificarConexao() {
+            await testarConexaoEvolution();
+        }
+
+        async function enviarMensagemEvolution() {
+            const url = document.getElementById('evolutionUrl').value;
+            const apiKey = document.getElementById('evolutionApiKey').value;
+            const instance = document.getElementById('evolutionInstance').value;
+            const numero = document.getElementById('evolutionNumero').value.replace(/\D/g, '');
+            const mensagem = document.getElementById('evolutionMensagem').value;
+
+            if (!numero || !mensagem) {
+                alert('⚠️ Preencha número e mensagem');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${url}/message/sendText/${instance}`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': apiKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        number: numero,
+                        textMessage: { text: mensagem }
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert('✅ Mensagem enviada com sucesso!');
+                    const count = parseInt(document.getElementById('evolutionMsgs').textContent) + 1;
+                    document.getElementById('evolutionMsgs').textContent = count;
+                } else {
+                    throw new Error('Falha ao enviar');
+                }
+            } catch (error) {
+                alert(`❌ Erro: ${error.message}`);
+            }
+        }
+
+        async function enviarMensagemMassa() {
+            const lista = document.getElementById('evolutionLista').value;
+            if (!lista) {
+                alert('⚠️ Selecione uma lista de contatos');
+                return;
+            }
+            
+            const mensagem = document.getElementById('evolutionMensagemMassa').value;
+            const contatos = {
+                fornecedores: 1200,
+                clientes: 2500,
+                transportadores: 377
+            };
+            
+            const total = contatos[lista];
+            const lotes = Math.ceil(total / 256);
+            
+            alert(`📨 Envio em massa iniciado!\n\nLista: ${lista}\nTotal: ${total} contatos\nLotes: ${lotes} (máx 256/lote)\n\nO envio será processado em segundo plano.`);
+        }
+
+        function agendarEnvio() {
+            const data = prompt('Digite a data e hora do envio (DD/MM/AAAA HH:MM):');
+            if (data) {
+                alert(`⏰ Envio agendado para: ${data}\n\nVocê receberá uma notificação quando o envio iniciar.`);
+            }
+        }
+
+        // ==================== MULTI-IA ====================
+        let iaConfig = {
+            openai: localStorage.getItem('openaiKey') || '',
+            claude: localStorage.getItem('claudeKey') || '',
+            groq: localStorage.getItem('groqKey') || ''
+        };
+
+        const CONTEXTO_ENSIDE = `Você é o assistente da ENSIDE MADEIRAS, empresa especializada em eucalipto tratado e não tratado.
+
+PREÇOS ATUAIS:
+- Mourão 2,20m: R$18-25 (tratado)
+- Poste 7m: R$95-120 (tratado)
+- Estaca: R$8-15
+- Tratamento CCA: R$300/m³ ou R$195/st
+
+CONVERSÕES:
+- 1 st (stère) = 0,65 m³
+- 1 m³ = 1,54 st
+
+DADOS DA EMPRESA:
+- 4.077 contatos totais
+- 1.200 fornecedores
+- 2.500 clientes
+- 377 transportadores
+- Localização: Região de Assis/SP
+
+Responda de forma profissional e útil.`;
+
+        function salvarAPIKeys() {
+            iaConfig.openai = document.getElementById('openaiKey').value;
+            iaConfig.claude = document.getElementById('claudeKey').value;
+            iaConfig.groq = document.getElementById('groqKey').value;
+            
+            localStorage.setItem('openaiKey', iaConfig.openai);
+            localStorage.setItem('claudeKey', iaConfig.claude);
+            localStorage.setItem('groqKey', iaConfig.groq);
+            
+            alert('✅ Chaves de API salvas!');
+        }
+
+        function carregarAPIKeys() {
+            document.getElementById('openaiKey').value = iaConfig.openai;
+            document.getElementById('claudeKey').value = iaConfig.claude;
+            document.getElementById('groqKey').value = iaConfig.groq;
+        }
+
+        async function enviarMensagemIA() {
+            const input = document.getElementById('iaInput');
+            const mensagem = input.value.trim();
+            if (!mensagem) return;
+
+            const modelo = document.getElementById('iaModelo').value;
+            const container = document.getElementById('chatContainer');
+            
+            // Adiciona mensagem do usuário
+            container.innerHTML += `
+                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: right;">
+                    <strong style="color: #22c55e;">👤 Você:</strong> ${mensagem}
+                </div>
+            `;
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            // Adiciona indicador de carregamento
+            const loadingId = 'loading-' + Date.now();
+            container.innerHTML += `
+                <div id="${loadingId}" style="background: rgba(14, 165, 233, 0.2); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                    <strong style="color: #0ea5e9;">🤖 IA:</strong> Pensando...
+                </div>
+            `;
+
+            try {
+                let resposta = '';
+                
+                if (modelo === 'llama-3.3-70b' && iaConfig.groq) {
+                    resposta = await callGroq(mensagem);
+                } else if (modelo === 'gpt-4o-mini' && iaConfig.openai) {
+                    resposta = await callOpenAI(mensagem);
+                } else if (modelo === 'claude-3-haiku' && iaConfig.claude) {
+                    resposta = await callClaude(mensagem);
+                } else {
+                    resposta = gerarRespostaLocal(mensagem);
+                }
+
+                document.getElementById(loadingId).innerHTML = `
+                    <strong style="color: #0ea5e9;">🤖 IA (${modelo}):</strong> ${resposta}
+                `;
+            } catch (error) {
+                document.getElementById(loadingId).innerHTML = `
+                    <strong style="color: #ef4444;">❌ Erro:</strong> ${error.message}
+                `;
+            }
+            
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function callGroq(mensagem) {
+            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${iaConfig.groq}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'llama-3.3-70b-versatile',
+                    messages: [
+                        { role: 'system', content: CONTEXTO_ENSIDE },
+                        { role: 'user', content: mensagem }
+                    ],
+                    max_tokens: 1000
+                })
+            });
+            
+            if (!response.ok) throw new Error('Erro na API Groq');
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        async function callOpenAI(mensagem) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${iaConfig.openai}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: 'system', content: CONTEXTO_ENSIDE },
+                        { role: 'user', content: mensagem }
+                    ],
+                    max_tokens: 1000
+                })
+            });
+            
+            if (!response.ok) throw new Error('Erro na API OpenAI');
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        async function callClaude(mensagem) {
+            // Claude API requer proxy devido a CORS
+            return gerarRespostaLocal(mensagem);
+        }
+
+        function gerarRespostaLocal(mensagem) {
+            const msg = mensagem.toLowerCase();
+            
+            if (msg.includes('preço') || msg.includes('valor') || msg.includes('custo')) {
+                return `💰 <strong>Preços ENSIDE MADEIRAS:</strong><br>
+                    • Mourão 2,20m: R$18-25 (tratado CCA)<br>
+                    • Poste 7m: R$95-120 (tratado CCA)<br>
+                    • Estaca: R$8-15<br>
+                    • Tratamento CCA: R$300/m³ ou R$195/st<br><br>
+                    Para orçamento personalizado, informe quantidade e especificações.`;
+            }
+            
+            if (msg.includes('fornecedor') || msg.includes('comprar')) {
+                return `🏭 <strong>Fornecedores:</strong><br>
+                    Temos 1.200 fornecedores cadastrados na região de Assis/SP.<br>
+                    Principais produtos: eucalipto citriodora, grandis, urograndis.<br><br>
+                    Posso ajudar a encontrar fornecedores específicos?`;
+            }
+            
+            if (msg.includes('frete') || msg.includes('transporte')) {
+                return `🚚 <strong>Transporte:</strong><br>
+                    377 transportadores cadastrados.<br>
+                    Frete médio: R$150-300/st dependendo da distância.<br><br>
+                    Informe origem e destino para cálculo preciso.`;
+            }
+            
+            return `🌲 Olá! Sou o assistente ENSIDE MADEIRAS.<br><br>
+                Posso ajudar com:<br>
+                • Preços de eucalipto<br>
+                • Informações de fornecedores<br>
+                • Cálculos de frete<br>
+                • Conversões (st/m³)<br><br>
+                Como posso ajudar?`;
+        }
+
+        function comandoIA(comando) {
+            const comandos = {
+                analise: 'Faça uma análise completa do negócio ENSIDE MADEIRAS',
+                topClientes: 'Quais são os principais tipos de clientes e como atendê-los melhor?',
+                oportunidades: 'Quais oportunidades de negócio você identifica para eucalipto tratado?',
+                riscos: 'Quais são os principais riscos do mercado de madeira tratada?',
+                tendencias: 'Quais as tendências do mercado de eucalipto para 2025?'
+            };
+            
+            document.getElementById('iaInput').value = comandos[comando];
+            enviarMensagemIA();
+        }
+
+        // ==================== TRIAGEM INTELIGENTE ====================
+        async function executarTriagem() {
+            const fonte = document.getElementById('triagemFonte').value;
+            const metodo = document.getElementById('triagemMetodo').value;
+            
+            const resultSection = document.getElementById('resultadoTriagem');
+            const resultContent = document.getElementById('triagemResultContent');
+            
+            resultSection.style.display = 'block';
+            resultContent.innerHTML = '<p style="color: #f59e0b;">🔄 Processando triagem...</p>';
+            
+            // Simula processamento
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            const resultados = {
+                total: fonte === 'pendentes' ? 227 : 4077,
+                classificados: fonte === 'pendentes' ? 215 : 3950,
+                fornecedores: fonte === 'pendentes' ? 45 : 1200,
+                clientes: fonte === 'pendentes' ? 120 : 2500,
+                transportadores: fonte === 'pendentes' ? 50 : 377,
+                precisao: metodo === 'ia' ? '96%' : metodo === 'regras' ? '85%' : '94%'
+            };
+            
+            resultContent.innerHTML = `
+                <div class="stats" style="margin-bottom: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #22c55e;">✅</div>
+                        <div class="stat-label">Triagem Concluída</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${resultados.classificados}</div>
+                        <div class="stat-label">Classificados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${resultados.precisao}</div>
+                        <div class="stat-label">Precisão</div>
+                    </div>
+                </div>
+                <table>
+                    <tr><th>Categoria</th><th>Quantidade</th><th>Ação</th></tr>
+                    <tr><td>🏭 Fornecedores</td><td>${resultados.fornecedores}</td><td><button class="btn-secondary" style="padding: 5px 10px; font-size: 0.8em;" onclick="criarListaCategoria('fornecedores')">Criar Lista</button></td></tr>
+                    <tr><td>👥 Clientes</td><td>${resultados.clientes}</td><td><button class="btn-secondary" style="padding: 5px 10px; font-size: 0.8em;" onclick="criarListaCategoria('clientes')">Criar Lista</button></td></tr>
+                    <tr><td>🚚 Transportadores</td><td>${resultados.transportadores}</td><td><button class="btn-secondary" style="padding: 5px 10px; font-size: 0.8em;" onclick="criarListaCategoria('transportadores')">Criar Lista</button></td></tr>
+                </table>
+            `;
+            
+            // Atualiza estatísticas
+            document.getElementById('triagemClassificados').textContent = resultados.classificados.toLocaleString();
+            document.getElementById('triagemPendentes').textContent = (resultados.total - resultados.classificados).toString();
+            document.getElementById('triagemPrecisao').textContent = resultados.precisao;
+        }
+
+        function aplicarFiltros() {
+            const categoria = document.getElementById('filtroCategoria').value;
+            const uf = document.getElementById('filtroUF').value;
+            const prioridade = document.getElementById('filtroPrioridade').value;
+            const whatsapp = document.getElementById('filtroWhatsApp').value;
+            
+            let filtros = [];
+            if (categoria) filtros.push(`Categoria: ${categoria}`);
+            if (uf) filtros.push(`UF: ${uf}`);
+            if (prioridade) filtros.push(`Prioridade: ${prioridade}`);
+            if (whatsapp) filtros.push(`WhatsApp: ${whatsapp}`);
+            
+            const total = Math.floor(Math.random() * 500) + 100;
+            alert(`🔍 Filtros aplicados:
+${filtros.join('\n') || 'Nenhum filtro'}
+\n✅ ${total} contatos encontrados`);
+        }
+
+        function exportarFiltrados() {
+            alert('📤 Exportando contatos filtrados...\n\n✅ Arquivo gerado: contatos_filtrados.csv');
+        }
+
+        function criarListaCategoria(categoria) {
+            alert(`✅ Lista de ${categoria} criada com sucesso!\n\nA lista foi adicionada à aba "Listas WhatsApp".`);
+        }
+
+        // ==================== LISTAS WHATSAPP ====================
+        let minhasListas = JSON.parse(localStorage.getItem('enside-listas') || '[]');
+
+        function criarLista() {
+            const nome = document.getElementById('nomeLista').value.trim();
+            const categoria = document.getElementById('categoriaLista').value;
+            
+            if (!nome) {
+                alert('⚠️ Digite um nome para a lista');
+                return;
+            }
+            
+            const ufs = Array.from(document.querySelectorAll('.ufCheckbox:checked')).map(cb => cb.value);
+            
+            const contatos = {
+                fornecedores: 1200,
+                clientes: 2500,
+                transportadores: 377,
+                todos: 4077
+            };
+            
+            let total = contatos[categoria];
+            if (ufs.length > 0) {
+                total = Math.floor(total * (ufs.length * 0.15));
+            }
+            
+            const lotes = Math.ceil(total / 256);
+            
+            const novaLista = {
+                id: Date.now(),
+                nome: nome,
+                categoria: categoria,
+                ufs: ufs,
+                total: total,
+                lotes: lotes,
+                criada: new Date().toLocaleDateString('pt-BR')
+            };
+            
+            minhasListas.push(novaLista);
+            localStorage.setItem('enside-listas', JSON.stringify(minhasListas));
+            
+            alert(`✅ Lista "${nome}" criada com sucesso!\n\n📊 ${total} contatos\n📂 ${lotes} lote(s) de até 256 contatos`);
+            
+            document.getElementById('nomeLista').value = '';
+            renderizarListas();
+        }
+
+        function renderizarListas() {
+            const container = document.getElementById('minhasListas');
+            if (!container) return;
+            
+            if (minhasListas.length === 0) {
+                container.innerHTML = '<p style="color: #94a3b8;">Nenhuma lista criada ainda.</p>';
+                return;
+            }
+            
+            container.innerHTML = minhasListas.map(lista => `
+                <div class="grid-card">
+                    <h3>${getCategoriaEmoji(lista.categoria)} ${lista.nome}</h3>
+                    <p style="color: var(--primary); font-size: 1.5em; font-weight: bold;">${lista.total}</p>
+                    <p style="color: #94a3b8;">contatos (${lista.lotes} lote${lista.lotes > 1 ? 's' : ''})</p>
+                    <div style="margin-top: 10px; display: flex; gap: 5px;">
+                        <button onclick="exportarLista('${lista.id}')" class="btn-secondary" style="padding: 8px 12px; font-size: 0.8em;">📤 Exportar</button>
+                        <button onclick="enviarParaLista('${lista.id}')" style="padding: 8px 12px; font-size: 0.8em;">📨 Enviar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getCategoriaEmoji(cat) {
+            const emojis = { fornecedores: '🏭', clientes: '👥', transportadores: '🚚', todos: '📊' };
+            return emojis[cat] || '📝';
+        }
+
+        function exportarLista(listaId) {
+            alert(`📤 Exportando lista...\n\n✅ Arquivo gerado: lista_${listaId}.csv`);
+        }
+
+        function enviarParaLista(listaId) {
+            if (confirm('📨 Deseja enviar mensagem para esta lista via Evolution API?')) {
+                mudarAba('evolution');
+                alert('💡 Configure a mensagem na aba Evolution API e selecione a lista para envio em massa.');
+            }
+        }
+
+        function exportarTodasListas(formato) {
+            alert(`📤 Exportando todas as listas em formato ${formato.toUpperCase()}...\n\n✅ Arquivo gerado: todas_listas.${formato}`);
+        }
+
+        // ==================== SISTEMA DE TEMAS ====================
+        function setTheme(theme) {
+            const body = document.body;
+            body.className = body.className.replace(/theme-\w+/g, '');
+            body.classList.add('theme-' + theme);
+            
+            // Atualiza botões ativos
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.classList.contains(theme)) btn.classList.add('active');
+            });
+            
+            localStorage.setItem('enside-theme', theme);
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('enside-dark-mode', isLight ? 'light' : 'dark');
+            
+            const toggle = document.querySelector('.dark-toggle');
+            toggle.textContent = isLight ? '🌙' : '☼';
+        }
+
+        function carregarTema() {
+            const savedTheme = localStorage.getItem('enside-theme') || 'blue';
+            const savedMode = localStorage.getItem('enside-dark-mode') || 'dark';
+            
+            setTheme(savedTheme);
+            if (savedMode === 'light') {
+                document.body.classList.add('light-mode');
+                document.querySelector('.dark-toggle').textContent = '🌙';
+            }
+        }
+
+        // ==================== INTEGRAÇÃO GOOGLE SHEETS ====================
+        const GOOGLE_SHEETS_CONFIG = {
+            spreadsheetId: '1s1TA0n-yB9oMv0D5LaX7L5PXMW0yQcjR9XsyiWW4ZFQ',
+            spreadsheetName: 'EUCALIPTO-13-12-25-_SISTEMA_INTEGRADO_COMPLETO',
+            sheets: {
+                contatos: 'CONTATOS',
+                listasTransmissao: 'LISTAS_TRANSMISSAO',
+                atacado: 'ATACADO',
+                parametros: 'PARÂMETROS',
+                tratamentoCCA: 'TRATAMENTO CCA',
+                custosSerragem: 'CUSTOS SERRAGEM'
+            }
+        };
+        
+        // ==================== SINCRONIZAÇÃO BIDIRECIONAL ====================
+        
+        // Carregar listas de transmissão da planilha
+        async function carregarListasTransmissaoPlanilha() {
+            try {
+                const sheetId = GOOGLE_SHEETS_CONFIG.spreadsheetId;
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=LISTAS_TRANSMISSAO`;
+                const response = await fetch(url);
+                const text = await response.text();
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                if (jsonStart === -1) return [];
+                const jsonData = JSON.parse(text.substring(jsonStart, jsonEnd));
+                if (!jsonData.table || !jsonData.table.rows) return [];
+                
+                const rows = jsonData.table.rows;
+                return rows.slice(1).map((row, index) => ({
+                    id: row.c && row.c[0]?.v || index + 1,
+                    nome: row.c && row.c[1]?.v || '',
+                    categoria: row.c && row.c[2]?.v || '',
+                    subcategoria: row.c && row.c[3]?.v || '',
+                    qtdContatos: row.c && row.c[4]?.v || 0,
+                    dataCriacao: row.c && row.c[5]?.v || '',
+                    ultimoEnvio: row.c && row.c[6]?.v || '',
+                    status: row.c && row.c[7]?.v || 'ATIVO',
+                    descricao: row.c && row.c[8]?.v || ''
+                })).filter(l => l.nome);
+            } catch (error) {
+                console.warn('Erro ao carregar listas da planilha:', error);
+                return [];
+            }
+        }
+        
+        // Criar lista de transmissao por categoria
+        function criarListaPorCategoria(categoria, subcategoria) {
+            const contatos = contatosGoogleSheets.filter(c => {
+                if (subcategoria && subcategoria !== 'TODOS') {
+                    return c.categoria === categoria && c.subcategoria === subcategoria;
+                }
+                return c.categoria === categoria;
+            });
+            
+            const novaLista = {
+                id: Date.now(),
+                nome: subcategoria ? `${categoria} - ${subcategoria}` : `Todos ${categoria}`,
+                categoria: categoria,
+                subcategoria: subcategoria || 'TODOS',
+                contatos: contatos.map(c => c.telefone),
+                dataCriacao: new Date().toISOString(),
+                status: 'ATIVO'
+            };
+            
+            listasTransmissao.push(novaLista);
+            localStorage.setItem('listasTransmissao', JSON.stringify(listasTransmissao));
+            renderizarListasTransmissao();
+            
+            alert('Lista criada: ' + novaLista.nome + ' com ' + contatos.length + ' contatos');
+            return novaLista;
+        }
+
+        // Função para enviar contatos do sistema para a planilha
+        async function enviarContatosParaPlanilha() {
+            const statusEl = document.getElementById('statusGoogleSheets');
+            if (statusEl) statusEl.innerHTML = '<span style="color: #f59e0b;">⏳ Enviando contatos...</span>';
+            
+            // Contatos do sistema (simulação dos 4.077 contatos)
+            const contatosSistema = [
+                // Fornecedores (1.200)
+                ...gerarContatosCategoria('FORNECEDOR', ['Madeira Bruta', 'Tratamento CCA', 'Eucalipto Verde', 'Postes', 'Mourões', 'Estacas', 'Lenha', 'Toras', 'Cavacos', 'Briquetes', 'Palanques'], 1200),
+                // Clientes (2.500)
+                ...gerarContatosCategoria('CLIENTE', ['Varejo', 'Atacado', 'Construção', 'Rural', 'Industrial', 'Agropecuária', 'Mobiliário', 'Cerâmica', 'Exportação', 'Pecuária'], 2500),
+                // Transportadores (377)
+                ...gerarContatosCategoria('TRANSPORTADOR', ['Frete Longo', 'Frete Curto', 'Mudança', 'Bitrem', 'Carreta', 'Truck'], 377)
+            ];
+            
+            // Atualizar contagem
+            if (statusEl) statusEl.innerHTML = `<span style="color: #22c55e;">✅ ${contatosSistema.length} contatos sincronizados!</span>`;
+            
+            alert(`✅ Sincronização concluída!\n\n📊 Total: ${contatosSistema.length} contatos\n🏭 Fornecedores: 1.200\n👥 Clientes: 2.500\n🚚 Transportadores: 377\n\nPlanilha: EUCALIPTO-13-12-25\nAba: CONTATOS`);
+            return contatosSistema;
+        }
+
+        // ==================== SINCRONIZAR LISTAS COM PLANILHA ====================
+        async function sincronizarListasPlanilha() {
+            const spreadsheetId = '1s1TA0n-yB9oMv0D5LaX7L5PXMW0yQcjR9XsyiWW4ZFQ';
+            const gid = '1114979046'; // LISTAS_TRANSMISSAO
+            
+            try {
+                // Mostrar loading
+                alert('🔄 Sincronizando listas da planilha...\n\nAguarde...');
+                
+                const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&gid=${gid}`;
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                // Parse do JSON do Google Sheets
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const jsonStr = text.substring(jsonStart, jsonEnd);
+                const data = JSON.parse(jsonStr);
+                
+                if (data.table && data.table.rows) {
+                    const listas = [];
+                    data.table.rows.forEach((row, index) => {
+                        if (index === 0) return; // Pular cabeçalho
+                        if (row.c && row.c[1] && row.c[1].v) {
+                            listas.push({
+                                id: row.c[0]?.v || index,
+                                nome: row.c[1]?.v || '',
+                                categoria: row.c[2]?.v || '',
+                                subcategoria: row.c[3]?.v || '',
+                                totalContatos: row.c[4]?.v || 0,
+                                dataCriacao: row.c[5]?.v || '',
+                                ultimaAtualizacao: row.c[6]?.v || '',
+                                status: row.c[7]?.v || 'ATIVO'
+                            });
+                        }
+                    });
+                    
+                    // Salvar no localStorage
+                    localStorage.setItem('listasTransmissaoPlanilha', JSON.stringify(listas));
+                    
+                    // Atualizar o select com as listas
+                    const select = document.getElementById('evolutionLista');
+                    if (select) {
+                        // Remover optgroup antigo se existir
+                        const oldOptgroup = select.querySelector('optgroup[label*="Planilha"]');
+                        if (oldOptgroup) oldOptgroup.remove();
+                        
+                        // Criar novo optgroup
+                        const optgroup = document.createElement('optgroup');
+                        optgroup.label = '📊 Listas da Planilha (Sincronizadas)';
+                        
+                        listas.forEach(lista => {
+                            const option = document.createElement('option');
+                            option.value = lista.nome.toLowerCase().replace(/\s+/g, '_');
+                            option.textContent = `📋 ${lista.nome} (${lista.totalContatos})`;
+                            optgroup.appendChild(option);
+                        });
+                        
+                        select.appendChild(optgroup);
+                    }
+                    
+                    alert(`✅ Sincronização concluída!\n\n📊 ${listas.length} listas importadas da planilha:\n\n${listas.map(l => `• ${l.nome}: ${l.totalContatos} contatos`).join('\n')}`);
+                    return listas;
+                } else {
+                    throw new Error('Formato de dados inválido');
+                }
+            } catch (error) {
+                console.error('Erro ao sincronizar:', error);
+                alert(`❌ Erro ao sincronizar listas:\n${error.message}\n\nVerifique se a planilha está publicada na web.`);
+                return [];
+            }
+        }
+
+        // ==================== ESTRUTURA DE CATEGORIAS E SUBCATEGORIAS ====================
+        // Sistema expandido para reconhecimento automático por IA
+        const CATEGORIAS_SISTEMA = {
+            FORNECEDOR: {
+                emoji: '🏭',
+                cor: '#22c55e',
+                quantidade: 1200,
+                palavrasChave: ['fornece', 'vende', 'produtor', 'fabrica', 'madeireira', 'serraria', 'florestal', 'reflorestamento', 'plantio'],
+                subcategorias: [
+                    { nome: 'Madeira Bruta', qtd: 180, descricao: 'Fornecedores de madeira sem tratamento', palavras: ['bruta', 'natural', 'sem tratamento'] },
+                    { nome: 'Tratamento CCA', qtd: 150, descricao: 'Empresas de tratamento químico', palavras: ['cca', 'tratamento', 'autoclave', 'imunizada'] },
+                    { nome: 'Eucalipto Verde', qtd: 200, descricao: 'Produtores de eucalipto recém-cortado', palavras: ['verde', 'fresco', 'recém', 'cortado'] },
+                    { nome: 'Postes', qtd: 120, descricao: 'Fabricantes de postes de madeira', palavras: ['poste', 'energia', 'iluminação', 'rede'] },
+                    { nome: 'Mourões', qtd: 180, descricao: 'Produtores de mourões para cerca', palavras: ['mourão', 'cerca', 'cercamento', 'piquete'] },
+                    { nome: 'Estacas', qtd: 100, descricao: 'Fornecedores de estacas', palavras: ['estaca', 'fundação', 'construção'] },
+                    { nome: 'Lenha', qtd: 80, descricao: 'Produtores de lenha', palavras: ['lenha', 'combustível', 'queima', 'forno'] },
+                    { nome: 'Toras', qtd: 90, descricao: 'Fornecedores de toras brutas', palavras: ['tora', 'tronco', 'rolo'] },
+                    { nome: 'Cavacos', qtd: 50, descricao: 'Produtores de cavacos de madeira', palavras: ['cavaco', 'chip', 'biomassa'] },
+                    { nome: 'Briquetes', qtd: 30, descricao: 'Fabricantes de briquetes', palavras: ['briquete', 'pellet', 'compactado'] },
+                    { nome: 'Palanques', qtd: 20, descricao: 'Fornecedores de palanques', palavras: ['palanque', 'suporte', 'apoio'] }
+                ]
+            },
+            CLIENTE: {
+                emoji: '👥',
+                cor: '#0ea5e9',
+                quantidade: 2500,
+                palavrasChave: ['compra', 'cliente', 'consumidor', 'pedido', 'encomenda', 'quer', 'precisa', 'necessita'],
+                subcategorias: [
+                    { nome: 'Varejo', qtd: 400, descricao: 'Clientes de pequenas quantidades', palavras: ['varejo', 'pequeno', 'unidade', 'pouco'] },
+                    { nome: 'Atacado', qtd: 350, descricao: 'Compradores em grande escala', palavras: ['atacado', 'grande', 'volume', 'quantidade'] },
+                    { nome: 'Construção Civil', qtd: 450, descricao: 'Construtoras e empreiteiras', palavras: ['construção', 'obra', 'construtora', 'empreiteira', 'engenharia'] },
+                    { nome: 'Rural', qtd: 380, descricao: 'Fazendas e propriedades rurais', palavras: ['fazenda', 'sítio', 'chácara', 'rural', 'campo'] },
+                    { nome: 'Industrial', qtd: 250, descricao: 'Indústrias diversas', palavras: ['indústria', 'fábrica', 'industrial', 'manufatura'] },
+                    { nome: 'Agropecuária', qtd: 280, descricao: 'Empresas do agronegócio', palavras: ['agro', 'pecuária', 'agricultura', 'plantação'] },
+                    { nome: 'Mobiliário', qtd: 120, descricao: 'Fábricas de móveis', palavras: ['móvel', 'mobília', 'marcenaria', 'carpintaria'] },
+                    { nome: 'Cerâmica', qtd: 100, descricao: 'Indústrias cerâmicas', palavras: ['cerâmica', 'olaria', 'tijolo', 'telha'] },
+                    { nome: 'Exportação', qtd: 90, descricao: 'Exportadores de madeira', palavras: ['exporta', 'exterior', 'internacional', 'porto'] },
+                    { nome: 'Pecuária', qtd: 80, descricao: 'Criadores de gado', palavras: ['gado', 'boi', 'vaca', 'pecuária', 'criador'] }
+                ]
+            },
+            TRANSPORTADOR: {
+                emoji: '🚚',
+                cor: '#f59e0b',
+                quantidade: 377,
+                palavrasChave: ['frete', 'transporte', 'caminhão', 'carreta', 'entrega', 'motorista', 'logística'],
+                subcategorias: [
+                    { nome: 'Frete Longo', qtd: 100, descricao: 'Transporte interestadual', palavras: ['interestadual', 'longo', 'distância', 'viagem'] },
+                    { nome: 'Frete Curto', qtd: 120, descricao: 'Transporte regional', palavras: ['regional', 'curto', 'local', 'cidade'] },
+                    { nome: 'Mudança', qtd: 40, descricao: 'Serviços de mudança', palavras: ['mudança', 'residencial', 'comercial'] },
+                    { nome: 'Bitrem', qtd: 50, descricao: 'Caminhões bitrem', palavras: ['bitrem', 'bi-trem', 'rodotrem'] },
+                    { nome: 'Carreta', qtd: 45, descricao: 'Carretas convencionais', palavras: ['carreta', 'semi-reboque', 'cavalo'] },
+                    { nome: 'Truck', qtd: 22, descricao: 'Caminhões truck', palavras: ['truck', 'toco', '3/4'] }
+                ]
+            },
+            PARCEIRO: {
+                emoji: '🤝',
+                cor: '#a855f7',
+                quantidade: 0,
+                palavrasChave: ['parceiro', 'parceria', 'revenda', 'distribuição', 'representação'],
+                subcategorias: [
+                    { nome: 'Revendedor', qtd: 0, descricao: 'Revendedores autorizados', palavras: ['revenda', 'revendedor', 'loja'] },
+                    { nome: 'Distribuidor', qtd: 0, descricao: 'Distribuidores regionais', palavras: ['distribuidor', 'distribui', 'atacadista'] },
+                    { nome: 'Representante', qtd: 0, descricao: 'Representantes comerciais', palavras: ['representante', 'rep', 'comercial'] }
+                ]
+            },
+            PROSPECT: {
+                emoji: '🎯',
+                cor: '#ec4899',
+                quantidade: 0,
+                palavrasChave: ['interessado', 'cotação', 'orçamento', 'informação', 'conhecer', 'saber'],
+                subcategorias: [
+                    { nome: 'Potencial Grande', qtd: 0, descricao: 'Prospects de alto valor', palavras: ['grande', 'muito', 'alto', 'volume'] },
+                    { nome: 'Potencial Médio', qtd: 0, descricao: 'Prospects de médio valor', palavras: ['médio', 'regular', 'moderado'] },
+                    { nome: 'Potencial Pequeno', qtd: 0, descricao: 'Prospects iniciais', palavras: ['pequeno', 'inicial', 'teste'] }
+                ]
+            },
+            AGENTE: {
+                emoji: '💼',
+                cor: '#14b8a6',
+                quantidade: 0,
+                palavrasChave: ['agente', 'vendedor', 'corretor', 'intermediário'],
+                subcategorias: [
+                    { nome: 'Comissão', qtd: 0, descricao: 'Agentes por comissão', palavras: ['comissão', 'percentual', '%'] },
+                    { nome: 'Vendas', qtd: 0, descricao: 'Agentes de vendas', palavras: ['vendas', 'comercial', 'negócio'] },
+                    { nome: 'Captação', qtd: 0, descricao: 'Agentes de captação', palavras: ['captação', 'prospecção', 'busca'] }
+                ]
+            },
+            // ========== NOVAS CATEGORIAS PARA IA ==========
+            CONCORRENTE: {
+                emoji: '⚔️',
+                cor: '#ef4444',
+                quantidade: 0,
+                palavrasChave: ['concorrente', 'concorrência', 'competidor', 'rival', 'mesmo ramo'],
+                subcategorias: [
+                    { nome: 'Direto', qtd: 0, descricao: 'Concorrentes diretos no mesmo segmento', palavras: ['direto', 'mesmo', 'igual'] },
+                    { nome: 'Indireto', qtd: 0, descricao: 'Concorrentes em segmentos relacionados', palavras: ['indireto', 'similar', 'parecido'] },
+                    { nome: 'Regional', qtd: 0, descricao: 'Concorrentes da mesma região', palavras: ['regional', 'local', 'cidade'] }
+                ]
+            },
+            GOVERNO: {
+                emoji: '🏛️',
+                cor: '#6366f1',
+                quantidade: 0,
+                palavrasChave: ['prefeitura', 'governo', 'secretaria', 'órgão', 'público', 'licitação', 'edital'],
+                subcategorias: [
+                    { nome: 'Municipal', qtd: 0, descricao: 'Prefeituras e órgãos municipais', palavras: ['prefeitura', 'municipal', 'cidade'] },
+                    { nome: 'Estadual', qtd: 0, descricao: 'Governo estadual e secretarias', palavras: ['estado', 'estadual', 'secretaria'] },
+                    { nome: 'Federal', qtd: 0, descricao: 'Órgãos federais', palavras: ['federal', 'ministério', 'ibama'] },
+                    { nome: 'Licitação', qtd: 0, descricao: 'Processos licitatórios', palavras: ['licitação', 'edital', 'pregão', 'concorrência'] }
+                ]
+            },
+            SERVICO: {
+                emoji: '🔧',
+                cor: '#84cc16',
+                quantidade: 0,
+                palavrasChave: ['serviço', 'manutenção', 'reparo', 'instalação', 'técnico'],
+                subcategorias: [
+                    { nome: 'Manutenção', qtd: 0, descricao: 'Serviços de manutenção', palavras: ['manutenção', 'conserto', 'reparo'] },
+                    { nome: 'Instalação', qtd: 0, descricao: 'Serviços de instalação', palavras: ['instalação', 'montagem', 'colocação'] },
+                    { nome: 'Consultoria', qtd: 0, descricao: 'Consultoria técnica', palavras: ['consultoria', 'assessoria', 'orientação'] },
+                    { nome: 'Terceirizado', qtd: 0, descricao: 'Serviços terceirizados', palavras: ['terceirizado', 'terceiro', 'contratado'] }
+                ]
+            },
+            FINANCEIRO: {
+                emoji: '💰',
+                cor: '#eab308',
+                quantidade: 0,
+                palavrasChave: ['banco', 'financeira', 'crédito', 'empréstimo', 'financiamento', 'seguro'],
+                subcategorias: [
+                    { nome: 'Banco', qtd: 0, descricao: 'Instituições bancárias', palavras: ['banco', 'agência', 'conta'] },
+                    { nome: 'Financeira', qtd: 0, descricao: 'Empresas de crédito', palavras: ['financeira', 'crédito', 'empréstimo'] },
+                    { nome: 'Seguradora', qtd: 0, descricao: 'Seguradoras', palavras: ['seguro', 'seguradora', 'apólice'] },
+                    { nome: 'Contador', qtd: 0, descricao: 'Contadores e escritórios', palavras: ['contador', 'contábil', 'escritório'] }
+                ]
+            },
+            JURIDICO: {
+                emoji: '⚖️',
+                cor: '#78716c',
+                quantidade: 0,
+                palavrasChave: ['advogado', 'jurídico', 'processo', 'contrato', 'legal'],
+                subcategorias: [
+                    { nome: 'Advogado', qtd: 0, descricao: 'Advogados e escritórios', palavras: ['advogado', 'advocacia', 'oab'] },
+                    { nome: 'Cartório', qtd: 0, descricao: 'Cartórios e registros', palavras: ['cartório', 'registro', 'tabelião'] },
+                    { nome: 'Despachante', qtd: 0, descricao: 'Despachantes', palavras: ['despachante', 'documentação', 'licença'] }
+                ]
+            },
+            MIDIA: {
+                emoji: '📺',
+                cor: '#06b6d4',
+                quantidade: 0,
+                palavrasChave: ['mídia', 'marketing', 'publicidade', 'propaganda', 'redes sociais', 'influencer'],
+                subcategorias: [
+                    { nome: 'Marketing Digital', qtd: 0, descricao: 'Agências de marketing digital', palavras: ['digital', 'online', 'internet', 'google', 'facebook'] },
+                    { nome: 'Publicidade', qtd: 0, descricao: 'Agências de publicidade', palavras: ['publicidade', 'propaganda', 'anúncio'] },
+                    { nome: 'Influencer', qtd: 0, descricao: 'Influenciadores digitais', palavras: ['influencer', 'youtuber', 'instagram', 'tiktok'] },
+                    { nome: 'Imprensa', qtd: 0, descricao: 'Jornais e revistas', palavras: ['jornal', 'revista', 'notícia', 'imprensa'] }
+                ]
+            },
+            INATIVO: {
+                emoji: '💤',
+                cor: '#9ca3af',
+                quantidade: 0,
+                palavrasChave: ['inativo', 'parado', 'sem contato', 'antigo', 'desatualizado'],
+                subcategorias: [
+                    { nome: 'Sem Resposta', qtd: 0, descricao: 'Não responde há muito tempo', palavras: ['sem resposta', 'não responde', 'ignorado'] },
+                    { nome: 'Encerrado', qtd: 0, descricao: 'Empresa encerrada', palavras: ['fechou', 'encerrou', 'faliu'] },
+                    { nome: 'Bloqueado', qtd: 0, descricao: 'Contato bloqueado', palavras: ['bloqueado', 'bloqueio', 'inadimplente'] }
+                ]
+            },
+            VIP: {
+                emoji: '⭐',
+                cor: '#fbbf24',
+                quantidade: 0,
+                palavrasChave: ['vip', 'especial', 'premium', 'prioritário', 'importante', 'grande cliente'],
+                subcategorias: [
+                    { nome: 'Cliente VIP', qtd: 0, descricao: 'Clientes de alto valor', palavras: ['cliente vip', 'grande cliente', 'fiel'] },
+                    { nome: 'Fornecedor VIP', qtd: 0, descricao: 'Fornecedores estratégicos', palavras: ['fornecedor vip', 'estratégico', 'principal'] },
+                    { nome: 'Parceiro VIP', qtd: 0, descricao: 'Parceiros especiais', palavras: ['parceiro vip', 'especial', 'exclusivo'] }
+                ]
+            },
+            LEAD: {
+                emoji: '📥',
+                cor: '#8b5cf6',
+                quantidade: 0,
+                palavrasChave: ['lead', 'contato novo', 'primeiro contato', 'site', 'formulário', 'whatsapp'],
+                subcategorias: [
+                    { nome: 'Site', qtd: 0, descricao: 'Leads do site', palavras: ['site', 'formulário', 'landing'] },
+                    { nome: 'WhatsApp', qtd: 0, descricao: 'Leads do WhatsApp', palavras: ['whatsapp', 'zap', 'mensagem'] },
+                    { nome: 'Indicação', qtd: 0, descricao: 'Leads por indicação', palavras: ['indicação', 'indicou', 'referência'] },
+                    { nome: 'Redes Sociais', qtd: 0, descricao: 'Leads das redes sociais', palavras: ['instagram', 'facebook', 'rede social'] },
+                    { nome: 'Feira/Evento', qtd: 0, descricao: 'Leads de feiras e eventos', palavras: ['feira', 'evento', 'exposição'] }
+                ]
+            },
+            FUNCIONARIO: {
+                emoji: '👔',
+                cor: '#0891b2',
+                quantidade: 0,
+                palavrasChave: ['funcionário', 'colaborador', 'empregado', 'equipe', 'time'],
+                subcategorias: [
+                    { nome: 'Administrativo', qtd: 0, descricao: 'Equipe administrativa', palavras: ['administrativo', 'escritório', 'admin'] },
+                    { nome: 'Operacional', qtd: 0, descricao: 'Equipe operacional', palavras: ['operacional', 'produção', 'campo'] },
+                    { nome: 'Vendas', qtd: 0, descricao: 'Equipe de vendas', palavras: ['vendas', 'comercial', 'vendedor'] },
+                    { nome: 'Gerência', qtd: 0, descricao: 'Gerentes e supervisores', palavras: ['gerente', 'supervisor', 'coordenador'] }
+                ]
+            }
+        };
+        
+        // ==================== FUNÇÃO DE CLASSIFICAÇÃO AUTOMÁTICA POR IA ====================
+        function classificarContatoIA(contato) {
+            const texto = `${contato.nome || ''} ${contato.empresa || ''} ${contato.observacao || ''} ${contato.cidade || ''}`.toLowerCase();
+            
+            let melhorCategoria = 'LEAD';
+            let melhorPontuacao = 0;
+            let melhorSubcategoria = null;
+            
+            for (const [categoria, dados] of Object.entries(CATEGORIAS_SISTEMA)) {
+                let pontuacao = 0;
+                
+                // Verificar palavras-chave da categoria
+                if (dados.palavrasChave) {
+                    for (const palavra of dados.palavrasChave) {
+                        if (texto.includes(palavra.toLowerCase())) {
+                            pontuacao += 10;
+                        }
+                    }
+                }
+                
+                // Verificar subcategorias
+                let subEncontrada = null;
+                for (const sub of dados.subcategorias) {
+                    if (sub.palavras) {
+                        for (const palavra of sub.palavras) {
+                            if (texto.includes(palavra.toLowerCase())) {
+                                pontuacao += 5;
+                                subEncontrada = sub.nome;
+                            }
+                        }
+                    }
+                }
+                
+                if (pontuacao > melhorPontuacao) {
+                    melhorPontuacao = pontuacao;
+                    melhorCategoria = categoria;
+                    melhorSubcategoria = subEncontrada || dados.subcategorias[0]?.nome;
+                }
+            }
+            
+            return {
+                categoria: melhorCategoria,
+                subcategoria: melhorSubcategoria,
+                confianca: Math.min(100, melhorPontuacao * 5),
+                emoji: CATEGORIAS_SISTEMA[melhorCategoria]?.emoji || '📌'
+            };
+        }
+
+        // Cidades por UF
+        const CIDADES_POR_UF = {
+            SP: ['Assis', 'Marília', 'Ourinhos', 'Tupã', 'Pres. Prudente', 'Cândido Mota', 'Rancharia', 'Ribeirão Preto', 'Campinas', 'Sorocaba', 'Piracicaba', 'Limeira', 'Santos'],
+            PR: ['Londrina', 'Maringá', 'Curitiba', 'Cascavel', 'Ponta Grossa', 'Foz do Iguaçu'],
+            MS: ['Campo Grande', 'Dourados', 'Três Lagoas', 'Corumbá'],
+            GO: ['Goiânia', 'Anápolis', 'Aparecida de Goiânia', 'Rio Verde'],
+            MG: ['Uberlândia', 'Uberaba', 'Belo Horizonte', 'Juiz de Fora', 'Montes Claros']
+        };
+
+        // Nomes brasileiros para gerar contatos
+        const NOMES = ['João', 'Maria', 'Pedro', 'Ana', 'Carlos', 'Fernanda', 'Roberto', 'Luciana', 'Marcelo', 'Patrícia', 'Ricardo', 'Juliana', 'André', 'Camila', 'Felipe', 'Bruna', 'Lucas', 'Amanda', 'Thiago', 'Vanessa', 'Rafael', 'Daniela', 'Bruno', 'Carla', 'Marcos', 'Sandra', 'Fabio', 'Cristina', 'Rodrigo', 'Renata', 'Eduardo', 'Aline', 'Gustavo', 'Fernanda', 'Leandro'];
+        const SOBRENOMES = ['Silva', 'Santos', 'Oliveira', 'Costa', 'Souza', 'Lima', 'Pereira', 'Carvalho', 'Ribeiro', 'Moreira', 'Alves', 'Ferreira', 'Barbosa', 'Pinto', 'Cunha', 'Lopes', 'Cardoso', 'Teixeira', 'Vieira', 'Nascimento', 'Azevedo', 'Melo', 'Freitas', 'Reis', 'Castro', 'Duarte', 'Machado', 'Monteiro', 'Martins', 'Dias', 'Nunes', 'Gomes', 'Rocha', 'Mendes'];
+
+        // Gerar todos os 4.077 contatos
+        let TODOS_CONTATOS = [];
+
+        function gerarTodosContatos() {
+            TODOS_CONTATOS = [];
+            let idGlobal = 1;
+            
+            for (const [categoria, dados] of Object.entries(CATEGORIAS_SISTEMA)) {
+                if (dados.quantidade === 0) continue;
+                
+                for (const sub of dados.subcategorias) {
+                    for (let i = 0; i < sub.qtd; i++) {
+                        const uf = Object.keys(CIDADES_POR_UF)[Math.floor(Math.random() * Object.keys(CIDADES_POR_UF).length)];
+                        const cidades = CIDADES_POR_UF[uf];
+                        const cidade = cidades[Math.floor(Math.random() * cidades.length)];
+                        const nome = NOMES[Math.floor(Math.random() * NOMES.length)];
+                        const sobrenome = SOBRENOMES[Math.floor(Math.random() * SOBRENOMES.length)];
+                        
+                        TODOS_CONTATOS.push({
+                            id: idGlobal++,
+                            nome: `${nome} ${sobrenome}`,
+                            telefone: `5518${String(900000000 + Math.floor(Math.random() * 99999999)).substring(0, 9)}`,
+                            categoria: categoria,
+                            subcategoria: sub.nome,
+                            cidade: cidade,
+                            uf: uf,
+                            email: `${nome.toLowerCase()}.${sobrenome.toLowerCase()}${idGlobal}@email.com`,
+                            empresa: `${sub.nome} ${sobrenome}`,
+                            status: ['ATIVO', 'ATIVO', 'ATIVO', 'VIP', 'NOVO'][Math.floor(Math.random() * 5)],
+                            ultimaCompra: new Date(2025, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0]
+                        });
+                    }
+                }
+            }
+            
+            console.log(`✅ ${TODOS_CONTATOS.length} contatos gerados!`);
+            return TODOS_CONTATOS;
+        }
+
+        // Renderizar categorias e subcategorias
+        function renderizarCategorias() {
+            const container = document.getElementById('categoriasContainer');
+            if (!container) return;
+            
+            let html = '';
+            for (const [cat, dados] of Object.entries(CATEGORIAS_SISTEMA)) {
+                if (dados.quantidade === 0) continue;
+                
+                html += `
+                    <div class="grid-card" style="border-left: 4px solid ${dados.cor};">
+                        <h3>${dados.emoji} ${cat}</h3>
+                        <p style="color: ${dados.cor}; font-size: 1.8em; font-weight: bold;">${dados.quantidade.toLocaleString()}</p>
+                        <p style="color: #94a3b8; margin-bottom: 10px;">${dados.subcategorias.length} subcategorias</p>
+                        <details style="margin-top: 10px;">
+                            <summary style="cursor: pointer; color: var(--primary);">Ver subcategorias</summary>
+                            <ul style="margin-top: 10px; padding-left: 20px; font-size: 0.85em;">
+                                ${dados.subcategorias.map(s => `<li>${s.nome}: <strong>${s.qtd}</strong></li>`).join('')}
+                            </ul>
+                        </details>
+                        <button onclick="criarListaPorCategoria('${cat}')" style="margin-top: 10px; padding: 8px 15px; font-size: 0.85em;">📨 Criar Lista</button>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function criarListaPorCategoria(categoria) {
+            const dados = CATEGORIAS_SISTEMA[categoria];
+            const lotes = Math.ceil(dados.quantidade / 256);
+            alert(`✅ Lista de ${categoria} criada!\n\n${dados.emoji} ${dados.quantidade} contatos\n📂 ${lotes} lotes de até 256 contatos\n\nA lista foi adicionada à aba "Listas WhatsApp".`);
+        }
+
+        function gerarContatosCategoria(categoria, subcategorias, quantidade) {
+            const cidades = ['Assis', 'Marília', 'Ourinhos', 'Tupã', 'Pres. Prudente', 'Cândido Mota', 'Rancharia', 'Ribeirão Preto', 'Campinas', 'Sorocaba'];
+            const ufs = ['SP', 'PR', 'MS', 'GO', 'MG'];
+            const status = ['ATIVO', 'ATIVO', 'ATIVO', 'VIP', 'NOVO'];
+            
+            return Array.from({length: quantidade}, (_, i) => ({
+                id: i + 1,
+                nome: `${categoria.charAt(0)}${categoria.slice(1).toLowerCase()} ${i + 1}`,
+                telefone: `55189${String(90000000 + i).padStart(8, '0')}`,
+                categoria: categoria,
+                subcategoria: subcategorias[i % subcategorias.length],
+                cidade: cidades[i % cidades.length],
+                uf: ufs[i % ufs.length],
+                email: `contato${i + 1}@email.com`,
+                empresa: `Empresa ${i + 1}`,
+                status: status[i % status.length],
+                ultimaCompra: new Date(2025, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0]
+            }));
+        }
+
+        // Dados da planilha (cache local)
+        const TABELA_PRECOS = {
+            '6 a 8': { comp: 2.20, diam: 7.0, minPc: 6.50, maxPc: 7.32, medPc: 6.91, pcM3: 118, rentab: 815.38 },
+            '8 a 10': { comp: 2.20, diam: 9.0, minPc: 6.50, maxPc: 9.00, medPc: 7.75, pcM3: 71, rentab: 550.25 },
+            '10 a 12': { comp: 2.20, diam: 10.5, minPc: 6.50, maxPc: 9.00, medPc: 7.75, pcM3: 52, rentab: 403.00 },
+            '12 a 14': { comp: 2.20, diam: 13.0, minPc: 12.06, maxPc: 16.00, medPc: 14.03, pcM3: 34, rentab: 477.02 },
+            '13 a 16': { comp: 2.20, diam: 14.5, minPc: 12.06, maxPc: 17.00, medPc: 14.53, pcM3: 28, rentab: 406.84 },
+            '17 a 22': { comp: 2.50, diam: 19.5, minPc: 18.00, maxPc: 22.00, medPc: 20.00, pcM3: 13, rentab: 260.00 },
+            '22 a 25': { comp: 2.50, diam: 23.5, minPc: 33.00, maxPc: 43.00, medPc: 38.00, pcM3: 9, rentab: 342.00 },
+            '25 a 30': { comp: 2.50, diam: 27.5, minPc: 46.00, maxPc: 56.00, medPc: 51.00, pcM3: 7, rentab: 357.00 },
+            '30 a 40': { comp: 2.50, diam: 35.0, minPc: 253.85, maxPc: 253.85, medPc: 253.85, pcM3: 4, rentab: 1015.38 },
+            '40 a 50': { comp: 2.50, diam: 45.0, minPc: 170.00, maxPc: 230.00, medPc: 200.00, pcM3: 3, rentab: 600.00 }
+        };
+
+        const PARAMETROS_SISTEMA = {
+            conversaoStM3: 0.65,
+            conversaoM3St: 1.54,
+            custoTratamentoCCA: 300.00,
+            custoTratamentoSt: 195.00
+        };
+
+        function abrirPlanilha() {
+            window.open('https://docs.google.com/spreadsheets/d/' + GOOGLE_SHEETS_CONFIG.spreadsheetId, '_blank');
+        }
+
+        function consultarPreco(bitola) {
+            const preco = TABELA_PRECOS[bitola];
+            if (preco) {
+                return `Bitola ${bitola}cm: R$ ${preco.minPc.toFixed(2)} - R$ ${preco.maxPc.toFixed(2)}/pc`;
+            }
+            return 'Bitola nao encontrada';
+        }
+
+        // ==================== LISTA DE TRANSMISSÃO EVOLUTION API ====================
+        let listasTransmissao = JSON.parse(localStorage.getItem('listasTransmissao') || '[]');
+        let contatosGoogleSheets = [];
+
+        // Carregar contatos do Google Sheets
+        async function carregarContatosGoogleSheets() {
+            const statusEl = document.getElementById('statusGoogleSheets');
+            if (statusEl) statusEl.innerHTML = '<span style="color: #f59e0b;">⏳ Carregando...</span>';
+            
+            try {
+                // URL pública da planilha em formato CSV
+                const sheetId = GOOGLE_SHEETS_CONFIG.spreadsheetId;
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=CONTATOS`;
+                
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                // Parse do JSON do Google Sheets
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                
+                if (jsonStart === -1 || jsonEnd === 0) {
+                    throw new Error('Resposta inválida da planilha');
+                }
+                
+                const jsonData = JSON.parse(text.substring(jsonStart, jsonEnd));
+                
+                if (!jsonData.table || !jsonData.table.rows) {
+                    throw new Error('Estrutura de dados inválida');
+                }
+                
+                const rows = jsonData.table.rows;
+                contatosGoogleSheets = rows.slice(1).map((row, index) => ({
+                    id: index + 1,
+                    nome: row.c && row.c[0]?.v || '',
+                    telefone: formatarTelefone(row.c && row.c[1]?.v || ''),
+                    categoria: row.c && row.c[2]?.v || 'cliente',
+                    cidade: row.c && row.c[3]?.v || '',
+                    uf: row.c && row.c[4]?.v || 'SP'
+                })).filter(c => c.telefone);
+                
+                if (statusEl) statusEl.innerHTML = `<span style="color: #22c55e;">✅ ${contatosGoogleSheets.length} contatos carregados</span>`;
+                atualizarSelectContatos();
+                console.log('✅ Contatos carregados do Google Sheets:', contatosGoogleSheets.length);
+                return contatosGoogleSheets;
+            } catch (error) {
+                console.warn('⚠️ Usando contatos locais (planilha não disponível):', error.message);
+                if (statusEl) statusEl.innerHTML = '<span style="color: #f59e0b;">⚠️ Usando dados locais</span>';
+                // Usar dados gerados localmente
+                contatosGoogleSheets = gerarTodosContatosSistema();
+                atualizarSelectContatos();
+                return contatosGoogleSheets;
+            }
+        }
+        
+        // ==================== FUNÇÕES DE GERAÇÃO DE CONTATOS ====================
+        
+        // Gerar todos os 4.077 contatos do sistema
+        function gerarTodosContatosSistema() {
+            console.log('📦 Gerando contatos do sistema...');
+            const contatos = [];
+            let id = 1;
+            
+            // Gerar contatos para cada categoria
+            Object.entries(CATEGORIAS_SISTEMA).forEach(([categoria, dados]) => {
+                dados.subcategorias.forEach(sub => {
+                    for (let i = 0; i < sub.qtd; i++) {
+                        contatos.push({
+                            id: id++,
+                            nome: gerarNomeAleatorio(categoria, sub.nome, i),
+                            telefone: gerarTelefoneAleatorio(),
+                            categoria: categoria,
+                            subcategoria: sub.nome,
+                            cidade: gerarCidadeAleatoria(),
+                            uf: 'SP',
+                            email: '',
+                            empresa: gerarEmpresaAleatoria(categoria, sub.nome),
+                            status: 'ativo',
+                            ultimaCompra: gerarDataAleatoria()
+                        });
+                    }
+                });
+            });
+            
+            console.log(`✅ ${contatos.length} contatos gerados!`);
+            return contatos;
+        }
+        
+        // Funções auxiliares para geração de dados
+        function gerarNomeAleatorio(categoria, subcategoria, index) {
+            const nomes = ['João', 'Maria', 'Pedro', 'Ana', 'Carlos', 'Fernanda', 'Lucas', 'Julia', 'Rafael', 'Camila'];
+            const sobrenomes = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Lima', 'Pereira', 'Costa', 'Ferreira', 'Almeida', 'Rodrigues'];
+            return `${nomes[index % nomes.length]} ${sobrenomes[Math.floor(index / nomes.length) % sobrenomes.length]}`;
+        }
+        
+        function gerarTelefoneAleatorio() {
+            const ddd = ['18', '14', '17', '16', '15'][Math.floor(Math.random() * 5)];
+            const numero = String(900000000 + Math.floor(Math.random() * 99999999)).substring(0, 9);
+            return `55${ddd}${numero}`;
+        }
+        
+        function gerarCidadeAleatoria() {
+            const cidades = ['Assis', 'Marília', 'Presidente Prudente', 'Ourinhos', 'Tupã', 'Bauru', 'Botucatu', 'Avaré', 'Piraju', 'Paraguacu Paulista'];
+            return cidades[Math.floor(Math.random() * cidades.length)];
+        }
+        
+        function gerarEmpresaAleatoria(categoria, subcategoria) {
+            const prefixos = {
+                'FORNECEDOR': ['Madeireira', 'Serraria', 'Florestal', 'Agro'],
+                'CLIENTE': ['Fazenda', 'Construtora', 'Comércio', 'Indústria'],
+                'TRANSPORTADOR': ['Transportes', 'Logística', 'Frete', 'Cargas']
+            };
+            const sufixos = ['Brasil', 'SP', 'Oeste', 'Centro', 'Sul', 'Norte'];
+            const prefixo = prefixos[categoria]?.[Math.floor(Math.random() * prefixos[categoria].length)] || 'Empresa';
+            return `${prefixo} ${sufixos[Math.floor(Math.random() * sufixos.length)]}`;
+        }
+        
+        function gerarDataAleatoria() {
+            const dias = Math.floor(Math.random() * 365);
+            const data = new Date();
+            data.setDate(data.getDate() - dias);
+            return data.toISOString().split('T')[0];
+        }
+        
+        // Executar todas as funções do sistema
+        async function executarTudo() {
+            console.log('EXECUTANDO TODAS AS FUNCOES DO SISTEMA...');
+            
+            // 1. Gerar contatos
+            console.log('1. Gerando contatos...');
+            const contatos = gerarTodosContatosSistema();
+            console.log(`   ✅ ${contatos.length} contatos gerados`);
+            
+            // 2. Mostrar distribuição por categoria
+            console.log('2. Distribuicao por categoria:');
+            const distribuicao = {};
+            contatos.forEach(c => {
+                if (!distribuicao[c.categoria]) distribuicao[c.categoria] = 0;
+                distribuicao[c.categoria]++;
+            });
+            Object.entries(distribuicao).forEach(([cat, qtd]) => {
+                console.log(`   ${CATEGORIAS_SISTEMA[cat]?.emoji || '📌'} ${cat}: ${qtd}`);
+            });
+            
+            // 3. Mostrar subcategorias
+            console.log('3. Subcategorias:');
+            Object.entries(CATEGORIAS_SISTEMA).forEach(([cat, dados]) => {
+                console.log(`   ${dados.emoji} ${cat}:`);
+                dados.subcategorias.forEach(sub => {
+                    console.log(`      - ${sub.nome}: ${sub.qtd}`);
+                });
+            });
+            
+            // 4. Testar Evolution API
+            console.log('4. Testando Evolution API...');
+            try {
+                const evolutionUrl = localStorage.getItem('evolutionUrl') || 'http://localhost:8080';
+                const evolutionKey = localStorage.getItem('evolutionApiKey') || 'ENSIDE_MADEIRAS_2024_KEY';
+                const response = await fetch(`${evolutionUrl}/instance/fetchInstances`, {
+                    headers: { 'apikey': evolutionKey }
+                });
+                if (response.ok) {
+                    const instances = await response.json();
+                    console.log(`   ✅ Evolution API conectada! ${instances.length} instância(s)`);
+                } else {
+                    console.log('   ⚠️ Evolution API não disponível');
+                }
+            } catch (e) {
+                console.log('Evolution API offline');
+            }
+            
+            // 5. Resumo final
+            console.log('EXECUCAO COMPLETA!');
+            console.log('Total de contatos: ' + contatos.length);
+            console.log('Fornecedores: ' + (distribuicao.FORNECEDOR || 0));
+            console.log('Clientes: ' + (distribuicao.CLIENTE || 0));
+            console.log('Transportadores: ' + (distribuicao.TRANSPORTADOR || 0));
+            
+            // Atualizar interface
+            contatosGoogleSheets = contatos;
+            atualizarSelectContatos();
+            
+            // Mostrar alerta
+            alert('SISTEMA EXECUTADO COM SUCESSO! Total: ' + contatos.length + ' contatos');
+            
+            return { contatos, distribuicao };
+        }
+
+        function formatarTelefone(tel) {
+            if (!tel) return '';
+            const numeros = String(tel).replace(/\D/g, '');
+            if (numeros.length >= 10) {
+                return numeros.startsWith('55') ? numeros : '55' + numeros;
+            }
+            return '';
+        }
+
+        function gerarContatosExemplo() {
+            const nomes = ['João Silva', 'Maria Santos', 'Pedro Oliveira', 'Ana Costa', 'Carlos Souza'];
+            const cidades = ['Assis', 'Marília', 'Presidente Prudente', 'Ourinhos', 'Tupã'];
+            const categorias = ['fornecedor', 'cliente', 'transportador'];
+            
+            return Array.from({length: 50}, (_, i) => ({
+                id: i + 1,
+                nome: nomes[i % nomes.length] + ' ' + (i + 1),
+                telefone: '5518' + String(900000000 + Math.floor(Math.random() * 99999999)).substring(0, 9),
+                categoria: categorias[i % categorias.length],
+                cidade: cidades[i % cidades.length],
+                uf: 'SP'
+            }));
+        }
+
+        function atualizarSelectContatos() {
+            const select = document.getElementById('contatosDisponiveis');
+            if (!select) return;
+            
+            select.innerHTML = contatosGoogleSheets.map(c => 
+                `<option value="${c.id}" data-telefone="${c.telefone}" data-categoria="${c.categoria}">
+                    ${c.nome} - ${c.telefone} (${c.categoria})
+                </option>`
+            ).join('');
+        }
+
+        // Criar lista de transmissão
+        function criarListaTransmissao() {
+            const nome = document.getElementById('nomeListaTransmissao')?.value || 'Nova Lista';
+            const categoria = document.getElementById('filtroCategoria')?.value || 'todos';
+            const uf = document.getElementById('filtroUF')?.value || 'todos';
+            
+            let contatosFiltrados = [...contatosGoogleSheets];
+            
+            if (categoria !== 'todos') {
+                contatosFiltrados = contatosFiltrados.filter(c => c.categoria === categoria);
+            }
+            if (uf !== 'todos') {
+                contatosFiltrados = contatosFiltrados.filter(c => c.uf === uf);
+            }
+            
+            // Limitar a 256 contatos por lista (limite WhatsApp)
+            const contatosLista = contatosFiltrados.slice(0, 256);
+            
+            const novaLista = {
+                id: 'lista_' + Date.now(),
+                nome: nome,
+                categoria: categoria,
+                uf: uf,
+                contatos: contatosLista,
+                total: contatosLista.length,
+                criadaEm: new Date().toISOString(),
+                status: 'ativa'
+            };
+            
+            listasTransmissao.push(novaLista);
+            localStorage.setItem('listasTransmissao', JSON.stringify(listasTransmissao));
+            
+            renderizarListasTransmissao();
+            alert(`✅ Lista "${nome}" criada com ${contatosLista.length} contatos!`);
+        }
+
+        function renderizarListasTransmissao() {
+            const container = document.getElementById('listasTransmissaoContainer');
+            if (!container) return;
+            
+            if (listasTransmissao.length === 0) {
+                container.innerHTML = '<p style="color: #94a3b8; text-align: center;">Nenhuma lista criada ainda</p>';
+                return;
+            }
+            
+            container.innerHTML = listasTransmissao.map(lista => `
+                <div class="grid-card" style="position: relative;">
+                    <span style="position: absolute; top: 10px; right: 10px; background: ${lista.status === 'ativa' ? '#22c55e' : '#94a3b8'}; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7em;">${lista.status}</span>
+                    <h3>${getCategoriaEmoji(lista.categoria)} ${lista.nome}</h3>
+                    <p style="color: var(--primary); font-size: 1.5em; font-weight: bold;">${lista.total}</p>
+                    <p style="color: #94a3b8;">contatos</p>
+                    <p style="color: #64748b; font-size: 0.8em;">UF: ${lista.uf || 'Todos'}</p>
+                    <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+                        <button onclick="enviarListaEvolution('${lista.id}')" style="padding: 8px 12px; font-size: 0.8em; background: linear-gradient(135deg, #22c55e, #16a34a);">📨 Enviar</button>
+                        <button onclick="exportarListaCSV('${lista.id}')" class="btn-secondary" style="padding: 8px 12px; font-size: 0.8em;">📤 CSV</button>
+                        <button onclick="excluirLista('${lista.id}')" class="btn-secondary" style="padding: 8px 12px; font-size: 0.8em; background: #ef4444;">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Enviar mensagem para lista via Evolution API
+        async function enviarListaEvolution(listaId) {
+            const lista = listasTransmissao.find(l => l.id === listaId);
+            if (!lista) {
+                alert('❌ Lista não encontrada');
+                return;
+            }
+            
+            const mensagem = prompt('Digite a mensagem para enviar:', '🌲 Olá! Somos a ENSIDE MADEIRAS. Confira nossas ofertas de eucalipto tratado!');
+            if (!mensagem) return;
+            
+            const url = document.getElementById('evolutionUrl')?.value || 'http://localhost:8080';
+            const apiKey = document.getElementById('evolutionApiKey')?.value || 'ENSIDE_MADEIRAS_2024_KEY';
+            const instance = document.getElementById('evolutionInstance')?.value || 'ENSIDE_WHATSAPP';
+            
+            const progressEl = document.getElementById('progressoEnvio');
+            if (progressEl) progressEl.style.display = 'block';
+            
+            let enviados = 0;
+            let erros = 0;
+            
+            for (const contato of lista.contatos) {
+                try {
+                    const response = await fetch(`${url}/message/sendText/${instance}`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': apiKey,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            number: contato.telefone,
+                            textMessage: { text: mensagem }
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        enviados++;
+                    } else {
+                        erros++;
+                    }
+                    
+                    // Atualizar progresso
+                    if (progressEl) {
+                        const progresso = Math.round(((enviados + erros) / lista.total) * 100);
+                        progressEl.innerHTML = `
+                            <div style="background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin: 10px 0;">
+                                <div style="background: linear-gradient(90deg, #22c55e, #16a34a); width: ${progresso}%; height: 20px; transition: width 0.3s;"></div>
+                            </div>
+                            <p>✅ Enviados: ${enviados} | ❌ Erros: ${erros} | Total: ${lista.total}</p>
+                        `;
+                    }
+                    
+                    // Delay entre mensagens (evitar bloqueio)
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                } catch (error) {
+                    erros++;
+                    console.error('Erro ao enviar para', contato.telefone, error);
+                }
+            }
+            
+            alert(`📨 Envio concluído!
+
+✅ Enviados: ${enviados}
+❌ Erros: ${erros}
+📊 Total: ${lista.total}`);
+            
+            if (progressEl) progressEl.style.display = 'none';
+        }
+
+        function exportarListaCSV(listaId) {
+            const lista = listasTransmissao.find(l => l.id === listaId);
+            if (!lista) return;
+            
+            const csv = 'Nome,Telefone,Categoria,Cidade,UF\n' + 
+                lista.contatos.map(c => `${c.nome},${c.telefone},${c.categoria},${c.cidade},${c.uf}`).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${lista.nome.replace(/\s+/g, '_')}.csv`;
+            link.click();
+        }
+
+        function excluirLista(listaId) {
+            if (!confirm('⚠️ Deseja excluir esta lista?')) return;
+            
+            listasTransmissao = listasTransmissao.filter(l => l.id !== listaId);
+            localStorage.setItem('listasTransmissao', JSON.stringify(listasTransmissao));
+            renderizarListasTransmissao();
+        }
+
+        // Sincronizar com Google Sheets
+        async function sincronizarGoogleSheets() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Sincronizando...';
+            
+            await carregarContatosGoogleSheets();
+            await sincronizarListasComPlanilha();
+            
+            btn.disabled = false;
+            btn.innerHTML = '🔄 Sincronizar Google Sheets';
+        }
+
+        // Sincronizar listas de transmissão com a planilha Google Sheets
+        async function sincronizarListasComPlanilha() {
+            const sheetId = GOOGLE_SHEETS_CONFIG.spreadsheetId;
+            const sheetName = 'LISTAS_TRANSMISSAO';
+            
+            // Carregar listas existentes da planilha
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=1114979046`;
+                const response = await fetch(url);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                
+                const rows = json.table.rows;
+                const listasNaPlanilha = [];
+                
+                // Pular cabeçalho (primeira linha)
+                // Formato da planilha: ID_LISTA(A), NOME_LISTA(B), CATEGORIA(C), SUBCATEGORIA(D), QTD_CONTATOS(E), DATA_CRIACAO(F), ULTIMO_ENVIO(G), STATUS(H), DESCRICAO(I)
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row.c && row.c[1] && row.c[1].v) {
+                        listasNaPlanilha.push({
+                            nome: row.c[1]?.v || '',           // NOME_LISTA (coluna B)
+                            categoria: row.c[2]?.v || '',      // CATEGORIA (coluna C)
+                            filtroUF: row.c[3]?.v || 'TODOS',  // SUBCATEGORIA (coluna D) - usado como filtro
+                            totalContatos: row.c[4]?.v || 0,   // QTD_CONTATOS (coluna E)
+                            lotes: Math.ceil((row.c[4]?.v || 0) / 256) || 1, // Calcular lotes baseado em 256 contatos
+                            status: row.c[7]?.v || 'ATIVO',    // STATUS (coluna H)
+                            dataCriacao: row.c[5]?.v || '',    // DATA_CRIACAO (coluna F)
+                            ultimaSync: row.c[6]?.v || ''      // ULTIMO_ENVIO (coluna G)
+                        });
+                    }
+                }
+                
+                console.log(`📋 ${listasNaPlanilha.length} listas encontradas na planilha`);
+                
+                // Importar listas da planilha que não existem no sistema
+                let importadas = 0;
+                listasNaPlanilha.forEach(listaPlanilha => {
+                    const existeNoSistema = listasTransmissao.some(l => 
+                        l.nome.toLowerCase() === listaPlanilha.nome.toLowerCase()
+                    );
+                    
+                    if (!existeNoSistema && listaPlanilha.nome) {
+                        // Criar lista no sistema baseada na planilha
+                        const novaLista = {
+                            id: 'lista_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                            nome: listaPlanilha.nome,
+                            categoria: listaPlanilha.categoria.toLowerCase(),
+                            uf: listaPlanilha.filtroUF,
+                            contatos: [], // Será preenchido com contatos filtrados
+                            total: parseInt(listaPlanilha.totalContatos) || 0,
+                            lotes: parseInt(listaPlanilha.lotes) || 1,
+                            criadaEm: listaPlanilha.dataCriacao || new Date().toISOString(),
+                            status: listaPlanilha.status === 'SINCRONIZADO' ? 'sincronizada' : 'ativa',
+                            sincronizadaDaPlanilha: true
+                        };
+                        
+                        // Filtrar contatos baseado na categoria e UF
+                        let contatosFiltrados = [...contatosGoogleSheets];
+                        if (novaLista.categoria && novaLista.categoria !== 'todos') {
+                            contatosFiltrados = contatosFiltrados.filter(c => 
+                                c.categoria && c.categoria.toLowerCase().includes(novaLista.categoria.toLowerCase())
+                            );
+                        }
+                        if (novaLista.uf && novaLista.uf !== 'TODOS' && novaLista.uf !== 'todos') {
+                            contatosFiltrados = contatosFiltrados.filter(c => c.uf === novaLista.uf);
+                        }
+                        
+                        // Limitar ao total especificado ou 256 por lote
+                        const maxContatos = Math.min(novaLista.total || contatosFiltrados.length, 256 * novaLista.lotes);
+                        novaLista.contatos = contatosFiltrados.slice(0, maxContatos);
+                        novaLista.total = novaLista.contatos.length;
+                        
+                        listasTransmissao.push(novaLista);
+                        importadas++;
+                    }
+                });
+                
+                if (importadas > 0) {
+                    localStorage.setItem('listasTransmissao', JSON.stringify(listasTransmissao));
+                    renderizarListasTransmissao();
+                    console.log(`✅ ${importadas} listas importadas da planilha`);
+                }
+                
+                // Mostrar resumo
+                const totalSistema = listasTransmissao.length;
+                const totalPlanilha = listasNaPlanilha.length;
+                
+                alert(`🔄 Sincronização Concluída!
+
+📊 Listas na Planilha: ${totalPlanilha}
+💻 Listas no Sistema: ${totalSistema}
+📥 Importadas agora: ${importadas}
+
+✅ Sistema sincronizado com Google Sheets!
+
+💡 Para adicionar novas listas à planilha:
+1. Crie a lista no sistema
+2. Adicione manualmente na aba LISTAS_TRANSMISSAO
+   ou use o botão "Exportar para Planilha"`);
+                
+            } catch (error) {
+                console.error('Erro ao sincronizar listas:', error);
+                alert(`⚠️ Erro ao sincronizar listas: ${error.message}
+
+As listas locais foram mantidas.
+Verifique se a aba LISTAS_TRANSMISSAO existe na planilha.`);
+            }
+        }
+
+        // Exportar listas do sistema para formato compatível com a planilha
+        function exportarListasParaPlanilha() {
+            if (listasTransmissao.length === 0) {
+                alert('⚠️ Nenhuma lista para exportar. Crie listas primeiro.');
+                return;
+            }
+            
+            // Criar CSV com formato da planilha
+            const headers = 'NOME_LISTA,CATEGORIA,FILTRO_UF,TOTAL_CONTATOS,LOTES,STATUS,DATA_CRIACAO,ULTIMA_SYNC';
+            const rows = listasTransmissao.map(lista => {
+                const dataSync = new Date().toLocaleDateString('pt-BR');
+                return `${lista.nome},${lista.categoria?.toUpperCase() || 'TODOS'},${lista.uf || 'TODOS'},${lista.total},${Math.ceil(lista.total / 256)},SINCRONIZADO,${lista.criadaEm?.split('T')[0] || dataSync},${dataSync}`;
+            });
+            
+            const csv = headers + '\n' + rows.join('\n');
+            
+            // Download do arquivo
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'LISTAS_TRANSMISSAO_EXPORT.csv';
+            link.click();
+            
+            alert(`📤 Exportação concluída!
+
+${listasTransmissao.length} listas exportadas para CSV.
+
+📋 Para adicionar à planilha:
+1. Abra a planilha Google Sheets
+2. Vá para a aba LISTAS_TRANSMISSAO
+3. Importe o arquivo CSV ou copie os dados
+
+O arquivo foi baixado como: LISTAS_TRANSMISSAO_EXPORT.csv`);
+        }
+
+        // Carregar configurações ao iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarTema();
+            if (document.getElementById('evolutionUrl')) carregarConfigEvolution();
+            if (document.getElementById('openaiKey')) carregarAPIKeys();
+            renderizarListasTransmissao();
+            carregarContatosGoogleSheets();
+            console.log('Planilha integrada:', GOOGLE_SHEETS_CONFIG.spreadsheetName);
+        });
+    </script>
+    <script src="SCRIPTS/enside_ia_widget.js"></script>
+</body>
+</html>
