@@ -539,6 +539,8 @@
             <button class="tab-btn" onclick="mudarAba('listas')">📝 Listas WhatsApp</button>
             <button class="tab-btn" onclick="mudarAba('github')">🐙 GitHub API</button>
             <button class="tab-btn" onclick="mudarAba('sincronizacao')">🔄 Sincronização</button>
+            <button class="tab-btn" onclick="mudarAba('fretes')">🚚 Fretes</button>
+            <button class="tab-btn" onclick="mudarAba('captacao')">📋 Captação Leads</button>
             <button class="tab-btn" onclick="mudarAba('documentacao')">📖 Documentação</button>
         </div>
 
@@ -1388,6 +1390,490 @@
                         Status: <span class="badge badge-success">✓ Protegido</span>
                     </p>
                     <button class="btn-secondary" onclick="configurarSeguranca()">Config.</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA FRETES DISPONIVEIS ==================== -->
+        <div id="fretes" class="tab-content">
+            <div class="section">
+                <div class="section-title">🚚 Fretes Disponíveis - Gestão Interna</div>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Gerencie fretes disponíveis | Cálculo automático de KM | Valores por tonelada | Exportação para HTML público
+                </p>
+            </div>
+
+            <div class="section">
+                <h3>➕ Adicionar Novo Frete</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="form-group">
+                        <label>ID do Frete</label>
+                        <input type="text" id="freteId" placeholder="Ex: FRT001">
+                    </div>
+                    <div class="form-group">
+                        <label>Origem - Estado (UF)</label>
+                        <select id="origemUF" onchange="carregarCidades('origem')">
+                            <option value="">Selecione o Estado...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Origem - Cidade</label>
+                        <select id="origemCidade" disabled>
+                            <option value="">Primeiro selecione o estado...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Destino - Estado (UF)</label>
+                        <select id="destinoUF" onchange="carregarCidades('destino')">
+                            <option value="">Selecione o Estado...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Destino - Cidade</label>
+                        <select id="destinoCidade" disabled>
+                            <option value="">Primeiro selecione o estado...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>KM (Distância)</label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="number" id="freteKM" placeholder="Ex: 1119" style="flex: 1;">
+                            <button onclick="calcularDistancia()" style="padding: 8px 12px; font-size: 0.8em;">📍 Calcular</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Veículo</label>
+                        <select id="freteTipoVeiculo">
+                            <option value="">Selecione...</option>
+                            <option value="Bitrem">🚛 Bitrem</option>
+                            <option value="Carreta">🚚 Carreta</option>
+                            <option value="Truck">🚛 Truck</option>
+                            <option value="Toco">🚗 Toco</option>
+                            <option value="VUC">📦 VUC</option>
+                            <option value="Rodotrem">🚛 Rodotrem</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Capacidade (ton)</label>
+                        <input type="number" id="freteCapacidade" placeholder="Ex: 40">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor por KM (R$)</label>
+                        <input type="number" id="freteValorKM" placeholder="Ex: 8.00" step="0.01" oninput="calcularTotais()">
+                    </div>
+                    <div class="form-group">
+                        <label>Contato</label>
+                        <input type="text" id="freteContato" placeholder="Nome do contato">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp</label>
+                        <input type="text" id="freteWhatsApp" placeholder="(18) 99999-9999">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="freteStatus">
+                            <option value="DISPONIVEL">✅ Disponível</option>
+                            <option value="RESERVADO">⏳ Reservado</option>
+                            <option value="EM_TRANSITO">🚚 Em Trânsito</option>
+                            <option value="CONCLUIDO">✓ Concluído</option>
+                            <option value="CANCELADO">❌ Cancelado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 15px;">
+                    <strong>📊 Cálculos Automáticos:</strong>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 10px;">
+                        <div>
+                            <span style="color: #94a3b8;">TOTAL (KM × Valor/KM):</span>
+                            <strong style="color: #22c55e; font-size: 1.3em;" id="calcTotal">R$ 0,00</strong>
+                        </div>
+                        <div>
+                            <span style="color: #94a3b8;">Valor por Tonelada:</span>
+                            <strong style="color: #0ea5e9; font-size: 1.3em;" id="calcTonelada">R$ 0,00</strong>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="color: #f59e0b; margin: 0;">
+                                <input type="checkbox" id="freteVaiHTML"> Exportar para HTML Público
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button onclick="adicionarFrete()" style="background: linear-gradient(135deg, #22c55e, #16a34a);">➕ Adicionar Frete</button>
+                    <button onclick="limparFormularioFrete()" class="btn-secondary">🔄 Limpar</button>
+                    <button onclick="sincronizarFretesSheets()" class="btn-secondary">☁️ Sincronizar com Sheets</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📋 Lista de Fretes Disponíveis</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="filtroFrete" placeholder="🔍 Buscar frete..." style="flex: 1;" oninput="filtrarFretes()">
+                    <select id="filtroStatusFrete" onchange="filtrarFretes()">
+                        <option value="">Todos os Status</option>
+                        <option value="DISPONIVEL">✅ Disponível</option>
+                        <option value="RESERVADO">⏳ Reservado</option>
+                        <option value="EM_TRANSITO">🚚 Em Trânsito</option>
+                    </select>
+                    <button onclick="exportarFretesHTML()" style="background: linear-gradient(135deg, #f59e0b, #d97706);">📤 Exportar Marcados para HTML</button>
+                </div>
+                <div class="table-container">
+                    <table id="tabelaFretes">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Origem</th>
+                                <th>Destino</th>
+                                <th>KM</th>
+                                <th>Veículo</th>
+                                <th>Capacidade</th>
+                                <th>R$/KM</th>
+                                <th>Total</th>
+                                <th>R$/Ton</th>
+                                <th>Status</th>
+                                <th>HTML</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyFretes">
+                            <tr>
+                                <td colspan="12" style="text-align: center; color: #94a3b8;">Nenhum frete cadastrado. Adicione um novo frete acima.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📊 Estatísticas de Fretes</h3>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statFretesTotal">0</div>
+                        <div class="stat-label">Total de Fretes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statFretesDisponiveis">0</div>
+                        <div class="stat-label">Disponíveis</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statFretesHTML">0</div>
+                        <div class="stat-label">Para Exportação HTML</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statValorMedioKM">R$ 0</div>
+                        <div class="stat-label">Valor Médio/KM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA CAPTAÇÃO DE LEADS ==================== -->
+        <div id="captacao" class="tab-content">
+            <div class="section">
+                <div class="section-title">📋 Captação de Leads - Motoristas/Transportadores</div>
+                <p style="color: #94a3b8; margin-bottom: 20px;">
+                    Sistema de captação de leads em 3 etapas | Dados do motorista | Veículo | Preferências de frete
+                </p>
+            </div>
+
+            <div class="section">
+                <h3>📱 Progresso da Captação</h3>
+                <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;">
+                    <div id="etapa1Btn" class="etapa-btn active" onclick="irParaEtapa(1)" style="cursor: pointer; padding: 15px 30px; border-radius: 10px; background: rgba(34, 197, 94, 0.3); border: 2px solid #22c55e; text-align: center;">
+                        <strong style="color: #22c55e;">1️⃣ ETAPA 1</strong><br>
+                        <small style="color: #94a3b8;">Dados Pessoais</small>
+                    </div>
+                    <div id="etapa2Btn" class="etapa-btn" onclick="irParaEtapa(2)" style="cursor: pointer; padding: 15px 30px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.2); text-align: center;">
+                        <strong style="color: #94a3b8;">2️⃣ ETAPA 2</strong><br>
+                        <small style="color: #94a3b8;">Veículo & Regiões</small>
+                    </div>
+                    <div id="etapa3Btn" class="etapa-btn" onclick="irParaEtapa(3)" style="cursor: pointer; padding: 15px 30px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.2); text-align: center;">
+                        <strong style="color: #94a3b8;">3️⃣ ETAPA 3</strong><br>
+                        <small style="color: #94a3b8;">Proposta de Frete</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 1: Dados Pessoais -->
+            <div id="etapa1" class="etapa-content" style="display: block;">
+                <div class="section">
+                    <h3>1️⃣ Dados Pessoais do Motorista</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>Nome Completo *</label>
+                            <input type="text" id="leadNome" placeholder="Nome completo do motorista">
+                        </div>
+                        <div class="form-group">
+                            <label>WhatsApp *</label>
+                            <input type="text" id="leadWhatsApp" placeholder="(18) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label>Interesse em Seguro?</label>
+                            <select id="leadSeguro">
+                                <option value="">Selecione...</option>
+                                <option value="SIM">✅ Sim, tenho interesse</option>
+                                <option value="NAO">❌ Não tenho interesse</option>
+                                <option value="JA_POSSUO">🛡️ Já possuo seguro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo Profissional</label>
+                            <select id="leadTipoProfissional">
+                                <option value="">Selecione...</option>
+                                <option value="AUTONOMO">🚛 Autônomo</option>
+                                <option value="AGREGADO">🤝 Agregado</option>
+                                <option value="TRANSPORTADORA">🏢 Transportadora</option>
+                                <option value="FROTA_PROPRIA">📦 Frota Própria</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 20px; color: #f59e0b;">🛣️ Rotas Preferidas (até 5)</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <input type="text" id="rota1" placeholder="Rota 1: Ex: SP → PR">
+                        <input type="text" id="rota2" placeholder="Rota 2: Ex: SP → MG">
+                        <input type="text" id="rota3" placeholder="Rota 3: Ex: SP → GO">
+                        <input type="text" id="rota4" placeholder="Rota 4: Ex: PR → SC">
+                        <input type="text" id="rota5" placeholder="Rota 5: Ex: MG → BA">
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button onclick="salvarEtapa1(); irParaEtapa(2)" style="background: linear-gradient(135deg, #22c55e, #16a34a);">Salvar e Avançar ➡️</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 2: Veículo e Regiões -->
+            <div id="etapa2" class="etapa-content" style="display: none;">
+                <div class="section">
+                    <h3>2️⃣ Dados do Veículo</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>Tipo de Veículo *</label>
+                            <select id="leadTipoVeiculo">
+                                <option value="">Selecione...</option>
+                                <option value="BITREM">🚛 Bitrem</option>
+                                <option value="CARRETA">🚚 Carreta</option>
+                                <option value="TRUCK">🚛 Truck</option>
+                                <option value="TOCO">🚗 Toco</option>
+                                <option value="VUC">📦 VUC</option>
+                                <option value="RODOTREM">🚛 Rodotrem</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Capacidade de Carga (ton)</label>
+                            <input type="number" id="leadCapacidade" placeholder="Ex: 40">
+                        </div>
+                        <div class="form-group">
+                            <label>Ano de Fabricação</label>
+                            <input type="number" id="leadAnoFab" placeholder="Ex: 2020">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Carroceria</label>
+                            <select id="leadCarroceria">
+                                <option value="">Selecione...</option>
+                                <option value="GRANELEIRA">Graneleira</option>
+                                <option value="BAU">Baú</option>
+                                <option value="SIDER">Sider</option>
+                                <option value="CARGA_SECA">Carga Seca</option>
+                                <option value="PRANCHA">Prancha</option>
+                                <option value="TANQUE">Tanque</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Possui Rastreador?</label>
+                            <select id="leadRastreador">
+                                <option value="">Selecione...</option>
+                                <option value="SIM">✅ Sim</option>
+                                <option value="NAO">❌ Não</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 20px; color: #f59e0b;">🗺️ Regiões de Atuação</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="regiaoSul"> 🧭 Sul</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="regiaoSudeste"> 🧭 Sudeste</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="regiaoCO"> 🧭 Centro-Oeste</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="regiaoNordeste"> 🧭 Nordeste</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="regiaoNorte"> 🧭 Norte</label>
+                    </div>
+
+                    <h4 style="margin-top: 20px; color: #f59e0b;">📦 Tipos de Carga</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="cargaMadeira"> 🪵 Madeira</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="cargaCompensados"> 📐 Compensados</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="cargaMDF"> 🏠 MDF</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="cargaMoveis"> 🛋️ Móveis</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="cargaGeral"> 📦 Geral</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="cargaPerecivel"> ❄️ Perecível</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="cargaGranel"> 🌾 Granel</label>
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button onclick="irParaEtapa(1)" class="btn-secondary">⬅️ Voltar</button>
+                        <button onclick="salvarEtapa2(); irParaEtapa(3)" style="background: linear-gradient(135deg, #22c55e, #16a34a);">Salvar e Avançar ➡️</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 3: Proposta de Frete -->
+            <div id="etapa3" class="etapa-content" style="display: none;">
+                <div class="section">
+                    <h3>3️⃣ Proposta de Frete</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>Frete ID (vinculado)</label>
+                            <select id="leadFreteId">
+                                <option value="">Selecione um frete disponível...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Rota do Frete</label>
+                            <input type="text" id="leadRotaFrete" readonly placeholder="Auto-preenchido ao selecionar frete">
+                        </div>
+                        <div class="form-group">
+                            <label>Valor Sugerido (R$)</label>
+                            <input type="text" id="leadValorSugerido" readonly placeholder="Auto-preenchido">
+                        </div>
+                        <div class="form-group">
+                            <label>Valor da Proposta (R$)</label>
+                            <input type="number" id="leadValorProposta" placeholder="Valor que o motorista propõe" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Prazo de Entrega (dias)</label>
+                            <input type="number" id="leadPrazoEntrega" placeholder="Ex: 3">
+                        </div>
+                        <div class="form-group">
+                            <label>Placa do Veículo</label>
+                            <input type="text" id="leadPlaca" placeholder="Ex: ABC-1234">
+                        </div>
+                        <div class="form-group">
+                            <label>Disponibilidade</label>
+                            <input type="date" id="leadDisponibilidade">
+                        </div>
+                        <div class="form-group">
+                            <label>Aceita Carga de Retorno?</label>
+                            <select id="leadCargaRetorno">
+                                <option value="">Selecione...</option>
+                                <option value="SIM">✅ Sim</option>
+                                <option value="NAO">❌ Não</option>
+                                <option value="DEPENDE">🤔 Depende da rota</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 20px; color: #f59e0b;">💳 Dados para Pagamento</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>Forma de Pagamento Preferida</label>
+                            <select id="leadFormaPagamento">
+                                <option value="">Selecione...</option>
+                                <option value="PIX">💚 PIX</option>
+                                <option value="TED">🏦 TED</option>
+                                <option value="DEPOSITO">💰 Depósito</option>
+                                <option value="BOLETO">📄 Boleto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Aceita Adiantamento?</label>
+                            <select id="leadAdiantamento">
+                                <option value="">Selecione...</option>
+                                <option value="SIM">✅ Sim</option>
+                                <option value="NAO">❌ Não</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>PIX (CPF/CNPJ/Chave)</label>
+                            <input type="text" id="leadPix" placeholder="Chave PIX">
+                        </div>
+                        <div class="form-group">
+                            <label>Banco</label>
+                            <input type="text" id="leadBanco" placeholder="Nome do banco">
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 20px; color: #f59e0b;">📄 Documentação</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group">
+                            <label>CPF/CNPJ</label>
+                            <input type="text" id="leadCPF" placeholder="000.000.000-00">
+                        </div>
+                        <div class="form-group">
+                            <label>CNH</label>
+                            <input type="text" id="leadCNH" placeholder="Número da CNH">
+                        </div>
+                        <div class="form-group">
+                            <label>ANTT/RNTRC</label>
+                            <input type="text" id="leadANTT" placeholder="Número ANTT">
+                        </div>
+                        <div class="form-group">
+                            <label>Possui Seguro Obrigatório?</label>
+                            <select id="leadSeguroObrigatorio">
+                                <option value="">Selecione...</option>
+                                <option value="SIM">✅ Sim</option>
+                                <option value="NAO">❌ Não</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Observações da Proposta</label>
+                        <textarea id="leadObservacoes" rows="3" placeholder="Observações adicionais..."></textarea>
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button onclick="irParaEtapa(2)" class="btn-secondary">⬅️ Voltar</button>
+                        <button onclick="salvarLeadCompleto()" style="background: linear-gradient(135deg, #22c55e, #16a34a);">✅ Salvar Lead Completo</button>
+                        <button onclick="enviarLeadParaSheets()" style="background: linear-gradient(135deg, #0ea5e9, #06b6d4);">☁️ Enviar para Google Sheets</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📊 Leads Captados</h3>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statLeadsTotal">0</div>
+                        <div class="stat-label">Total de Leads</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statLeadsHoje">0</div>
+                        <div class="stat-label">Novos Hoje</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statLeadsComProposta">0</div>
+                        <div class="stat-label">Com Proposta</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statLeadsConvertidos">0</div>
+                        <div class="stat-label">Convertidos</div>
+                    </div>
+                </div>
+
+                <div class="table-container" style="margin-top: 20px;">
+                    <table id="tabelaLeads">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>WhatsApp</th>
+                                <th>Tipo Veículo</th>
+                                <th>Regiões</th>
+                                <th>Frete Vinculado</th>
+                                <th>Valor Proposta</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyLeads">
+                            <tr>
+                                <td colspan="9" style="text-align: center; color: #94a3b8;">Nenhum lead captado ainda.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -2297,15 +2783,19 @@ ${filtros.join('\n') || 'Nenhum filtro'}
 
         // ==================== INTEGRAÇÃO GOOGLE SHEETS ====================
         const GOOGLE_SHEETS_CONFIG = {
-            spreadsheetId: '1s1TA0n-yB9oMv0D5LaX7L5PXMW0yQcjR9XsyiWW4ZFQ',
-            spreadsheetName: 'EUCALIPTO-13-12-25-_SISTEMA_INTEGRADO_COMPLETO',
+            spreadsheetId: '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE',
+            spreadsheetName: 'ENSIDE-FRETES-SISTEMA',
+            gid: '1335082895',
             sheets: {
                 contatos: 'CONTATOS',
                 listasTransmissao: 'LISTAS_TRANSMISSAO',
                 atacado: 'ATACADO',
                 parametros: 'PARÂMETROS',
                 tratamentoCCA: 'TRATAMENTO CCA',
-                custosSerragem: 'CUSTOS SERRAGEM'
+                custosSerragem: 'CUSTOS SERRAGEM',
+                fretesDisponiveis: 'FRETES_DISPONIVEIS',
+                estadosCidades: 'ESTADOS_CIDADES',
+                leadsCaptados: 'LEADS_CAPTADOS'
             }
         };
         
@@ -3391,6 +3881,671 @@ ${listasTransmissao.length} listas exportadas para CSV.
 O arquivo foi baixado como: LISTAS_TRANSMISSAO_EXPORT.csv`);
         }
 
+        // ==================== MÓDULO DE FRETES ====================
+
+        // Dados de Estados e Cidades do Brasil
+        const ESTADOS_CIDADES = {
+            'AC': ['Rio Branco', 'Cruzeiro do Sul', 'Sena Madureira'],
+            'AL': ['Maceió', 'Arapiraca', 'Palmeira dos Índios'],
+            'AP': ['Macapá', 'Santana', 'Laranjal do Jari'],
+            'AM': ['Manaus', 'Parintins', 'Itacoatiara'],
+            'BA': ['Salvador', 'Feira de Santana', 'Vitória da Conquista', 'Ilhéus', 'Juazeiro'],
+            'CE': ['Fortaleza', 'Caucaia', 'Juazeiro do Norte', 'Sobral'],
+            'DF': ['Brasília', 'Taguatinga', 'Ceilândia'],
+            'ES': ['Vitória', 'Vila Velha', 'Serra', 'Cariacica', 'Linhares'],
+            'GO': ['Goiânia', 'Aparecida de Goiânia', 'Anápolis', 'Rio Verde', 'Luziânia'],
+            'MA': ['São Luís', 'Imperatriz', 'Caxias'],
+            'MT': ['Cuiabá', 'Várzea Grande', 'Rondonópolis', 'Sinop', 'Tangará da Serra'],
+            'MS': ['Campo Grande', 'Dourados', 'Três Lagoas', 'Corumbá', 'Ponta Porã'],
+            'MG': ['Belo Horizonte', 'Uberlândia', 'Contagem', 'Juiz de Fora', 'Betim', 'Montes Claros', 'Uberaba'],
+            'PA': ['Belém', 'Ananindeua', 'Santarém', 'Marabá'],
+            'PB': ['João Pessoa', 'Campina Grande', 'Santa Rita'],
+            'PR': ['Curitiba', 'Londrina', 'Maringá', 'Ponta Grossa', 'Cascavel', 'São José dos Pinhais', 'Foz do Iguaçu'],
+            'PE': ['Recife', 'Jaboatão dos Guararapes', 'Olinda', 'Caruaru', 'Petrolina'],
+            'PI': ['Teresina', 'Parnaíba', 'Picos'],
+            'RJ': ['Rio de Janeiro', 'São Gonçalo', 'Duque de Caxias', 'Nova Iguaçu', 'Niterói', 'Campos dos Goytacazes'],
+            'RN': ['Natal', 'Mossoró', 'Parnamirim'],
+            'RS': ['Porto Alegre', 'Caxias do Sul', 'Pelotas', 'Canoas', 'Santa Maria', 'Gravataí'],
+            'RO': ['Porto Velho', 'Ji-Paraná', 'Ariquemes'],
+            'RR': ['Boa Vista', 'Rorainópolis'],
+            'SC': ['Florianópolis', 'Joinville', 'Blumenau', 'Chapecó', 'Itajaí', 'Criciúma', 'Tubarão'],
+            'SP': ['São Paulo', 'Campinas', 'Guarulhos', 'São Bernardo', 'Santo André', 'Osasco', 'Sorocaba', 'Ribeirão Preto', 'Santos', 'Assis', 'Marília', 'Ourinhos', 'Presidente Prudente'],
+            'SE': ['Aracaju', 'Nossa Senhora do Socorro'],
+            'TO': ['Palmas', 'Araguaína', 'Gurupi']
+        };
+
+        // Armazenamento de Fretes
+        let fretesDisponiveis = JSON.parse(localStorage.getItem('fretesDisponiveis') || '[]');
+        let leadsCapturados = JSON.parse(localStorage.getItem('leadsCapturados') || '[]');
+        let leadAtual = {};
+
+        // Inicializar dropdowns de UF
+        function inicializarDropdownsUF() {
+            const ufs = Object.keys(ESTADOS_CIDADES).sort();
+            const selects = ['origemUF', 'destinoUF'];
+
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">Selecione o Estado...</option>';
+                    ufs.forEach(uf => {
+                        select.innerHTML += `<option value="${uf}">${uf}</option>`;
+                    });
+                }
+            });
+        }
+
+        // Carregar cidades baseado no estado selecionado
+        function carregarCidades(tipo) {
+            const ufSelect = document.getElementById(`${tipo}UF`);
+            const cidadeSelect = document.getElementById(`${tipo}Cidade`);
+            const uf = ufSelect.value;
+
+            if (!uf) {
+                cidadeSelect.innerHTML = '<option value="">Primeiro selecione o estado...</option>';
+                cidadeSelect.disabled = true;
+                return;
+            }
+
+            const cidades = ESTADOS_CIDADES[uf] || [];
+            cidadeSelect.innerHTML = '<option value="">Selecione a cidade...</option>';
+            cidades.forEach(cidade => {
+                cidadeSelect.innerHTML += `<option value="${cidade}">${cidade}</option>`;
+            });
+            cidadeSelect.disabled = false;
+        }
+
+        // Calcular distância via API (OpenStreetMap / OSRM)
+        async function calcularDistancia() {
+            const origemCidade = document.getElementById('origemCidade').value;
+            const origemUF = document.getElementById('origemUF').value;
+            const destinoCidade = document.getElementById('destinoCidade').value;
+            const destinoUF = document.getElementById('destinoUF').value;
+
+            if (!origemCidade || !origemUF || !destinoCidade || !destinoUF) {
+                alert('⚠️ Selecione origem e destino completos para calcular a distância');
+                return;
+            }
+
+            try {
+                // Geocoding da origem
+                const origemResp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(origemCidade + ', ' + origemUF + ', Brasil')}`);
+                const origemData = await origemResp.json();
+
+                // Geocoding do destino
+                const destinoResp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destinoCidade + ', ' + destinoUF + ', Brasil')}`);
+                const destinoData = await destinoResp.json();
+
+                if (origemData.length === 0 || destinoData.length === 0) {
+                    alert('⚠️ Não foi possível encontrar as coordenadas das cidades');
+                    return;
+                }
+
+                const origemLat = origemData[0].lat;
+                const origemLon = origemData[0].lon;
+                const destinoLat = destinoData[0].lat;
+                const destinoLon = destinoData[0].lon;
+
+                // Calcular distância via OSRM
+                const routeResp = await fetch(`https://router.project-osrm.org/route/v1/driving/${origemLon},${origemLat};${destinoLon},${destinoLat}?overview=false`);
+                const routeData = await routeResp.json();
+
+                if (routeData.routes && routeData.routes.length > 0) {
+                    const distanciaKm = Math.round(routeData.routes[0].distance / 1000);
+                    document.getElementById('freteKM').value = distanciaKm;
+                    calcularTotais();
+                    alert(`✅ Distância calculada: ${distanciaKm} km`);
+                } else {
+                    alert('⚠️ Não foi possível calcular a rota');
+                }
+            } catch (error) {
+                console.error('Erro ao calcular distância:', error);
+                alert('⚠️ Erro ao calcular distância. Verifique sua conexão.');
+            }
+        }
+
+        // Calcular totais automaticamente
+        function calcularTotais() {
+            const km = parseFloat(document.getElementById('freteKM').value) || 0;
+            const valorKM = parseFloat(document.getElementById('freteValorKM').value) || 0;
+            const capacidade = parseFloat(document.getElementById('freteCapacidade').value) || 1;
+
+            const total = km * valorKM;
+            const valorTonelada = total / capacidade;
+
+            document.getElementById('calcTotal').textContent = `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('calcTonelada').textContent = `R$ ${valorTonelada.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        }
+
+        // Adicionar novo frete
+        function adicionarFrete() {
+            const frete = {
+                id: document.getElementById('freteId').value || `FRT${Date.now()}`,
+                origemUF: document.getElementById('origemUF').value,
+                origemCidade: document.getElementById('origemCidade').value,
+                destinoUF: document.getElementById('destinoUF').value,
+                destinoCidade: document.getElementById('destinoCidade').value,
+                km: parseFloat(document.getElementById('freteKM').value) || 0,
+                tipoVeiculo: document.getElementById('freteTipoVeiculo').value,
+                capacidade: parseFloat(document.getElementById('freteCapacidade').value) || 0,
+                valorKM: parseFloat(document.getElementById('freteValorKM').value) || 0,
+                contato: document.getElementById('freteContato').value,
+                whatsapp: document.getElementById('freteWhatsApp').value,
+                status: document.getElementById('freteStatus').value,
+                vaiHTML: document.getElementById('freteVaiHTML').checked,
+                total: 0,
+                valorTonelada: 0,
+                dataCriacao: new Date().toISOString()
+            };
+
+            // Validações
+            if (!frete.origemUF || !frete.origemCidade || !frete.destinoUF || !frete.destinoCidade) {
+                alert('⚠️ Preencha origem e destino completos');
+                return;
+            }
+
+            if (!frete.km || !frete.valorKM) {
+                alert('⚠️ Preencha KM e Valor por KM');
+                return;
+            }
+
+            // Calcular valores
+            frete.total = frete.km * frete.valorKM;
+            frete.valorTonelada = frete.capacidade > 0 ? frete.total / frete.capacidade : 0;
+
+            // Adicionar à lista
+            fretesDisponiveis.push(frete);
+            localStorage.setItem('fretesDisponiveis', JSON.stringify(fretesDisponiveis));
+
+            // Atualizar tabela e estatísticas
+            renderizarTabelaFretes();
+            atualizarEstatisticasFretes();
+            atualizarSelectFretesLead();
+            limparFormularioFrete();
+
+            alert('✅ Frete adicionado com sucesso!');
+        }
+
+        // Limpar formulário de frete
+        function limparFormularioFrete() {
+            document.getElementById('freteId').value = '';
+            document.getElementById('origemUF').value = '';
+            document.getElementById('origemCidade').innerHTML = '<option value="">Primeiro selecione o estado...</option>';
+            document.getElementById('origemCidade').disabled = true;
+            document.getElementById('destinoUF').value = '';
+            document.getElementById('destinoCidade').innerHTML = '<option value="">Primeiro selecione o estado...</option>';
+            document.getElementById('destinoCidade').disabled = true;
+            document.getElementById('freteKM').value = '';
+            document.getElementById('freteTipoVeiculo').value = '';
+            document.getElementById('freteCapacidade').value = '';
+            document.getElementById('freteValorKM').value = '';
+            document.getElementById('freteContato').value = '';
+            document.getElementById('freteWhatsApp').value = '';
+            document.getElementById('freteStatus').value = 'DISPONIVEL';
+            document.getElementById('freteVaiHTML').checked = false;
+            document.getElementById('calcTotal').textContent = 'R$ 0,00';
+            document.getElementById('calcTonelada').textContent = 'R$ 0,00';
+        }
+
+        // Renderizar tabela de fretes
+        function renderizarTabelaFretes() {
+            const tbody = document.getElementById('tbodyFretes');
+            if (!tbody) return;
+
+            if (fretesDisponiveis.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align: center; color: #94a3b8;">Nenhum frete cadastrado. Adicione um novo frete acima.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = fretesDisponiveis.map((frete, index) => `
+                <tr>
+                    <td>${frete.id}</td>
+                    <td>${frete.origemCidade}/${frete.origemUF}</td>
+                    <td>${frete.destinoCidade}/${frete.destinoUF}</td>
+                    <td>${frete.km}</td>
+                    <td>${frete.tipoVeiculo}</td>
+                    <td>${frete.capacidade}t</td>
+                    <td>R$ ${frete.valorKM.toFixed(2)}</td>
+                    <td style="color: #22c55e; font-weight: bold;">R$ ${frete.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${frete.valorTonelada.toFixed(2)}</td>
+                    <td><span class="badge ${getStatusClass(frete.status)}">${getStatusEmoji(frete.status)} ${frete.status}</span></td>
+                    <td><input type="checkbox" ${frete.vaiHTML ? 'checked' : ''} onchange="toggleVaiHTML(${index})"></td>
+                    <td>
+                        <button onclick="editarFrete(${index})" class="btn-secondary" style="padding: 5px 10px; font-size: 0.8em;">✏️</button>
+                        <button onclick="excluirFrete(${index})" style="padding: 5px 10px; font-size: 0.8em; background: #ef4444;">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                'DISPONIVEL': 'badge-success',
+                'RESERVADO': 'badge-warning',
+                'EM_TRANSITO': 'badge-warning',
+                'CONCLUIDO': 'badge-success',
+                'CANCELADO': 'badge-error'
+            };
+            return classes[status] || '';
+        }
+
+        function getStatusEmoji(status) {
+            const emojis = {
+                'DISPONIVEL': '✅',
+                'RESERVADO': '⏳',
+                'EM_TRANSITO': '🚚',
+                'CONCLUIDO': '✓',
+                'CANCELADO': '❌'
+            };
+            return emojis[status] || '';
+        }
+
+        function toggleVaiHTML(index) {
+            fretesDisponiveis[index].vaiHTML = !fretesDisponiveis[index].vaiHTML;
+            localStorage.setItem('fretesDisponiveis', JSON.stringify(fretesDisponiveis));
+            atualizarEstatisticasFretes();
+        }
+
+        function excluirFrete(index) {
+            if (confirm('⚠️ Tem certeza que deseja excluir este frete?')) {
+                fretesDisponiveis.splice(index, 1);
+                localStorage.setItem('fretesDisponiveis', JSON.stringify(fretesDisponiveis));
+                renderizarTabelaFretes();
+                atualizarEstatisticasFretes();
+                atualizarSelectFretesLead();
+            }
+        }
+
+        function editarFrete(index) {
+            const frete = fretesDisponiveis[index];
+            document.getElementById('freteId').value = frete.id;
+            document.getElementById('origemUF').value = frete.origemUF;
+            carregarCidades('origem');
+            setTimeout(() => document.getElementById('origemCidade').value = frete.origemCidade, 100);
+            document.getElementById('destinoUF').value = frete.destinoUF;
+            carregarCidades('destino');
+            setTimeout(() => document.getElementById('destinoCidade').value = frete.destinoCidade, 100);
+            document.getElementById('freteKM').value = frete.km;
+            document.getElementById('freteTipoVeiculo').value = frete.tipoVeiculo;
+            document.getElementById('freteCapacidade').value = frete.capacidade;
+            document.getElementById('freteValorKM').value = frete.valorKM;
+            document.getElementById('freteContato').value = frete.contato;
+            document.getElementById('freteWhatsApp').value = frete.whatsapp;
+            document.getElementById('freteStatus').value = frete.status;
+            document.getElementById('freteVaiHTML').checked = frete.vaiHTML;
+            calcularTotais();
+
+            // Remover o frete antigo
+            fretesDisponiveis.splice(index, 1);
+            localStorage.setItem('fretesDisponiveis', JSON.stringify(fretesDisponiveis));
+            renderizarTabelaFretes();
+        }
+
+        function filtrarFretes() {
+            const filtro = document.getElementById('filtroFrete').value.toLowerCase();
+            const statusFiltro = document.getElementById('filtroStatusFrete').value;
+
+            const fretesFiltrados = fretesDisponiveis.filter(frete => {
+                const matchTexto = !filtro ||
+                    frete.origemCidade.toLowerCase().includes(filtro) ||
+                    frete.destinoCidade.toLowerCase().includes(filtro) ||
+                    frete.id.toLowerCase().includes(filtro);
+                const matchStatus = !statusFiltro || frete.status === statusFiltro;
+                return matchTexto && matchStatus;
+            });
+
+            // Re-renderizar com filtros
+            const tbody = document.getElementById('tbodyFretes');
+            if (fretesFiltrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align: center; color: #94a3b8;">Nenhum frete encontrado com os filtros aplicados.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = fretesFiltrados.map((frete) => {
+                const index = fretesDisponiveis.indexOf(frete);
+                return `
+                <tr>
+                    <td>${frete.id}</td>
+                    <td>${frete.origemCidade}/${frete.origemUF}</td>
+                    <td>${frete.destinoCidade}/${frete.destinoUF}</td>
+                    <td>${frete.km}</td>
+                    <td>${frete.tipoVeiculo}</td>
+                    <td>${frete.capacidade}t</td>
+                    <td>R$ ${frete.valorKM.toFixed(2)}</td>
+                    <td style="color: #22c55e; font-weight: bold;">R$ ${frete.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${frete.valorTonelada.toFixed(2)}</td>
+                    <td><span class="badge ${getStatusClass(frete.status)}">${getStatusEmoji(frete.status)} ${frete.status}</span></td>
+                    <td><input type="checkbox" ${frete.vaiHTML ? 'checked' : ''} onchange="toggleVaiHTML(${index})"></td>
+                    <td>
+                        <button onclick="editarFrete(${index})" class="btn-secondary" style="padding: 5px 10px; font-size: 0.8em;">✏️</button>
+                        <button onclick="excluirFrete(${index})" style="padding: 5px 10px; font-size: 0.8em; background: #ef4444;">🗑️</button>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        function atualizarEstatisticasFretes() {
+            const total = fretesDisponiveis.length;
+            const disponiveis = fretesDisponiveis.filter(f => f.status === 'DISPONIVEL').length;
+            const paraHTML = fretesDisponiveis.filter(f => f.vaiHTML).length;
+            const mediaKM = total > 0 ? fretesDisponiveis.reduce((sum, f) => sum + f.valorKM, 0) / total : 0;
+
+            document.getElementById('statFretesTotal').textContent = total;
+            document.getElementById('statFretesDisponiveis').textContent = disponiveis;
+            document.getElementById('statFretesHTML').textContent = paraHTML;
+            document.getElementById('statValorMedioKM').textContent = `R$ ${mediaKM.toFixed(2)}`;
+        }
+
+        // Exportar fretes marcados para HTML
+        function exportarFretesHTML() {
+            const fretesParaExportar = fretesDisponiveis.filter(f => f.vaiHTML);
+
+            if (fretesParaExportar.length === 0) {
+                alert('⚠️ Nenhum frete marcado para exportação HTML');
+                return;
+            }
+
+            const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fretes Disponíveis - ENSIDE MADEIRAS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: linear-gradient(135deg, #000 0%, #1a1a1a 100%); color: #fff; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #FFD700; font-size: 2.5em; margin-bottom: 40px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        .frete-card { background: rgba(255, 215, 0, 0.1); border: 2px solid #FFD700; border-radius: 15px; padding: 25px; margin-bottom: 20px; }
+        .frete-rota { font-size: 1.4em; font-weight: bold; color: #FFD700; margin-bottom: 15px; }
+        .frete-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .frete-info { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; }
+        .frete-label { font-size: 0.85em; color: #FFD700; }
+        .frete-valor { font-size: 1.1em; font-weight: bold; }
+        .valor-destaque { color: #00FF00; font-size: 1.3em; text-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
+        .btn-whatsapp { display: block; background: #25D366; color: #fff; text-decoration: none; text-align: center; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 20px; }
+        .btn-whatsapp:hover { background: #128C7E; }
+        @media (max-width: 768px) { h1 { font-size: 1.8em; } .frete-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚚 FRETES DISPONÍVEIS</h1>
+        ${fretesParaExportar.map(f => `
+        <div class="frete-card">
+            <div class="frete-rota">${f.origemCidade}/${f.origemUF} → ${f.destinoCidade}/${f.destinoUF}</div>
+            <div class="frete-grid">
+                <div class="frete-info"><div class="frete-label">Distância</div><div class="frete-valor">${f.km} km</div></div>
+                <div class="frete-info"><div class="frete-label">Valor Total</div><div class="frete-valor valor-destaque">R$ ${f.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div>
+                <div class="frete-info"><div class="frete-label">Veículo</div><div class="frete-valor">${f.tipoVeiculo}</div></div>
+                <div class="frete-info"><div class="frete-label">Status</div><div class="frete-valor">${f.status}</div></div>
+            </div>
+            <a href="https://wa.me/55${f.whatsapp.replace(/\D/g, '')}?text=Olá! Tenho interesse no frete ${f.origemCidade} → ${f.destinoCidade}" class="btn-whatsapp" target="_blank">📱 ENTRAR EM CONTATO</a>
+        </div>
+        `).join('')}
+    </div>
+</body>
+</html>`;
+
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fretes_disponiveis_${new Date().toISOString().split('T')[0]}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert(`✅ ${fretesParaExportar.length} fretes exportados para HTML!`);
+        }
+
+        // Sincronizar fretes com Google Sheets
+        async function sincronizarFretesSheets() {
+            const sheetId = GOOGLE_SHEETS_CONFIG.spreadsheetId;
+            try {
+                // Tentar carregar dados da planilha FRETES_DISPONIVEIS
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=FRETES_DISPONIVEIS`;
+                const response = await fetch(url);
+                const text = await response.text();
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+
+                if (jsonStart !== -1) {
+                    const jsonData = JSON.parse(text.substring(jsonStart, jsonEnd));
+                    if (jsonData.table && jsonData.table.rows) {
+                        // Processar dados da planilha
+                        alert('✅ Sincronização com Google Sheets iniciada! Verifique a aba FRETES_DISPONIVEIS.');
+                    }
+                }
+            } catch (error) {
+                console.log('Aba FRETES_DISPONIVEIS não encontrada ou erro de conexão');
+                alert('⚠️ Crie a aba FRETES_DISPONIVEIS na planilha Google Sheets para sincronizar.');
+            }
+        }
+
+        // ==================== MÓDULO DE CAPTAÇÃO DE LEADS ====================
+
+        // Navegação entre etapas
+        function irParaEtapa(etapa) {
+            // Ocultar todas as etapas
+            document.querySelectorAll('.etapa-content').forEach(el => el.style.display = 'none');
+
+            // Mostrar etapa selecionada
+            document.getElementById(`etapa${etapa}`).style.display = 'block';
+
+            // Atualizar botões de etapa
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`etapa${i}Btn`);
+                if (btn) {
+                    if (i === etapa) {
+                        btn.style.background = 'rgba(34, 197, 94, 0.3)';
+                        btn.style.borderColor = '#22c55e';
+                        btn.querySelector('strong').style.color = '#22c55e';
+                    } else if (i < etapa) {
+                        btn.style.background = 'rgba(34, 197, 94, 0.2)';
+                        btn.style.borderColor = '#22c55e';
+                        btn.querySelector('strong').style.color = '#22c55e';
+                    } else {
+                        btn.style.background = 'rgba(255,255,255,0.05)';
+                        btn.style.borderColor = 'rgba(255,255,255,0.2)';
+                        btn.querySelector('strong').style.color = '#94a3b8';
+                    }
+                }
+            }
+
+            // Se etapa 3, preencher select de fretes
+            if (etapa === 3) {
+                atualizarSelectFretesLead();
+            }
+        }
+
+        function salvarEtapa1() {
+            leadAtual.nome = document.getElementById('leadNome').value;
+            leadAtual.whatsapp = document.getElementById('leadWhatsApp').value;
+            leadAtual.interesseSeguro = document.getElementById('leadSeguro').value;
+            leadAtual.tipoProfissional = document.getElementById('leadTipoProfissional').value;
+            leadAtual.rotas = [
+                document.getElementById('rota1').value,
+                document.getElementById('rota2').value,
+                document.getElementById('rota3').value,
+                document.getElementById('rota4').value,
+                document.getElementById('rota5').value
+            ].filter(r => r.trim() !== '');
+            leadAtual.timestampP1 = new Date().toISOString();
+
+            if (!leadAtual.nome || !leadAtual.whatsapp) {
+                alert('⚠️ Preencha Nome e WhatsApp');
+                return false;
+            }
+            return true;
+        }
+
+        function salvarEtapa2() {
+            leadAtual.tipoVeiculo = document.getElementById('leadTipoVeiculo').value;
+            leadAtual.capacidade = document.getElementById('leadCapacidade').value;
+            leadAtual.anoFab = document.getElementById('leadAnoFab').value;
+            leadAtual.carroceria = document.getElementById('leadCarroceria').value;
+            leadAtual.rastreador = document.getElementById('leadRastreador').value;
+
+            leadAtual.regioes = [];
+            if (document.getElementById('regiaoSul').checked) leadAtual.regioes.push('SUL');
+            if (document.getElementById('regiaoSudeste').checked) leadAtual.regioes.push('SUDESTE');
+            if (document.getElementById('regiaoCO').checked) leadAtual.regioes.push('CENTRO-OESTE');
+            if (document.getElementById('regiaoNordeste').checked) leadAtual.regioes.push('NORDESTE');
+            if (document.getElementById('regiaoNorte').checked) leadAtual.regioes.push('NORTE');
+
+            leadAtual.tiposCarga = [];
+            if (document.getElementById('cargaMadeira').checked) leadAtual.tiposCarga.push('MADEIRA');
+            if (document.getElementById('cargaCompensados').checked) leadAtual.tiposCarga.push('COMPENSADOS');
+            if (document.getElementById('cargaMDF').checked) leadAtual.tiposCarga.push('MDF');
+            if (document.getElementById('cargaMoveis').checked) leadAtual.tiposCarga.push('MÓVEIS');
+            if (document.getElementById('cargaGeral').checked) leadAtual.tiposCarga.push('GERAL');
+            if (document.getElementById('cargaPerecivel').checked) leadAtual.tiposCarga.push('PERECÍVEL');
+            if (document.getElementById('cargaGranel').checked) leadAtual.tiposCarga.push('GRANEL');
+
+            leadAtual.timestampP2 = new Date().toISOString();
+            return true;
+        }
+
+        function atualizarSelectFretesLead() {
+            const select = document.getElementById('leadFreteId');
+            if (!select) return;
+
+            const fretesDisponivelList = fretesDisponiveis.filter(f => f.status === 'DISPONIVEL');
+
+            select.innerHTML = '<option value="">Selecione um frete disponível...</option>';
+            fretesDisponivelList.forEach(f => {
+                select.innerHTML += `<option value="${f.id}" data-rota="${f.origemCidade}/${f.origemUF} → ${f.destinoCidade}/${f.destinoUF}" data-valor="${f.total}">${f.id} - ${f.origemCidade} → ${f.destinoCidade} (R$ ${f.total.toLocaleString('pt-BR')})</option>`;
+            });
+
+            select.onchange = function() {
+                const selected = this.options[this.selectedIndex];
+                if (selected.value) {
+                    document.getElementById('leadRotaFrete').value = selected.dataset.rota;
+                    document.getElementById('leadValorSugerido').value = `R$ ${parseFloat(selected.dataset.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                } else {
+                    document.getElementById('leadRotaFrete').value = '';
+                    document.getElementById('leadValorSugerido').value = '';
+                }
+            };
+        }
+
+        function salvarLeadCompleto() {
+            leadAtual.freteId = document.getElementById('leadFreteId').value;
+            leadAtual.rotaFrete = document.getElementById('leadRotaFrete').value;
+            leadAtual.valorSugerido = document.getElementById('leadValorSugerido').value;
+            leadAtual.valorProposta = document.getElementById('leadValorProposta').value;
+            leadAtual.prazoEntrega = document.getElementById('leadPrazoEntrega').value;
+            leadAtual.placa = document.getElementById('leadPlaca').value;
+            leadAtual.disponibilidade = document.getElementById('leadDisponibilidade').value;
+            leadAtual.cargaRetorno = document.getElementById('leadCargaRetorno').value;
+            leadAtual.formaPagamento = document.getElementById('leadFormaPagamento').value;
+            leadAtual.adiantamento = document.getElementById('leadAdiantamento').value;
+            leadAtual.pix = document.getElementById('leadPix').value;
+            leadAtual.banco = document.getElementById('leadBanco').value;
+            leadAtual.cpf = document.getElementById('leadCPF').value;
+            leadAtual.cnh = document.getElementById('leadCNH').value;
+            leadAtual.antt = document.getElementById('leadANTT').value;
+            leadAtual.seguroObrigatorio = document.getElementById('leadSeguroObrigatorio').value;
+            leadAtual.observacoes = document.getElementById('leadObservacoes').value;
+            leadAtual.timestampP3 = new Date().toISOString();
+            leadAtual.id = `LEAD${Date.now()}`;
+            leadAtual.status = 'NOVO';
+
+            // Salvar lead
+            leadsCapturados.push({...leadAtual});
+            localStorage.setItem('leadsCapturados', JSON.stringify(leadsCapturados));
+
+            // Atualizar tabela e estatísticas
+            renderizarTabelaLeads();
+            atualizarEstatisticasLeads();
+
+            alert('✅ Lead salvo com sucesso!');
+            limparFormularioLead();
+        }
+
+        function limparFormularioLead() {
+            leadAtual = {};
+            document.querySelectorAll('#captacao input, #captacao select, #captacao textarea').forEach(el => {
+                if (el.type === 'checkbox') el.checked = false;
+                else el.value = '';
+            });
+            irParaEtapa(1);
+        }
+
+        function renderizarTabelaLeads() {
+            const tbody = document.getElementById('tbodyLeads');
+            if (!tbody) return;
+
+            if (leadsCapturados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #94a3b8;">Nenhum lead captado ainda.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = leadsCapturados.map((lead, index) => `
+                <tr>
+                    <td>${lead.id}</td>
+                    <td>${lead.nome}</td>
+                    <td>${lead.whatsapp}</td>
+                    <td>${lead.tipoVeiculo || '-'}</td>
+                    <td>${(lead.regioes || []).join(', ') || '-'}</td>
+                    <td>${lead.freteId || '-'}</td>
+                    <td>${lead.valorProposta ? 'R$ ' + parseFloat(lead.valorProposta).toLocaleString('pt-BR') : '-'}</td>
+                    <td><span class="badge badge-success">${lead.status}</span></td>
+                    <td>
+                        <button onclick="visualizarLead(${index})" class="btn-secondary" style="padding: 5px 10px; font-size: 0.8em;">👁️</button>
+                        <button onclick="excluirLead(${index})" style="padding: 5px 10px; font-size: 0.8em; background: #ef4444;">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function atualizarEstatisticasLeads() {
+            const total = leadsCapturados.length;
+            const hoje = new Date().toDateString();
+            const novosHoje = leadsCapturados.filter(l => new Date(l.timestampP1).toDateString() === hoje).length;
+            const comProposta = leadsCapturados.filter(l => l.valorProposta).length;
+            const convertidos = leadsCapturados.filter(l => l.status === 'CONVERTIDO').length;
+
+            document.getElementById('statLeadsTotal').textContent = total;
+            document.getElementById('statLeadsHoje').textContent = novosHoje;
+            document.getElementById('statLeadsComProposta').textContent = comProposta;
+            document.getElementById('statLeadsConvertidos').textContent = convertidos;
+        }
+
+        function visualizarLead(index) {
+            const lead = leadsCapturados[index];
+            alert(`📋 LEAD: ${lead.nome}\n\n` +
+                `WhatsApp: ${lead.whatsapp}\n` +
+                `Tipo Profissional: ${lead.tipoProfissional || '-'}\n` +
+                `Veículo: ${lead.tipoVeiculo || '-'}\n` +
+                `Capacidade: ${lead.capacidade || '-'}t\n` +
+                `Regiões: ${(lead.regioes || []).join(', ') || '-'}\n` +
+                `Frete Vinculado: ${lead.freteId || '-'}\n` +
+                `Proposta: ${lead.valorProposta ? 'R$ ' + lead.valorProposta : '-'}\n` +
+                `Status: ${lead.status}`);
+        }
+
+        function excluirLead(index) {
+            if (confirm('⚠️ Tem certeza que deseja excluir este lead?')) {
+                leadsCapturados.splice(index, 1);
+                localStorage.setItem('leadsCapturados', JSON.stringify(leadsCapturados));
+                renderizarTabelaLeads();
+                atualizarEstatisticasLeads();
+            }
+        }
+
+        async function enviarLeadParaSheets() {
+            salvarLeadCompleto();
+
+            // Preparar dados para envio
+            const lead = leadsCapturados[leadsCapturados.length - 1];
+
+            alert('✅ Lead salvo! Para sincronizar com Google Sheets:\n\n' +
+                '1. Crie a aba LEADS_CAPTADOS na planilha\n' +
+                '2. Configure o Google Apps Script para receber dados\n' +
+                '3. Os dados serão enviados automaticamente');
+        }
+
         // Carregar configurações ao iniciar
         document.addEventListener('DOMContentLoaded', function() {
             carregarTema();
@@ -3398,7 +4553,17 @@ O arquivo foi baixado como: LISTAS_TRANSMISSAO_EXPORT.csv`);
             if (document.getElementById('openaiKey')) carregarAPIKeys();
             renderizarListasTransmissao();
             carregarContatosGoogleSheets();
+
+            // Inicializar módulos de Fretes e Leads
+            inicializarDropdownsUF();
+            renderizarTabelaFretes();
+            atualizarEstatisticasFretes();
+            renderizarTabelaLeads();
+            atualizarEstatisticasLeads();
+
             console.log('Planilha integrada:', GOOGLE_SHEETS_CONFIG.spreadsheetName);
+            console.log('Módulo Fretes carregado:', fretesDisponiveis.length, 'fretes');
+            console.log('Módulo Leads carregado:', leadsCapturados.length, 'leads');
         });
     </script>
     <script src="SCRIPTS/enside_ia_widget.js"></script>
