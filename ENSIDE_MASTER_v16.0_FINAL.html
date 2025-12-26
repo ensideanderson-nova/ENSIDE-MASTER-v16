@@ -1500,10 +1500,12 @@
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
                     <button onclick="adicionarFrete()" style="background: linear-gradient(135deg, #22c55e, #16a34a);">➕ Adicionar Frete</button>
                     <button onclick="limparFormularioFrete()" class="btn-secondary">🔄 Limpar</button>
-                    <button onclick="sincronizarFretesSheets()" class="btn-secondary">☁️ Sincronizar com Sheets</button>
+                    <button onclick="sincronizarFretesSheets()" style="background: linear-gradient(135deg, #0ea5e9, #06b6d4);">☁️ Carregar do Sheets</button>
+                    <button onclick="exportarFretesParaCSV()" class="btn-secondary">📥 Exportar CSV</button>
+                    <button onclick="abrirPlanilhaFretes()" class="btn-secondary">📊 Abrir Planilha</button>
                 </div>
             </div>
 
@@ -1827,7 +1829,8 @@
                     <div style="margin-top: 20px; display: flex; gap: 10px;">
                         <button onclick="irParaEtapa(2)" class="btn-secondary">⬅️ Voltar</button>
                         <button onclick="salvarLeadCompleto()" style="background: linear-gradient(135deg, #22c55e, #16a34a);">✅ Salvar Lead Completo</button>
-                        <button onclick="enviarLeadParaSheets()" style="background: linear-gradient(135deg, #0ea5e9, #06b6d4);">☁️ Enviar para Google Sheets</button>
+                        <button onclick="enviarLeadParaSheets()" style="background: linear-gradient(135deg, #0ea5e9, #06b6d4);">☁️ Enviar para Sheets</button>
+                        <button onclick="exportarLeadsParaCSV()" class="btn-secondary">📥 Exportar Leads CSV</button>
                     </div>
                 </div>
             </div>
@@ -4298,28 +4301,252 @@ O arquivo foi baixado como: LISTAS_TRANSMISSAO_EXPORT.csv`);
             alert(`✅ ${fretesParaExportar.length} fretes exportados para HTML!`);
         }
 
-        // Sincronizar fretes com Google Sheets
-        async function sincronizarFretesSheets() {
+        // ==================== INTEGRAÇÃO COMPLETA COM GOOGLE SHEETS ====================
+
+        // Carregar fretes da planilha Google Sheets
+        async function carregarFretesDoSheets() {
             const sheetId = GOOGLE_SHEETS_CONFIG.spreadsheetId;
+
             try {
-                // Tentar carregar dados da planilha FRETES_DISPONIVEIS
                 const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=FRETES_DISPONIVEIS`;
                 const response = await fetch(url);
                 const text = await response.text();
                 const jsonStart = text.indexOf('{');
                 const jsonEnd = text.lastIndexOf('}') + 1;
 
-                if (jsonStart !== -1) {
-                    const jsonData = JSON.parse(text.substring(jsonStart, jsonEnd));
-                    if (jsonData.table && jsonData.table.rows) {
-                        // Processar dados da planilha
-                        alert('✅ Sincronização com Google Sheets iniciada! Verifique a aba FRETES_DISPONIVEIS.');
+                if (jsonStart === -1) throw new Error('Resposta inválida');
+
+                const jsonData = JSON.parse(text.substring(jsonStart, jsonEnd));
+                if (!jsonData.table || !jsonData.table.rows) throw new Error('Sem dados');
+
+                const rows = jsonData.table.rows;
+                const fretesCarregados = [];
+
+                // Pular header (primeira linha) - começar do índice 1
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (!row.c || !row.c[0]) continue;
+
+                    const frete = {
+                        id: row.c[0]?.v || `FRT${i}`,
+                        origemUF: row.c[1]?.v || '',
+                        origemCidade: row.c[2]?.v || '',
+                        destinoUF: row.c[3]?.v || '',
+                        destinoCidade: row.c[4]?.v || '',
+                        km: parseFloat(row.c[5]?.v) || 0,
+                        tipoVeiculo: row.c[6]?.v || '',
+                        capacidade: parseFloat(row.c[7]?.v) || 0,
+                        valorKM: parseFloat(row.c[8]?.v) || 0,
+                        contato: row.c[9]?.v || '',
+                        whatsapp: row.c[10]?.v || '',
+                        status: row.c[11]?.v || 'DISPONIVEL',
+                        valorTonelada: parseFloat(row.c[12]?.v) || 0,
+                        total: parseFloat(row.c[13]?.v) || 0,
+                        vaiHTML: row.c[14]?.v === 'SIM' || row.c[14]?.v === true,
+                        dataCriacao: new Date().toISOString()
+                    };
+
+                    // Calcular valores se não vieram da planilha
+                    if (!frete.total && frete.km && frete.valorKM) {
+                        frete.total = frete.km * frete.valorKM;
+                    }
+                    if (!frete.valorTonelada && frete.total && frete.capacidade) {
+                        frete.valorTonelada = frete.total / frete.capacidade;
+                    }
+
+                    fretesCarregados.push(frete);
+                }
+
+                // Atualizar dados locais
+                fretesDisponiveis = fretesCarregados;
+                localStorage.setItem('fretesDisponiveis', JSON.stringify(fretesDisponiveis));
+
+                // Atualizar interface
+                renderizarTabelaFretes();
+                atualizarEstatisticasFretes();
+                atualizarSelectFretesLead();
+
+                console.log(`✅ ${fretesCarregados.length} fretes carregados do Google Sheets`);
+                return fretesCarregados.length;
+
+            } catch (error) {
+                console.error('Erro ao carregar fretes do Sheets:', error);
+                return 0;
+            }
+        }
+
+        // Carregar Estados e Cidades da planilha
+        async function carregarEstadosCidadesDoSheets() {
+            const sheetId = GOOGLE_SHEETS_CONFIG.spreadsheetId;
+
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=ESTADOS_CIDADES`;
+                const response = await fetch(url);
+                const text = await response.text();
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+
+                if (jsonStart === -1) throw new Error('Resposta inválida');
+
+                const jsonData = JSON.parse(text.substring(jsonStart, jsonEnd));
+                if (!jsonData.table || !jsonData.table.rows) throw new Error('Sem dados');
+
+                const rows = jsonData.table.rows;
+                const estadosCidadesCarregados = {};
+
+                // Pular header - começar do índice 1
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (!row.c || !row.c[0] || !row.c[1]) continue;
+
+                    const uf = row.c[0].v;
+                    const cidade = row.c[1].v;
+
+                    if (!estadosCidadesCarregados[uf]) {
+                        estadosCidadesCarregados[uf] = [];
+                    }
+                    if (!estadosCidadesCarregados[uf].includes(cidade)) {
+                        estadosCidadesCarregados[uf].push(cidade);
                     }
                 }
+
+                // Atualizar objeto global se tiver dados
+                if (Object.keys(estadosCidadesCarregados).length > 0) {
+                    Object.assign(ESTADOS_CIDADES, estadosCidadesCarregados);
+                    inicializarDropdownsUF();
+                    console.log(`✅ Estados/Cidades carregados do Sheets: ${Object.keys(estadosCidadesCarregados).length} UFs`);
+                }
+
+                return estadosCidadesCarregados;
+
             } catch (error) {
-                console.log('Aba FRETES_DISPONIVEIS não encontrada ou erro de conexão');
-                alert('⚠️ Crie a aba FRETES_DISPONIVEIS na planilha Google Sheets para sincronizar.');
+                console.log('Usando Estados/Cidades locais (planilha não acessível)');
+                return ESTADOS_CIDADES;
             }
+        }
+
+        // Sincronizar fretes com Google Sheets (carregar + exportar)
+        async function sincronizarFretesSheets() {
+            const btn = event?.target;
+            if (btn) btn.disabled = true;
+
+            try {
+                // 1. Carregar fretes da planilha
+                const qtdCarregados = await carregarFretesDoSheets();
+
+                if (qtdCarregados > 0) {
+                    alert(`✅ Sincronização concluída!\n\n📊 ${qtdCarregados} fretes carregados da planilha Google Sheets.\n\nOs dados foram atualizados na interface.`);
+                } else {
+                    // Se não carregou nada, mostrar instruções
+                    alert(`⚠️ Nenhum frete encontrado na planilha.\n\n📋 Verifique se:\n1. A planilha está pública (Compartilhar → Qualquer pessoa com link → Leitor)\n2. Existe a aba "FRETES_DISPONIVEIS"\n3. As colunas estão corretas: ID, ORIGEM_UF, ORIGEM_CIDADE, DESTINO_UF, DESTINO_CIDADE, KM, TIPO_VEICULO, CAPACIDADE, VALOR_KM, CONTATO, WHATSAPP, STATUS, VALOR_TONELADA, TOTAL, VAI_HTML`);
+                }
+
+            } catch (error) {
+                alert('❌ Erro na sincronização. Verifique se a planilha está pública.');
+            }
+
+            if (btn) btn.disabled = false;
+        }
+
+        // Exportar fretes locais para formato CSV (copiar para planilha)
+        function exportarFretesParaCSV() {
+            if (fretesDisponiveis.length === 0) {
+                alert('⚠️ Nenhum frete para exportar');
+                return;
+            }
+
+            const headers = ['ID', 'ORIGEM_UF', 'ORIGEM_CIDADE', 'DESTINO_UF', 'DESTINO_CIDADE', 'KM', 'TIPO_VEICULO', 'CAPACIDADE', 'VALOR_KM', 'CONTATO', 'WHATSAPP', 'STATUS', 'VALOR_TONELADA', 'TOTAL', 'VAI_HTML'];
+
+            const csvContent = [
+                headers.join(','),
+                ...fretesDisponiveis.map(f => [
+                    f.id,
+                    f.origemUF,
+                    f.origemCidade,
+                    f.destinoUF,
+                    f.destinoCidade,
+                    f.km,
+                    f.tipoVeiculo,
+                    f.capacidade,
+                    f.valorKM,
+                    f.contato,
+                    f.whatsapp,
+                    f.status,
+                    f.valorTonelada.toFixed(2),
+                    f.total.toFixed(2),
+                    f.vaiHTML ? 'SIM' : 'NAO'
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fretes_export_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert(`✅ ${fretesDisponiveis.length} fretes exportados para CSV!\n\nImporte o arquivo na aba FRETES_DISPONIVEIS da planilha.`);
+        }
+
+        // Exportar leads para CSV
+        function exportarLeadsParaCSV() {
+            if (leadsCapturados.length === 0) {
+                alert('⚠️ Nenhum lead para exportar');
+                return;
+            }
+
+            const headers = ['ID', 'NOME', 'WHATSAPP', 'INTERESSE_SEGURO', 'TIPO_PROFISSIONAL', 'ROTAS', 'TIPO_VEICULO', 'CAPACIDADE', 'ANO_FAB', 'CARROCERIA', 'RASTREADOR', 'REGIOES', 'TIPOS_CARGA', 'FRETE_ID', 'VALOR_PROPOSTA', 'PRAZO', 'PLACA', 'DISPONIBILIDADE', 'CARGA_RETORNO', 'FORMA_PAGAMENTO', 'PIX', 'CPF', 'CNH', 'ANTT', 'OBSERVACOES', 'STATUS', 'TIMESTAMP_P1', 'TIMESTAMP_P2', 'TIMESTAMP_P3'];
+
+            const csvContent = [
+                headers.join(','),
+                ...leadsCapturados.map(l => [
+                    l.id,
+                    `"${l.nome || ''}"`,
+                    l.whatsapp || '',
+                    l.interesseSeguro || '',
+                    l.tipoProfissional || '',
+                    `"${(l.rotas || []).join('; ')}"`,
+                    l.tipoVeiculo || '',
+                    l.capacidade || '',
+                    l.anoFab || '',
+                    l.carroceria || '',
+                    l.rastreador || '',
+                    `"${(l.regioes || []).join('; ')}"`,
+                    `"${(l.tiposCarga || []).join('; ')}"`,
+                    l.freteId || '',
+                    l.valorProposta || '',
+                    l.prazoEntrega || '',
+                    l.placa || '',
+                    l.disponibilidade || '',
+                    l.cargaRetorno || '',
+                    l.formaPagamento || '',
+                    l.pix || '',
+                    l.cpf || '',
+                    l.cnh || '',
+                    l.antt || '',
+                    `"${(l.observacoes || '').replace(/"/g, '""')}"`,
+                    l.status || 'NOVO',
+                    l.timestampP1 || '',
+                    l.timestampP2 || '',
+                    l.timestampP3 || ''
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `leads_export_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert(`✅ ${leadsCapturados.length} leads exportados para CSV!\n\nImporte o arquivo na aba LEADS_CAPTADOS da planilha.`);
+        }
+
+        // Abrir planilha no navegador
+        function abrirPlanilhaFretes() {
+            window.open(`https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_CONFIG.spreadsheetId}/edit`, '_blank');
         }
 
         // ==================== MÓDULO DE CAPTAÇÃO DE LEADS ====================
@@ -4560,6 +4787,19 @@ O arquivo foi baixado como: LISTAS_TRANSMISSAO_EXPORT.csv`);
             atualizarEstatisticasFretes();
             renderizarTabelaLeads();
             atualizarEstatisticasLeads();
+
+            // Tentar carregar dados do Google Sheets automaticamente
+            carregarEstadosCidadesDoSheets().then(() => {
+                console.log('✅ Estados/Cidades verificados');
+            });
+
+            carregarFretesDoSheets().then(qtd => {
+                if (qtd > 0) {
+                    console.log(`✅ ${qtd} fretes carregados do Google Sheets`);
+                } else {
+                    console.log('ℹ️ Usando fretes do localStorage');
+                }
+            });
 
             console.log('Planilha integrada:', GOOGLE_SHEETS_CONFIG.spreadsheetName);
             console.log('Módulo Fretes carregado:', fretesDisponiveis.length, 'fretes');
