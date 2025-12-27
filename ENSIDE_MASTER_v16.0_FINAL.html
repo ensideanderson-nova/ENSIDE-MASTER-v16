@@ -2789,6 +2789,8 @@ ${filtros.join('\n') || 'Nenhum filtro'}
             spreadsheetId: '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE',
             spreadsheetName: 'ENSIDE-FRETES-SISTEMA',
             gid: '1335082895',
+            // URL do Google Apps Script para escrita na planilha
+            scriptURL: 'https://script.google.com/macros/s/AKfycbzlXB43ZA83ZT98KAypV4EEmsyxslyXB1Ya8_b6TtwH9xSZunZhzS0ZcZiDKqUtEsT3/exec',
             sheets: {
                 contatos: 'CONTATOS',
                 listasTransmissao: 'LISTAS_TRANSMISSAO',
@@ -2801,6 +2803,32 @@ ${filtros.join('\n') || 'Nenhum filtro'}
                 leadsCaptados: 'LEADS_CAPTADOS'
             }
         };
+
+        // Função para enviar dados para o Google Sheets via Apps Script
+        async function enviarParaGoogleSheets(dados, tipo) {
+            try {
+                const payload = {
+                    tipo: tipo, // 'frete', 'lead', 'contato'
+                    timestamp: new Date().toISOString(),
+                    ...dados
+                };
+
+                const response = await fetch(GOOGLE_SHEETS_CONFIG.scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                console.log(`✅ Dados enviados para Google Sheets (${tipo})`);
+                return true;
+            } catch (error) {
+                console.error('❌ Erro ao enviar para Sheets:', error);
+                return false;
+            }
+        }
         
         // ==================== SINCRONIZAÇÃO BIDIRECIONAL ====================
         
@@ -4060,6 +4088,13 @@ O arquivo foi baixado como: LISTAS_TRANSMISSAO_EXPORT.csv`);
             fretesDisponiveis.push(frete);
             localStorage.setItem('fretesDisponiveis', JSON.stringify(fretesDisponiveis));
 
+            // Enviar para Google Sheets
+            enviarParaGoogleSheets(frete, 'FRETE').then(sucesso => {
+                if (sucesso) {
+                    console.log('✅ Frete sincronizado com Google Sheets');
+                }
+            });
+
             // Atualizar tabela e estatísticas
             renderizarTabelaFretes();
             atualizarEstatisticasFretes();
@@ -4681,6 +4716,13 @@ O arquivo foi baixado como: LISTAS_TRANSMISSAO_EXPORT.csv`);
             // Salvar lead
             leadsCapturados.push({...leadAtual});
             localStorage.setItem('leadsCapturados', JSON.stringify(leadsCapturados));
+
+            // Enviar para Google Sheets
+            enviarParaGoogleSheets({...leadAtual}, 'LEAD').then(sucesso => {
+                if (sucesso) {
+                    console.log('✅ Lead sincronizado com Google Sheets');
+                }
+            });
 
             // Atualizar tabela e estatísticas
             renderizarTabelaLeads();
