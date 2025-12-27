@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fretes Disponíveis - ANDERSON ENSIDE LOGISTICS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%); color: #fff; min-height: 100vh; }
+
+        .header { text-align: center; padding: 30px 20px; background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0.8) 100%); }
+        .logo { font-size: 2em; font-weight: 800; color: #FFD700; }
+        .welcome { color: #10b981; margin-top: 10px; font-size: 1.1em; }
+
+        .filtros-section { background: rgba(255,255,255,0.05); padding: 25px; margin: 20px; border-radius: 15px; border: 1px solid rgba(255,215,0,0.2); }
+        .filtros-title { color: #FFD700; margin-bottom: 20px; font-size: 1.2em; }
+        .filtros-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .filtro-select { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,215,0,0.3); color: #fff; border-radius: 8px; font-size: 1em; }
+        .filtro-select option { background: #1a1a2e; }
+
+        .fretes-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .fretes-count { color: #94a3b8; margin-bottom: 20px; }
+
+        .frete-card { background: rgba(255,255,255,0.05); border: 2px solid rgba(255,215,0,0.3); border-radius: 15px; padding: 25px; margin-bottom: 20px; transition: all 0.3s; }
+        .frete-card:hover { border-color: #FFD700; box-shadow: 0 5px 30px rgba(255,215,0,0.2); }
+        .frete-card.hidden { display: none; }
+        .frete-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .frete-rota { font-size: 1.3em; font-weight: 700; color: #FFD700; }
+        .badge-urgente { background: linear-gradient(135deg, #dc2626, #f59e0b); padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+
+        .frete-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .frete-info { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; text-align: center; }
+        .frete-label { font-size: 0.8em; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .frete-valor { font-size: 1.1em; font-weight: 600; }
+        .frete-valor.destaque { color: #10b981; font-size: 1.4em; }
+
+        .btn-proposta { display: block; width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: #fff; padding: 15px; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .btn-proposta:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(16,185,129,0.4); }
+
+        /* Modal de Proposta */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1a1a2e; border: 2px solid #FFD700; border-radius: 20px; padding: 30px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-title { color: #FFD700; font-size: 1.5em; margin-bottom: 20px; text-align: center; }
+        .modal-rota { background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px; color: #FFD700; }
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; color: #94a3b8; margin-bottom: 5px; font-size: 0.9em; }
+        .form-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,215,0,0.3); color: #fff; border-radius: 8px; font-size: 1em; }
+        .form-input:focus { outline: none; border-color: #FFD700; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-enviar { flex: 1; background: linear-gradient(135deg, #FFD700, #f59e0b); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-cancelar { flex: 1; background: rgba(255,255,255,0.1); color: #fff; padding: 15px; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; cursor: pointer; }
+
+        .no-results { text-align: center; padding: 50px; color: #94a3b8; }
+
+        @media (max-width: 768px) {
+            .frete-rota { font-size: 1.1em; }
+            .frete-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">ANDERSON ENSIDE LOGISTICS</div>
+        <div class="welcome" id="welcomeMsg">Bem-vindo! Escolha seu frete</div>
+    </header>
+
+    <section class="filtros-section">
+        <h2 class="filtros-title">🔍 FILTRAR FRETES DISPONÍVEIS</h2>
+        <div class="filtros-grid">
+            <select class="filtro-select" id="filtroOrigem" onchange="aplicarFiltros()">
+                <option value="">Estado Origem</option>
+                <option value="PR">PR</option>
+                <option value="SC">SC</option>
+                <option value="RS">RS</option>
+                <option value="SP">SP</option>
+                <option value="RJ">RJ</option>
+                <option value="MG">MG</option>
+            </select>
+            <select class="filtro-select" id="filtroDestino" onchange="aplicarFiltros()">
+                <option value="">Estado Destino</option>
+                <option value="PR">PR</option>
+                <option value="SC">SC</option>
+                <option value="RS">RS</option>
+                <option value="SP">SP</option>
+                <option value="RJ">RJ</option>
+                <option value="MG">MG</option>
+            </select>
+            <select class="filtro-select" id="filtroTipo" onchange="aplicarFiltros()">
+                <option value="">Tipo de Veículo</option>
+                <option value="Carreta">Carreta</option>
+                <option value="Truck">Truck</option>
+                <option value="Bitrem">Bitrem</option>
+                <option value="Rodotrem">Rodotrem</option>
+            </select>
+            <select class="filtro-select" id="filtroValor" onchange="aplicarFiltros()">
+                <option value="">Valor Mínimo (R$)</option>
+                <option value="1000">R$ 1.000+</option>
+                <option value="2000">R$ 2.000+</option>
+                <option value="3000">R$ 3.000+</option>
+                <option value="5000">R$ 5.000+</option>
+            </select>
+        </div>
+    </section>
+
+    <main class="fretes-container">
+        <p class="fretes-count">Mostrando <span id="countFretes">6</span> fretes disponíveis</p>
+
+        <div id="listaFretes">
+            <!-- Frete 1 -->
+            <div class="frete-card" data-origem="PR" data-destino="SP" data-tipo="Carreta" data-valor="2850">
+                <div class="frete-header">
+                    <div class="frete-rota">Curitiba - PR → São Paulo - SP</div>
+                    <span class="badge-urgente">🔥 URGENTE</span>
+                </div>
+                <div class="frete-grid">
+                    <div class="frete-info">
+                        <div class="frete-label">Distância</div>
+                        <div class="frete-valor">408 km</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Valor Sugerido</div>
+                        <div class="frete-valor destaque">R$ 2.850</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Tipo Veículo</div>
+                        <div class="frete-valor">Carreta</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Carga</div>
+                        <div class="frete-valor">Madeira</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Peso</div>
+                        <div class="frete-valor">25 toneladas</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Embarque</div>
+                        <div class="frete-valor">Hoje</div>
+                    </div>
+                </div>
+                <button class="btn-proposta" onclick="fazerProposta(1, 'FRT001', 'Curitiba/PR', 'São Paulo/SP', 2850)">
+                    💼 FAZER PROPOSTA
+                </button>
+            </div>
+
+            <!-- Frete 2 -->
+            <div class="frete-card" data-origem="SC" data-destino="RJ" data-tipo="Carreta" data-valor="5200">
+                <div class="frete-header">
+                    <div class="frete-rota">Tubarão - SC → Rio de Janeiro - RJ</div>
+                    <span class="badge-urgente">🔥 URGENTE</span>
+                </div>
+                <div class="frete-grid">
+                    <div class="frete-info">
+                        <div class="frete-label">Distância</div>
+                        <div class="frete-valor">920 km</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Valor Sugerido</div>
+                        <div class="frete-valor destaque">R$ 5.200</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Tipo Veículo</div>
+                        <div class="frete-valor">Carreta</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Carga</div>
+                        <div class="frete-valor">Compensados</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Peso</div>
+                        <div class="frete-valor">28 toneladas</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Embarque</div>
+                        <div class="frete-valor">Amanhã</div>
+                    </div>
+                </div>
+                <button class="btn-proposta" onclick="fazerProposta(2, 'FRT002', 'Tubarão/SC', 'Rio de Janeiro/RJ', 5200)">
+                    💼 FAZER PROPOSTA
+                </button>
+            </div>
+
+            <!-- Frete 3 -->
+            <div class="frete-card" data-origem="RS" data-destino="SP" data-tipo="Bitrem" data-valor="4800">
+                <div class="frete-header">
+                    <div class="frete-rota">Porto Alegre - RS → São Paulo - SP</div>
+                    <span class="badge-urgente">🔥 DISPONÍVEL</span>
+                </div>
+                <div class="frete-grid">
+                    <div class="frete-info">
+                        <div class="frete-label">Distância</div>
+                        <div class="frete-valor">1.109 km</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Valor Sugerido</div>
+                        <div class="frete-valor destaque">R$ 4.800</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Tipo Veículo</div>
+                        <div class="frete-valor">Bitrem</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Carga</div>
+                        <div class="frete-valor">Grãos</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Peso</div>
+                        <div class="frete-valor">40 toneladas</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Embarque</div>
+                        <div class="frete-valor">Esta semana</div>
+                    </div>
+                </div>
+                <button class="btn-proposta" onclick="fazerProposta(3, 'FRT003', 'Porto Alegre/RS', 'São Paulo/SP', 4800)">
+                    💼 FAZER PROPOSTA
+                </button>
+            </div>
+
+            <!-- Frete 4 -->
+            <div class="frete-card" data-origem="SP" data-destino="MG" data-tipo="Truck" data-valor="1800">
+                <div class="frete-header">
+                    <div class="frete-rota">São Paulo - SP → Belo Horizonte - MG</div>
+                    <span class="badge-urgente">🔥 DISPONÍVEL</span>
+                </div>
+                <div class="frete-grid">
+                    <div class="frete-info">
+                        <div class="frete-label">Distância</div>
+                        <div class="frete-valor">586 km</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Valor Sugerido</div>
+                        <div class="frete-valor destaque">R$ 1.800</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Tipo Veículo</div>
+                        <div class="frete-valor">Truck</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Carga</div>
+                        <div class="frete-valor">Eletrônicos</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Peso</div>
+                        <div class="frete-valor">12 toneladas</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Embarque</div>
+                        <div class="frete-valor">Hoje</div>
+                    </div>
+                </div>
+                <button class="btn-proposta" onclick="fazerProposta(4, 'FRT004', 'São Paulo/SP', 'Belo Horizonte/MG', 1800)">
+                    💼 FAZER PROPOSTA
+                </button>
+            </div>
+
+            <!-- Frete 5 -->
+            <div class="frete-card" data-origem="MG" data-destino="RJ" data-tipo="Carreta" data-valor="2200">
+                <div class="frete-header">
+                    <div class="frete-rota">Belo Horizonte - MG → Rio de Janeiro - RJ</div>
+                    <span class="badge-urgente">🔥 DISPONÍVEL</span>
+                </div>
+                <div class="frete-grid">
+                    <div class="frete-info">
+                        <div class="frete-label">Distância</div>
+                        <div class="frete-valor">434 km</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Valor Sugerido</div>
+                        <div class="frete-valor destaque">R$ 2.200</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Tipo Veículo</div>
+                        <div class="frete-valor">Carreta</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Carga</div>
+                        <div class="frete-valor">Bebidas</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Peso</div>
+                        <div class="frete-valor">22 toneladas</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Embarque</div>
+                        <div class="frete-valor">Amanhã</div>
+                    </div>
+                </div>
+                <button class="btn-proposta" onclick="fazerProposta(5, 'FRT005', 'Belo Horizonte/MG', 'Rio de Janeiro/RJ', 2200)">
+                    💼 FAZER PROPOSTA
+                </button>
+            </div>
+
+            <!-- Frete 6 -->
+            <div class="frete-card" data-origem="PR" data-destino="RS" data-tipo="Rodotrem" data-valor="3500">
+                <div class="frete-header">
+                    <div class="frete-rota">Curitiba - PR → Porto Alegre - RS</div>
+                    <span class="badge-urgente">🔥 DISPONÍVEL</span>
+                </div>
+                <div class="frete-grid">
+                    <div class="frete-info">
+                        <div class="frete-label">Distância</div>
+                        <div class="frete-valor">711 km</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Valor Sugerido</div>
+                        <div class="frete-valor destaque">R$ 3.500</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Tipo Veículo</div>
+                        <div class="frete-valor">Rodotrem</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Carga</div>
+                        <div class="frete-valor">Cimento</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Peso</div>
+                        <div class="frete-valor">50 toneladas</div>
+                    </div>
+                    <div class="frete-info">
+                        <div class="frete-label">Embarque</div>
+                        <div class="frete-valor">Esta semana</div>
+                    </div>
+                </div>
+                <button class="btn-proposta" onclick="fazerProposta(6, 'FRT006', 'Curitiba/PR', 'Porto Alegre/RS', 3500)">
+                    💼 FAZER PROPOSTA
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Proposta -->
+    <div class="modal" id="modalProposta">
+        <div class="modal-content">
+            <h3 class="modal-title">💼 FAZER PROPOSTA</h3>
+            <div class="modal-rota" id="modalRota"></div>
+
+            <form id="formProposta" onsubmit="enviarProposta(event)">
+                <input type="hidden" id="propFreteId">
+                <input type="hidden" id="propRota">
+
+                <div class="form-group">
+                    <label class="form-label">Seu Nome</label>
+                    <input type="text" class="form-input" id="propNome" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Seu WhatsApp</label>
+                    <input type="tel" class="form-input" id="propWhatsapp" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sua Proposta (R$)</label>
+                    <input type="number" class="form-input" id="propValor" required placeholder="Valor que você aceita">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo do seu Veículo</label>
+                    <input type="text" class="form-input" id="propVeiculo" placeholder="Ex: Carreta, Truck, Bitrem">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Disponibilidade</label>
+                    <select class="form-input" id="propDisponibilidade">
+                        <option value="IMEDIATA">Imediata</option>
+                        <option value="HOJE">Hoje</option>
+                        <option value="AMANHA">Amanhã</option>
+                        <option value="ESTA_SEMANA">Esta semana</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Observações</label>
+                    <textarea class="form-input" id="propObs" rows="2" placeholder="Informações adicionais..."></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn-enviar">Enviar Proposta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlXB43ZA83ZT98KAypV4EEmsyxslyXB1Ya8_b6TtwH9xSZunZhzS0ZcZiDKqUtEsT3/exec';
+
+        // Recuperar dados do motorista
+        const params = new URLSearchParams(window.location.search);
+        let motorista = { nome: '', whatsapp: '' };
+
+        try {
+            const stored = localStorage.getItem('motoristaCaptado');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                motorista.nome = params.get('nome') || parsed.nome || '';
+                motorista.whatsapp = params.get('whatsapp') || parsed.whatsapp || '';
+            } else {
+                motorista.nome = params.get('nome') || '';
+                motorista.whatsapp = params.get('whatsapp') || '';
+            }
+        } catch (e) {
+            motorista.nome = params.get('nome') || '';
+            motorista.whatsapp = params.get('whatsapp') || '';
+        }
+
+        if (motorista.nome) {
+            document.getElementById('welcomeMsg').textContent = 'Olá, ' + motorista.nome + '! Escolha seu frete';
+            document.getElementById('propNome').value = motorista.nome;
+            document.getElementById('propWhatsapp').value = motorista.whatsapp;
+        }
+
+        // Aplicar filtros
+        function aplicarFiltros() {
+            const origem = document.getElementById('filtroOrigem').value;
+            const destino = document.getElementById('filtroDestino').value;
+            const tipo = document.getElementById('filtroTipo').value;
+            const valorMin = parseInt(document.getElementById('filtroValor').value) || 0;
+
+            const cards = document.querySelectorAll('.frete-card');
+            let count = 0;
+
+            cards.forEach(card => {
+                const cardOrigem = card.dataset.origem;
+                const cardDestino = card.dataset.destino;
+                const cardTipo = card.dataset.tipo;
+                const cardValor = parseInt(card.dataset.valor) || 0;
+
+                const match = (!origem || cardOrigem === origem) &&
+                              (!destino || cardDestino === destino) &&
+                              (!tipo || cardTipo === tipo) &&
+                              (cardValor >= valorMin);
+
+                card.classList.toggle('hidden', !match);
+                if (match) count++;
+            });
+
+            document.getElementById('countFretes').textContent = count;
+        }
+
+        // Abrir modal de proposta
+        function fazerProposta(index, freteId, origem, destino, valorSugerido) {
+            document.getElementById('propFreteId').value = freteId;
+            document.getElementById('propRota').value = origem + ' → ' + destino;
+            document.getElementById('modalRota').textContent = origem + ' → ' + destino;
+            document.getElementById('propValor').placeholder = 'Sugerido: R$ ' + valorSugerido.toLocaleString('pt-BR');
+            document.getElementById('modalProposta').classList.add('active');
+        }
+
+        function fecharModal() {
+            document.getElementById('modalProposta').classList.remove('active');
+        }
+
+        // Enviar proposta
+        async function enviarProposta(e) {
+            e.preventDefault();
+
+            const dados = {
+                tipo: 'PROPOSTA_FRETE',
+                freteId: document.getElementById('propFreteId').value,
+                rota: document.getElementById('propRota').value,
+                nome: document.getElementById('propNome').value,
+                whatsapp: document.getElementById('propWhatsapp').value,
+                valorProposta: document.getElementById('propValor').value,
+                tipoVeiculo: document.getElementById('propVeiculo').value,
+                disponibilidade: document.getElementById('propDisponibilidade').value,
+                observacoes: document.getElementById('propObs').value,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                alert('✅ Proposta enviada com sucesso!\n\nEntraremos em contato pelo WhatsApp informado.');
+                fecharModal();
+
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao enviar proposta. Tente novamente.');
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('modalProposta').addEventListener('click', function(e) {
+            if (e.target === this) fecharModal();
+        });
+    </script>
+</body>
+</html>
