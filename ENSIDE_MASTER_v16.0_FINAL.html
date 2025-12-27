@@ -1519,7 +1519,9 @@
                         <option value="RESERVADO">⏳ Reservado</option>
                         <option value="EM_TRANSITO">🚚 Em Trânsito</option>
                     </select>
-                    <button onclick="exportarFretesHTML()" style="background: linear-gradient(135deg, #f59e0b, #d97706);">📤 Exportar Marcados para HTML</button>
+                    <button onclick="exportarHTMLCaptacao()" style="background: linear-gradient(135deg, #10b981, #059669);">📥 Landing Captação</button>
+                    <button onclick="exportarHTMLFretes()" style="background: linear-gradient(135deg, #f59e0b, #d97706);">📤 HTML Fretes</button>
+                    <button onclick="exportarFretesHTML()" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">📦 Exportar Ambos</button>
                 </div>
                 <div class="table-container">
                     <table id="tabelaFretes">
@@ -2800,7 +2802,8 @@ ${filtros.join('\n') || 'Nenhum filtro'}
                 custosSerragem: 'CUSTOS SERRAGEM',
                 fretesDisponiveis: 'FRETES_DISPONIVEIS',
                 estadosCidades: 'ESTADOS_CIDADES',
-                leadsCaptados: 'LEADS_CAPTADOS'
+                leadsCaptados: 'LEADS_CAPTADOS',
+                captacaoInicial: 'CAPTACAO_INICIAL' // Aba cinza para captação simples (nome + whatsapp)
             }
         };
 
@@ -4274,66 +4277,606 @@ O arquivo foi baixado como: LISTAS_TRANSMISSAO_EXPORT.csv`);
             document.getElementById('statValorMedioKM').textContent = `R$ ${mediaKM.toFixed(2)}`;
         }
 
-        // Exportar fretes marcados para HTML
-        function exportarFretesHTML() {
-            const fretesParaExportar = fretesDisponiveis.filter(f => f.vaiHTML);
+        // ==================== GERAÇÃO DE HTML PÚBLICOS ====================
 
-            if (fretesParaExportar.length === 0) {
-                alert('⚠️ Nenhum frete marcado para exportação HTML');
-                return;
-            }
+        // Calcular estatísticas para os HTMLs
+        function calcularEstatisticasHTML() {
+            const fretes = fretesDisponiveis.filter(f => f.vaiHTML && f.status === 'DISPONIVEL');
+            const totalFretes = fretes.length;
+            const totalMotoristas = leadsCapturados.length;
+
+            // Calcular média mensal (soma dos totais)
+            const somaTotal = fretes.reduce((acc, f) => acc + (f.total || 0), 0);
+
+            // Agrupar por cidade de origem
+            const porCidade = {};
+            fretes.forEach(f => {
+                const cidade = `${f.origemCidade} - ${f.origemUF}`;
+                if (!porCidade[cidade]) {
+                    porCidade[cidade] = { count: 0, minValor: Infinity, maxValor: 0 };
+                }
+                porCidade[cidade].count++;
+                porCidade[cidade].minValor = Math.min(porCidade[cidade].minValor, f.total || 0);
+                porCidade[cidade].maxValor = Math.max(porCidade[cidade].maxValor, f.total || 0);
+            });
+
+            return { totalFretes, totalMotoristas, somaTotal, porCidade, fretes };
+        }
+
+        // Gerar HTML 1 - Landing Page de Captação
+        function gerarHTMLCaptacao() {
+            const stats = calcularEstatisticasHTML();
+            const scriptURL = GOOGLE_SHEETS_CONFIG.scriptURL;
+
+            // Gerar cards de cidades dinamicamente
+            const cidadesHTML = Object.entries(stats.porCidade)
+                .sort((a, b) => b[1].count - a[1].count)
+                .slice(0, 6)
+                .map(([cidade, dados]) => `
+                    <div class="city-card">
+                        <div class="flag">🇧🇷</div>
+                        <div class="city-name">${cidade}</div>
+                        <div class="city-fretes">${dados.count} fretes disponíveis</div>
+                        <div class="city-range">R$ ${dados.minValor.toLocaleString('pt-BR', {minimumFractionDigits: 0})} - ${dados.maxValor.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</div>
+                    </div>
+                `).join('');
 
             const html = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fretes Disponíveis - ENSIDE MADEIRAS</title>
+    <title>ANDERSON ENSIDE LOGISTICS - Fretes Disponíveis</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, sans-serif; background: linear-gradient(135deg, #000 0%, #1a1a1a 100%); color: #fff; min-height: 100vh; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { text-align: center; color: #FFD700; font-size: 2.5em; margin-bottom: 40px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-        .frete-card { background: rgba(255, 215, 0, 0.1); border: 2px solid #FFD700; border-radius: 15px; padding: 25px; margin-bottom: 20px; }
-        .frete-rota { font-size: 1.4em; font-weight: bold; color: #FFD700; margin-bottom: 15px; }
-        .frete-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
-        .frete-info { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; }
-        .frete-label { font-size: 0.85em; color: #FFD700; }
-        .frete-valor { font-size: 1.1em; font-weight: bold; }
-        .valor-destaque { color: #00FF00; font-size: 1.3em; text-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
-        .btn-whatsapp { display: block; background: #25D366; color: #fff; text-decoration: none; text-align: center; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 20px; }
-        .btn-whatsapp:hover { background: #128C7E; }
-        @media (max-width: 768px) { h1 { font-size: 1.8em; } .frete-grid { grid-template-columns: 1fr; } }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%); color: #fff; min-height: 100vh; }
+
+        .header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0.8) 100%); }
+        .logo { font-size: 2.5em; font-weight: 800; color: #FFD700; text-shadow: 0 0 30px rgba(255,215,0,0.5); margin-bottom: 5px; }
+        .tagline { color: #94a3b8; font-size: 1.1em; letter-spacing: 3px; text-transform: uppercase; }
+
+        .alert-banner { background: linear-gradient(90deg, #dc2626, #f59e0b, #dc2626); background-size: 200% 100%; animation: gradientMove 3s ease infinite; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2em; }
+        @keyframes gradientMove { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        .stats-container { display: flex; justify-content: center; gap: 40px; padding: 40px 20px; flex-wrap: wrap; }
+        .stat-box { text-align: center; }
+        .stat-number { font-size: 3em; font-weight: 800; color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .stat-label { color: #94a3b8; font-size: 0.9em; text-transform: uppercase; letter-spacing: 2px; }
+
+        .cities-section { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        .cities-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+        .city-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,215,0,0.3); border-radius: 15px; padding: 25px; text-align: center; transition: all 0.3s; }
+        .city-card:hover { transform: translateY(-5px); border-color: #FFD700; box-shadow: 0 10px 30px rgba(255,215,0,0.2); }
+        .flag { font-size: 2em; margin-bottom: 10px; }
+        .city-name { font-weight: 700; font-size: 1.1em; color: #FFD700; margin-bottom: 5px; }
+        .city-fretes { color: #10b981; font-size: 0.9em; }
+        .city-range { color: #94a3b8; font-size: 0.85em; margin-top: 5px; }
+
+        .seguro-section { background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 20px; margin: 40px 20px; padding: 30px; max-width: 1000px; margin-left: auto; margin-right: auto; }
+        .seguro-title { text-align: center; font-size: 1.5em; color: #10b981; margin-bottom: 20px; }
+        .seguro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; text-align: center; }
+        .seguro-item { padding: 15px; }
+        .seguro-icon { font-size: 2em; margin-bottom: 10px; }
+        .seguro-text { font-size: 0.9em; color: #94a3b8; }
+        .seguro-price { font-size: 2em; font-weight: 800; color: #10b981; margin-top: 15px; }
+        .seguro-btn { display: block; background: linear-gradient(135deg, #10b981, #059669); color: #fff; text-decoration: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; margin-top: 20px; text-align: center; max-width: 400px; margin-left: auto; margin-right: auto; cursor: pointer; border: none; font-size: 1em; }
+
+        .cadastro-section { background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0.9) 100%); padding: 50px 20px; margin-top: 40px; }
+        .cadastro-container { max-width: 500px; margin: 0 auto; text-align: center; }
+        .cadastro-title { font-size: 1.8em; color: #FFD700; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-input { width: 100%; padding: 18px; border: 2px solid rgba(255,215,0,0.3); background: rgba(0,0,0,0.5); color: #fff; border-radius: 12px; font-size: 1.1em; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: #FFD700; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .form-input::placeholder { color: #64748b; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; justify-content: center; margin: 20px 0; color: #94a3b8; }
+        .checkbox-group input { width: 20px; height: 20px; accent-color: #FFD700; }
+
+        .btn-principal { display: block; width: 100%; background: linear-gradient(135deg, #FFD700, #f59e0b); color: #000; padding: 20px; border: none; border-radius: 12px; font-size: 1.3em; font-weight: 800; cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 2px; }
+        .btn-principal:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(255,215,0,0.4); }
+        .btn-principal:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .footer { text-align: center; padding: 30px; color: #64748b; font-size: 0.85em; }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 1.8em; }
+            .stat-number { font-size: 2em; }
+            .stats-container { gap: 20px; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚚 FRETES DISPONÍVEIS</h1>
-        ${fretesParaExportar.map(f => `
-        <div class="frete-card">
-            <div class="frete-rota">${f.origemCidade}/${f.origemUF} → ${f.destinoCidade}/${f.destinoUF}</div>
-            <div class="frete-grid">
-                <div class="frete-info"><div class="frete-label">Distância</div><div class="frete-valor">${f.km} km</div></div>
-                <div class="frete-info"><div class="frete-label">Valor Total</div><div class="frete-valor valor-destaque">R$ ${f.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div>
-                <div class="frete-info"><div class="frete-label">Veículo</div><div class="frete-valor">${f.tipoVeiculo}</div></div>
-                <div class="frete-info"><div class="frete-label">Status</div><div class="frete-valor">${f.status}</div></div>
-            </div>
-            <a href="https://wa.me/55${f.whatsapp.replace(/\D/g, '')}?text=Olá! Tenho interesse no frete ${f.origemCidade} → ${f.destinoCidade}" class="btn-whatsapp" target="_blank">📱 ENTRAR EM CONTATO</a>
-        </div>
-        `).join('')}
+    <header class="header">
+        <div class="logo">ANDERSON ENSIDE LOGISTICS</div>
+        <div class="tagline">Freight & Cargo Solutions</div>
+    </header>
+
+    <div class="alert-banner">
+        🔥 PARE DE RODAR VAZIO - CARGAS DISPONÍVEIS AGORA! 🔥
     </div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-number">${stats.totalFretes}</div>
+            <div class="stat-label">Fretes Disponíveis</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">R$ ${(stats.somaTotal / 1000).toFixed(1)}k</div>
+            <div class="stat-label">Média Mensal</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">${stats.totalMotoristas}</div>
+            <div class="stat-label">Motoristas Ativos</div>
+        </div>
+    </div>
+
+    <section class="cities-section">
+        <div class="cities-grid">
+            ${cidadesHTML || '<div class="city-card"><div class="flag">🇧🇷</div><div class="city-name">Cadastre fretes</div><div class="city-fretes">para ver aqui</div></div>'}
+        </div>
+    </section>
+
+    <section class="seguro-section">
+        <h2 class="seguro-title">🛡️ PROTEJA SUAS CARGAS</h2>
+        <div class="seguro-grid">
+            <div class="seguro-item">
+                <div class="seguro-icon">✅</div>
+                <div class="seguro-text">Cobertura Total</div>
+            </div>
+            <div class="seguro-item">
+                <div class="seguro-icon">📞</div>
+                <div class="seguro-text">Assistência 24h</div>
+            </div>
+            <div class="seguro-item">
+                <div class="seguro-icon">⚡</div>
+                <div class="seguro-text">Indenização Rápida</div>
+            </div>
+            <div class="seguro-item">
+                <div class="seguro-icon">💰</div>
+                <div class="seguro-text">Sem Franquia</div>
+            </div>
+        </div>
+        <div class="seguro-price">R$ 17,99/dia</div>
+        <button class="seguro-btn" onclick="document.getElementById('interesse_seguro').checked = true; document.getElementById('nome').focus();">
+            Tenho interesse em seguro para minhas cargas
+        </button>
+    </section>
+
+    <section class="cadastro-section">
+        <div class="cadastro-container">
+            <h2 class="cadastro-title">📝 CADASTRE-SE AGORA</h2>
+            <p style="color: #94a3b8; margin-bottom: 25px;">Preencha seus dados e veja as melhores oportunidades de frete!</p>
+
+            <form id="formCaptacao" onsubmit="enviarCaptacao(event)">
+                <div class="form-group">
+                    <input type="text" id="nome" name="nome" class="form-input" placeholder="Nome Completo *" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="whatsapp" name="whatsapp" class="form-input" placeholder="WhatsApp * (ex: 41999999999)" required pattern="[0-9]{10,11}">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="interesse_seguro" name="interesse_seguro">
+                    <label for="interesse_seguro">Tenho interesse em Seguro de Carga</label>
+                </div>
+                <button type="submit" class="btn-principal" id="btnSubmit">
+                    👉 CLICAR AQUI PARA VER FRETES DISPONÍVEIS
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© ${new Date().getFullYear()} ANDERSON ENSIDE LOGISTICS - Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        // Máscara para WhatsApp
+        document.getElementById('whatsapp').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\\D/g, '').substring(0, 11);
+        });
+
+        // Enviar captação para Google Sheets
+        async function enviarCaptacao(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
+            const dados = {
+                tipo: 'CAPTACAO_INICIAL',
+                nome: document.getElementById('nome').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                interesse_seguro: document.getElementById('interesse_seguro').checked ? 'SIM' : 'NAO',
+                timestamp: new Date().toISOString(),
+                origem: 'LANDING_PAGE'
+            };
+
+            try {
+                await fetch('${scriptURL}', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                // Salvar dados no localStorage para a próxima página
+                localStorage.setItem('motoristaCaptado', JSON.stringify(dados));
+
+                // Redirecionar para página de fretes
+                window.location.href = 'fretes_disponiveis.html?nome=' + encodeURIComponent(dados.nome) + '&whatsapp=' + dados.whatsapp;
+
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao enviar. Tente novamente.');
+                btn.disabled = false;
+                btn.textContent = '👉 CLICAR AQUI PARA VER FRETES DISPONÍVEIS';
+            }
+        }
+    </script>
 </body>
 </html>`;
 
+            return html;
+        }
+
+        // Gerar HTML 2 - Fretes Disponíveis com Filtros
+        function gerarHTMLFretesDisponiveis() {
+            const stats = calcularEstatisticasHTML();
+            const scriptURL = GOOGLE_SHEETS_CONFIG.scriptURL;
+            const fretes = stats.fretes;
+
+            // Gerar opções de estados únicos
+            const estadosOrigem = [...new Set(fretes.map(f => f.origemUF))].sort();
+            const estadosDestino = [...new Set(fretes.map(f => f.destinoUF))].sort();
+            const tiposVeiculo = [...new Set(fretes.map(f => f.tipoVeiculo))].filter(Boolean).sort();
+
+            // Gerar cards de fretes
+            const fretesHTML = fretes.map((f, i) => `
+                <div class="frete-card" data-origem="${f.origemUF}" data-destino="${f.destinoUF}" data-tipo="${f.tipoVeiculo}" data-valor="${f.total}">
+                    <div class="frete-header">
+                        <div class="frete-rota">${f.origemCidade} - ${f.origemUF} → ${f.destinoCidade} - ${f.destinoUF}</div>
+                        <span class="badge-urgente">🔥 DISPONÍVEL</span>
+                    </div>
+                    <div class="frete-grid">
+                        <div class="frete-info">
+                            <div class="frete-label">Distância</div>
+                            <div class="frete-valor">${f.km} km</div>
+                        </div>
+                        <div class="frete-info">
+                            <div class="frete-label">Valor Sugerido</div>
+                            <div class="frete-valor destaque">R$ ${f.total.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</div>
+                        </div>
+                        <div class="frete-info">
+                            <div class="frete-label">Tipo Veículo</div>
+                            <div class="frete-valor">${f.tipoVeiculo || 'Qualquer'}</div>
+                        </div>
+                        <div class="frete-info">
+                            <div class="frete-label">Capacidade</div>
+                            <div class="frete-valor">${f.capacidade} toneladas</div>
+                        </div>
+                    </div>
+                    <button class="btn-proposta" onclick="fazerProposta(${i}, '${f.id}', '${f.origemCidade}/${f.origemUF}', '${f.destinoCidade}/${f.destinoUF}', ${f.total})">
+                        💼 FAZER PROPOSTA
+                    </button>
+                </div>
+            `).join('');
+
+            const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fretes Disponíveis - ANDERSON ENSIDE LOGISTICS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%); color: #fff; min-height: 100vh; }
+
+        .header { text-align: center; padding: 30px 20px; background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0.8) 100%); }
+        .logo { font-size: 2em; font-weight: 800; color: #FFD700; }
+        .welcome { color: #10b981; margin-top: 10px; font-size: 1.1em; }
+
+        .filtros-section { background: rgba(255,255,255,0.05); padding: 25px; margin: 20px; border-radius: 15px; border: 1px solid rgba(255,215,0,0.2); }
+        .filtros-title { color: #FFD700; margin-bottom: 20px; font-size: 1.2em; }
+        .filtros-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .filtro-select { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,215,0,0.3); color: #fff; border-radius: 8px; font-size: 1em; }
+        .filtro-select option { background: #1a1a2e; }
+
+        .fretes-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .fretes-count { color: #94a3b8; margin-bottom: 20px; }
+
+        .frete-card { background: rgba(255,255,255,0.05); border: 2px solid rgba(255,215,0,0.3); border-radius: 15px; padding: 25px; margin-bottom: 20px; transition: all 0.3s; }
+        .frete-card:hover { border-color: #FFD700; box-shadow: 0 5px 30px rgba(255,215,0,0.2); }
+        .frete-card.hidden { display: none; }
+        .frete-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .frete-rota { font-size: 1.3em; font-weight: 700; color: #FFD700; }
+        .badge-urgente { background: linear-gradient(135deg, #dc2626, #f59e0b); padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+
+        .frete-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .frete-info { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; text-align: center; }
+        .frete-label { font-size: 0.8em; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .frete-valor { font-size: 1.1em; font-weight: 600; }
+        .frete-valor.destaque { color: #10b981; font-size: 1.4em; }
+
+        .btn-proposta { display: block; width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: #fff; padding: 15px; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .btn-proposta:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(16,185,129,0.4); }
+
+        /* Modal de Proposta */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1a1a2e; border: 2px solid #FFD700; border-radius: 20px; padding: 30px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-title { color: #FFD700; font-size: 1.5em; margin-bottom: 20px; text-align: center; }
+        .modal-rota { background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px; color: #FFD700; }
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; color: #94a3b8; margin-bottom: 5px; font-size: 0.9em; }
+        .form-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,215,0,0.3); color: #fff; border-radius: 8px; font-size: 1em; }
+        .form-input:focus { outline: none; border-color: #FFD700; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-enviar { flex: 1; background: linear-gradient(135deg, #FFD700, #f59e0b); color: #000; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-cancelar { flex: 1; background: rgba(255,255,255,0.1); color: #fff; padding: 15px; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; cursor: pointer; }
+
+        .no-results { text-align: center; padding: 50px; color: #94a3b8; }
+
+        @media (max-width: 768px) {
+            .frete-rota { font-size: 1.1em; }
+            .frete-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">ANDERSON ENSIDE LOGISTICS</div>
+        <div class="welcome" id="welcomeMsg">Bem-vindo! Escolha seu frete</div>
+    </header>
+
+    <section class="filtros-section">
+        <h2 class="filtros-title">🔍 FILTRAR FRETES DISPONÍVEIS</h2>
+        <div class="filtros-grid">
+            <select class="filtro-select" id="filtroOrigem" onchange="aplicarFiltros()">
+                <option value="">Estado Origem</option>
+                ${estadosOrigem.map(uf => `<option value="${uf}">${uf}</option>`).join('')}
+            </select>
+            <select class="filtro-select" id="filtroDestino" onchange="aplicarFiltros()">
+                <option value="">Estado Destino</option>
+                ${estadosDestino.map(uf => `<option value="${uf}">${uf}</option>`).join('')}
+            </select>
+            <select class="filtro-select" id="filtroTipo" onchange="aplicarFiltros()">
+                <option value="">Tipo de Veículo</option>
+                ${tiposVeiculo.map(tipo => `<option value="${tipo}">${tipo}</option>`).join('')}
+            </select>
+            <select class="filtro-select" id="filtroValor" onchange="aplicarFiltros()">
+                <option value="">Valor Mínimo (R$)</option>
+                <option value="1000">R$ 1.000+</option>
+                <option value="2000">R$ 2.000+</option>
+                <option value="3000">R$ 3.000+</option>
+                <option value="5000">R$ 5.000+</option>
+            </select>
+        </div>
+    </section>
+
+    <main class="fretes-container">
+        <p class="fretes-count">Mostrando <span id="countFretes">${fretes.length}</span> fretes disponíveis</p>
+
+        <div id="listaFretes">
+            ${fretesHTML || '<div class="no-results">Nenhum frete disponível no momento.</div>'}
+        </div>
+    </main>
+
+    <!-- Modal de Proposta -->
+    <div class="modal" id="modalProposta">
+        <div class="modal-content">
+            <h3 class="modal-title">💼 FAZER PROPOSTA</h3>
+            <div class="modal-rota" id="modalRota"></div>
+
+            <form id="formProposta" onsubmit="enviarProposta(event)">
+                <input type="hidden" id="propFreteId">
+                <input type="hidden" id="propRota">
+
+                <div class="form-group">
+                    <label class="form-label">Seu Nome</label>
+                    <input type="text" class="form-input" id="propNome" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Seu WhatsApp</label>
+                    <input type="tel" class="form-input" id="propWhatsapp" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sua Proposta (R$)</label>
+                    <input type="number" class="form-input" id="propValor" required placeholder="Valor que você aceita">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo do seu Veículo</label>
+                    <input type="text" class="form-input" id="propVeiculo" placeholder="Ex: Carreta, Truck, Bitrem">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Disponibilidade</label>
+                    <select class="form-input" id="propDisponibilidade">
+                        <option value="IMEDIATA">Imediata</option>
+                        <option value="HOJE">Hoje</option>
+                        <option value="AMANHA">Amanhã</option>
+                        <option value="ESTA_SEMANA">Esta semana</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Observações</label>
+                    <textarea class="form-input" id="propObs" rows="2" placeholder="Informações adicionais..."></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn-enviar">Enviar Proposta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Recuperar dados do motorista
+        const params = new URLSearchParams(window.location.search);
+        const motorista = {
+            nome: params.get('nome') || localStorage.getItem('motoristaCaptado') ? JSON.parse(localStorage.getItem('motoristaCaptado') || '{}').nome : '',
+            whatsapp: params.get('whatsapp') || localStorage.getItem('motoristaCaptado') ? JSON.parse(localStorage.getItem('motoristaCaptado') || '{}').whatsapp : ''
+        };
+
+        if (motorista.nome) {
+            document.getElementById('welcomeMsg').textContent = 'Olá, ' + motorista.nome + '! Escolha seu frete';
+            document.getElementById('propNome').value = motorista.nome;
+            document.getElementById('propWhatsapp').value = motorista.whatsapp;
+        }
+
+        // Aplicar filtros
+        function aplicarFiltros() {
+            const origem = document.getElementById('filtroOrigem').value;
+            const destino = document.getElementById('filtroDestino').value;
+            const tipo = document.getElementById('filtroTipo').value;
+            const valorMin = parseInt(document.getElementById('filtroValor').value) || 0;
+
+            const cards = document.querySelectorAll('.frete-card');
+            let count = 0;
+
+            cards.forEach(card => {
+                const cardOrigem = card.dataset.origem;
+                const cardDestino = card.dataset.destino;
+                const cardTipo = card.dataset.tipo;
+                const cardValor = parseInt(card.dataset.valor) || 0;
+
+                const match = (!origem || cardOrigem === origem) &&
+                              (!destino || cardDestino === destino) &&
+                              (!tipo || cardTipo === tipo) &&
+                              (cardValor >= valorMin);
+
+                card.classList.toggle('hidden', !match);
+                if (match) count++;
+            });
+
+            document.getElementById('countFretes').textContent = count;
+        }
+
+        // Abrir modal de proposta
+        function fazerProposta(index, freteId, origem, destino, valorSugerido) {
+            document.getElementById('propFreteId').value = freteId;
+            document.getElementById('propRota').value = origem + ' → ' + destino;
+            document.getElementById('modalRota').textContent = origem + ' → ' + destino;
+            document.getElementById('propValor').placeholder = 'Sugerido: R$ ' + valorSugerido.toLocaleString('pt-BR');
+            document.getElementById('modalProposta').classList.add('active');
+        }
+
+        function fecharModal() {
+            document.getElementById('modalProposta').classList.remove('active');
+        }
+
+        // Enviar proposta
+        async function enviarProposta(e) {
+            e.preventDefault();
+
+            const dados = {
+                tipo: 'PROPOSTA_FRETE',
+                freteId: document.getElementById('propFreteId').value,
+                rota: document.getElementById('propRota').value,
+                nome: document.getElementById('propNome').value,
+                whatsapp: document.getElementById('propWhatsapp').value,
+                valorProposta: document.getElementById('propValor').value,
+                tipoVeiculo: document.getElementById('propVeiculo').value,
+                disponibilidade: document.getElementById('propDisponibilidade').value,
+                observacoes: document.getElementById('propObs').value,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                await fetch('${scriptURL}', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                alert('✅ Proposta enviada com sucesso!\\n\\nEntraremos em contato pelo WhatsApp informado.');
+                fecharModal();
+
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao enviar proposta. Tente novamente.');
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('modalProposta').addEventListener('click', function(e) {
+            if (e.target === this) fecharModal();
+        });
+    </script>
+</body>
+</html>`;
+
+            return html;
+        }
+
+        // Exportar HTML 1 - Landing Page
+        function exportarHTMLCaptacao() {
+            const html = gerarHTMLCaptacao();
             const blob = new Blob([html], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `fretes_disponiveis_${new Date().toISOString().split('T')[0]}.html`;
+            a.download = 'landing_captacao.html';
             a.click();
             URL.revokeObjectURL(url);
+            alert('✅ HTML de Captação exportado!');
+        }
 
-            alert(`✅ ${fretesParaExportar.length} fretes exportados para HTML!`);
+        // Exportar HTML 2 - Fretes Disponíveis
+        function exportarHTMLFretes() {
+            const fretesParaExportar = fretesDisponiveis.filter(f => f.vaiHTML);
+
+            if (fretesParaExportar.length === 0) {
+                alert('⚠️ Nenhum frete marcado para exportação (VAI_HTML)');
+                return;
+            }
+
+            const html = gerarHTMLFretesDisponiveis();
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fretes_disponiveis.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            alert(`✅ ${fretesParaExportar.length} fretes exportados!`);
+        }
+
+        // Exportar ambos HTMLs
+        function exportarFretesHTML() {
+            const fretesParaExportar = fretesDisponiveis.filter(f => f.vaiHTML);
+
+            if (fretesParaExportar.length === 0) {
+                alert('⚠️ Nenhum frete marcado para exportação (VAI_HTML).\n\nMarque a caixa VAI_HTML nos fretes que deseja exportar.');
+                return;
+            }
+
+            // Exportar ambos os arquivos
+            const html1 = gerarHTMLCaptacao();
+            const html2 = gerarHTMLFretesDisponiveis();
+
+            // Download HTML 1 - Landing
+            setTimeout(() => {
+                const blob1 = new Blob([html1], { type: 'text/html' });
+                const url1 = URL.createObjectURL(blob1);
+                const a1 = document.createElement('a');
+                a1.href = url1;
+                a1.download = 'landing_captacao.html';
+                a1.click();
+                URL.revokeObjectURL(url1);
+            }, 100);
+
+            // Download HTML 2 - Fretes
+            setTimeout(() => {
+                const blob2 = new Blob([html2], { type: 'text/html' });
+                const url2 = URL.createObjectURL(blob2);
+                const a2 = document.createElement('a');
+                a2.href = url2;
+                a2.download = 'fretes_disponiveis.html';
+                a2.click();
+                URL.revokeObjectURL(url2);
+            }, 500);
+
+            alert(`✅ 2 HTMLs exportados:\n\n1. landing_captacao.html (Captação)\n2. fretes_disponiveis.html (${fretesParaExportar.length} fretes)\n\nHospede ambos no mesmo diretório.`);
         }
 
         // ==================== INTEGRAÇÃO COMPLETA COM GOOGLE SHEETS ====================
