@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANDERSON ENSIDE LOGISTICS - Fretes Disponíveis</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%); color: #fff; min-height: 100vh; }
+
+        .header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0.8) 100%); }
+        .logo { font-size: 2.5em; font-weight: 800; color: #FFD700; text-shadow: 0 0 30px rgba(255,215,0,0.5); margin-bottom: 5px; }
+        .tagline { color: #94a3b8; font-size: 1.1em; letter-spacing: 3px; text-transform: uppercase; }
+
+        .alert-banner { background: linear-gradient(90deg, #dc2626, #f59e0b, #dc2626); background-size: 200% 100%; animation: gradientMove 3s ease infinite; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2em; }
+        @keyframes gradientMove { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        .stats-container { display: flex; justify-content: center; gap: 40px; padding: 40px 20px; flex-wrap: wrap; }
+        .stat-box { text-align: center; }
+        .stat-number { font-size: 3em; font-weight: 800; color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .stat-label { color: #94a3b8; font-size: 0.9em; text-transform: uppercase; letter-spacing: 2px; }
+
+        .cities-section { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        .cities-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+        .city-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,215,0,0.3); border-radius: 15px; padding: 25px; text-align: center; transition: all 0.3s; }
+        .city-card:hover { transform: translateY(-5px); border-color: #FFD700; box-shadow: 0 10px 30px rgba(255,215,0,0.2); }
+        .flag { font-size: 2em; margin-bottom: 10px; }
+        .city-name { font-weight: 700; font-size: 1.1em; color: #FFD700; margin-bottom: 5px; }
+        .city-fretes { color: #10b981; font-size: 0.9em; }
+        .city-range { color: #94a3b8; font-size: 0.85em; margin-top: 5px; }
+
+        .seguro-section { background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 20px; margin: 40px 20px; padding: 30px; max-width: 1000px; margin-left: auto; margin-right: auto; }
+        .seguro-title { text-align: center; font-size: 1.5em; color: #10b981; margin-bottom: 20px; }
+        .seguro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; text-align: center; }
+        .seguro-item { padding: 15px; }
+        .seguro-icon { font-size: 2em; margin-bottom: 10px; }
+        .seguro-text { font-size: 0.9em; color: #94a3b8; }
+        .seguro-price { font-size: 2em; font-weight: 800; color: #10b981; margin-top: 15px; text-align: center; }
+        .seguro-btn { display: block; background: linear-gradient(135deg, #10b981, #059669); color: #fff; text-decoration: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; margin-top: 20px; text-align: center; max-width: 400px; margin-left: auto; margin-right: auto; cursor: pointer; border: none; font-size: 1em; }
+
+        .cadastro-section { background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0.9) 100%); padding: 50px 20px; margin-top: 40px; }
+        .cadastro-container { max-width: 500px; margin: 0 auto; text-align: center; }
+        .cadastro-title { font-size: 1.8em; color: #FFD700; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-input { width: 100%; padding: 18px; border: 2px solid rgba(255,215,0,0.3); background: rgba(0,0,0,0.5); color: #fff; border-radius: 12px; font-size: 1.1em; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: #FFD700; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .form-input::placeholder { color: #64748b; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; justify-content: center; margin: 20px 0; color: #94a3b8; }
+        .checkbox-group input { width: 20px; height: 20px; accent-color: #FFD700; }
+
+        .btn-principal { display: block; width: 100%; background: linear-gradient(135deg, #FFD700, #f59e0b); color: #000; padding: 20px; border: none; border-radius: 12px; font-size: 1.3em; font-weight: 800; cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 2px; }
+        .btn-principal:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(255,215,0,0.4); }
+        .btn-principal:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .footer { text-align: center; padding: 30px; color: #64748b; font-size: 0.85em; }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 1.8em; }
+            .stat-number { font-size: 2em; }
+            .stats-container { gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">ANDERSON ENSIDE LOGISTICS</div>
+        <div class="tagline">Freight & Cargo Solutions</div>
+    </header>
+
+    <div class="alert-banner">
+        🔥 PARE DE RODAR VAZIO - CARGAS DISPONÍVEIS AGORA! 🔥
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-number" id="statFretes">247</div>
+            <div class="stat-label">Fretes Disponíveis</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">R$ 8.5k</div>
+            <div class="stat-label">Média Mensal</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number" id="statMotoristas">1834</div>
+            <div class="stat-label">Motoristas Ativos</div>
+        </div>
+    </div>
+
+    <section class="cities-section">
+        <div class="cities-grid" id="citiesGrid">
+            <div class="city-card">
+                <div class="flag">🇧🇷</div>
+                <div class="city-name">CURITIBA - PR</div>
+                <div class="city-fretes">47 fretes disponíveis</div>
+                <div class="city-range">R$ 1.800 - 4.200</div>
+            </div>
+            <div class="city-card">
+                <div class="flag">🇧🇷</div>
+                <div class="city-name">TUBARÃO - SC</div>
+                <div class="city-fretes">38 fretes disponíveis</div>
+                <div class="city-range">R$ 2.100 - 5.800</div>
+            </div>
+            <div class="city-card">
+                <div class="flag">🇧🇷</div>
+                <div class="city-name">SÃO PAULO - SP</div>
+                <div class="city-fretes">62 fretes disponíveis</div>
+                <div class="city-range">R$ 1.500 - 6.500</div>
+            </div>
+            <div class="city-card">
+                <div class="flag">🇧🇷</div>
+                <div class="city-name">RIO DE JANEIRO - RJ</div>
+                <div class="city-fretes">41 fretes disponíveis</div>
+                <div class="city-range">R$ 2.200 - 5.200</div>
+            </div>
+            <div class="city-card">
+                <div class="flag">🇧🇷</div>
+                <div class="city-name">BELO HORIZONTE - MG</div>
+                <div class="city-fretes">35 fretes disponíveis</div>
+                <div class="city-range">R$ 1.900 - 4.800</div>
+            </div>
+            <div class="city-card">
+                <div class="flag">🇧🇷</div>
+                <div class="city-name">PORTO ALEGRE - RS</div>
+                <div class="city-fretes">24 fretes disponíveis</div>
+                <div class="city-range">R$ 2.400 - 5.100</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="seguro-section">
+        <h2 class="seguro-title">🛡️ PROTEJA SUAS CARGAS</h2>
+        <div class="seguro-grid">
+            <div class="seguro-item">
+                <div class="seguro-icon">✅</div>
+                <div class="seguro-text">Cobertura Total</div>
+            </div>
+            <div class="seguro-item">
+                <div class="seguro-icon">📞</div>
+                <div class="seguro-text">Assistência 24h</div>
+            </div>
+            <div class="seguro-item">
+                <div class="seguro-icon">⚡</div>
+                <div class="seguro-text">Indenização Rápida</div>
+            </div>
+            <div class="seguro-item">
+                <div class="seguro-icon">💰</div>
+                <div class="seguro-text">Sem Franquia</div>
+            </div>
+        </div>
+        <div class="seguro-price">R$ 17,99/dia</div>
+        <button class="seguro-btn" onclick="document.getElementById('interesse_seguro').checked = true; document.getElementById('nome').focus();">
+            Tenho interesse em seguro para minhas cargas
+        </button>
+    </section>
+
+    <section class="cadastro-section">
+        <div class="cadastro-container">
+            <h2 class="cadastro-title">📝 CADASTRE-SE AGORA</h2>
+            <p style="color: #94a3b8; margin-bottom: 25px;">Preencha seus dados e veja as melhores oportunidades de frete!</p>
+
+            <form id="formCaptacao" onsubmit="enviarCaptacao(event)">
+                <div class="form-group">
+                    <input type="text" id="nome" name="nome" class="form-input" placeholder="Nome Completo *" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="whatsapp" name="whatsapp" class="form-input" placeholder="WhatsApp * (ex: 41999999999)" required pattern="[0-9]{10,11}">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="interesse_seguro" name="interesse_seguro">
+                    <label for="interesse_seguro">Tenho interesse em Seguro de Carga</label>
+                </div>
+                <button type="submit" class="btn-principal" id="btnSubmit">
+                    👉 CLICAR AQUI PARA VER FRETES DISPONÍVEIS
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2025 ANDERSON ENSIDE LOGISTICS - Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlXB43ZA83ZT98KAypV4EEmsyxslyXB1Ya8_b6TtwH9xSZunZhzS0ZcZiDKqUtEsT3/exec';
+
+        // Máscara para WhatsApp
+        document.getElementById('whatsapp').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').substring(0, 11);
+        });
+
+        // Enviar captação para Google Sheets
+        async function enviarCaptacao(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
+            const dados = {
+                tipo: 'CAPTACAO_INICIAL',
+                nome: document.getElementById('nome').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                interesse_seguro: document.getElementById('interesse_seguro').checked ? 'SIM' : 'NAO',
+                timestamp: new Date().toISOString(),
+                origem: 'LANDING_PAGE'
+            };
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                // Salvar dados no localStorage para a próxima página
+                localStorage.setItem('motoristaCaptado', JSON.stringify(dados));
+
+                // Redirecionar para página de fretes
+                window.location.href = 'fretes_disponiveis.html?nome=' + encodeURIComponent(dados.nome) + '&whatsapp=' + dados.whatsapp;
+
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao enviar. Tente novamente.');
+                btn.disabled = false;
+                btn.textContent = '👉 CLICAR AQUI PARA VER FRETES DISPONÍVEIS';
+            }
+        }
+    </script>
+</body>
+</html>
