@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FASE 5 - Dados Profissionais Completos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; }
+        .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-gradient { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .section-title { border-left: 4px solid #f093fb; padding-left: 12px; }
+    </style>
+</head>
+<body class="text-white p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-pink-500/20 rounded-full text-pink-400 text-sm mb-4">
+                <span>📋</span> FASE 5 - Cadastro Completo
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">
+                Dados <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500">Profissionais</span>
+            </h1>
+            <p class="text-gray-400">Complete seu cadastro para receber as melhores cargas</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="glass rounded-2xl p-4 mb-8">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-400">Progresso do Cadastro</span>
+                <span class="text-sm text-pink-400">Fase 5 de 5 - FINAL</span>
+            </div>
+            <div class="w-full bg-white/10 rounded-full h-2">
+                <div class="bg-gradient-to-r from-pink-500 to-purple-500 h-2 rounded-full" style="width: 100%"></div>
+            </div>
+        </div>
+
+        <form id="formCompleto" class="space-y-6">
+            <!-- Seção 1: Tipo Profissional e Veículo -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="section-title text-xl font-semibold mb-4">🚛 Informações do Veículo</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Tipo Profissional *</label>
+                        <select id="tipoProfissional" required class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white">
+                            <option value="">Selecione...</option>
+                            <option value="AUTONOMO">Autônomo</option>
+                            <option value="AGREGADO">Agregado</option>
+                            <option value="FROTA">Frota Própria</option>
+                            <option value="TRANSPORTADORA">Transportadora</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Tipo de Veículo *</label>
+                        <select id="tipoVeiculo" required class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white">
+                            <option value="">Selecione...</option>
+                            <option value="TRUCK">Truck</option>
+                            <option value="CARRETA">Carreta</option>
+                            <option value="BITREM">Bitrem</option>
+                            <option value="RODOTREM">Rodotrem</option>
+                            <option value="VAN">Van/Furgão</option>
+                            <option value="VUC">VUC</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Capacidade de Carga (ton)</label>
+                        <input type="number" id="capacidadeCarga" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="Ex: 25">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Ano de Fabricação</label>
+                        <input type="number" id="anoFabricacao" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="Ex: 2020" min="1990" max="2026">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Tipo de Carroceria</label>
+                        <select id="tipoCarroceria" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white">
+                            <option value="ABERTA">Aberta</option>
+                            <option value="FECHADA">Fechada/Baú</option>
+                            <option value="SIDER">Sider</option>
+                            <option value="GRANELEIRA">Graneleira</option>
+                            <option value="TANQUE">Tanque</option>
+                            <option value="CEGONHA">Cegonha</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Possui Rastreador?</label>
+                        <select id="possuiRastreador" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white">
+                            <option value="SIM">Sim</option>
+                            <option value="NAO">Não</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção 2: Regiões de Atuação -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="section-title text-xl font-semibold mb-4">🗺️ Regiões de Atuação</h2>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="regiaoSul" class="w-5 h-5 rounded"> <span>SUL</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="regiaoSudeste" class="w-5 h-5 rounded"> <span>SUDESTE</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="regiaoCentroOeste" class="w-5 h-5 rounded"> <span>CENTRO-OESTE</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="regiaoNordeste" class="w-5 h-5 rounded"> <span>NORDESTE</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="regiaoNorte" class="w-5 h-5 rounded"> <span>NORTE</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Seção 3: Tipos de Carga -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="section-title text-xl font-semibold mb-4">📦 Tipos de Carga que Transporta</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="cargaMadeira" class="w-5 h-5 rounded"> <span>🪵 Madeira</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="cargaCompensados" class="w-5 h-5 rounded"> <span>📋 Compensados</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="cargaMDF" class="w-5 h-5 rounded"> <span>🪵 MDF</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="cargaMoveis" class="w-5 h-5 rounded"> <span>🛋️ Móveis</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="cargaGeral" class="w-5 h-5 rounded"> <span>📦 Geral</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="cargaPerecivel" class="w-5 h-5 rounded"> <span>❄️ Perecível</span>
+                    </label>
+                    <label class="flex items-center gap-2 bg-white/5 rounded-lg p-3 cursor-pointer hover:bg-white/10">
+                        <input type="checkbox" id="cargaGranel" class="w-5 h-5 rounded"> <span>🌾 Granel</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Seção 4: Disponibilidade e Pagamento -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="section-title text-xl font-semibold mb-4">💰 Disponibilidade e Pagamento</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Disponibilidade para Início</label>
+                        <select id="disponibilidadeInicio" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white">
+                            <option value="IMEDIATA">Imediata</option>
+                            <option value="1_SEMANA">Em 1 semana</option>
+                            <option value="15_DIAS">Em 15 dias</option>
+                            <option value="30_DIAS">Em 30 dias</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Aceita Carga de Retorno?</label>
+                        <select id="aceitaCargaRetorno" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white">
+                            <option value="SIM">Sim</option>
+                            <option value="NAO">Não</option>
+                            <option value="DEPENDE">Depende da rota</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Forma de Pagamento Preferida</label>
+                        <select id="formaPagamento" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white">
+                            <option value="PIX">PIX</option>
+                            <option value="TRANSFERENCIA">Transferência Bancária</option>
+                            <option value="BOLETO">Boleto</option>
+                            <option value="DINHEIRO">Dinheiro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Aceita Adiantamento?</label>
+                        <select id="aceitaAdiantamento" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white">
+                            <option value="SIM">Sim</option>
+                            <option value="NAO">Não</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção 5: Dados Bancários -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="section-title text-xl font-semibold mb-4">🏦 Dados Bancários</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Banco</label>
+                        <input type="text" id="banco" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="Ex: Bradesco">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Agência</label>
+                        <input type="text" id="agencia" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="0000">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Conta</label>
+                        <input type="text" id="conta" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="00000-0">
+                    </div>
+                    <div class="md:col-span-3">
+                        <label class="block text-sm text-gray-400 mb-2">Chave PIX</label>
+                        <input type="text" id="pix" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="CPF, Email, Telefone ou Chave Aleatória">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção 6: Documentos -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="section-title text-xl font-semibold mb-4">📄 Documentos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">CPF/CNPJ *</label>
+                        <input type="text" id="cpfCnpj" required class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="000.000.000-00">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">RG</label>
+                        <input type="text" id="rg" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="00.000.000-0">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">CNH *</label>
+                        <input type="text" id="cnh" required class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="00000000000">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">ANTT/RNTRC</label>
+                        <input type="text" id="antt" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white" placeholder="00000000">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm text-gray-400 mb-2">Seguro Obrigatório</label>
+                        <select id="seguroObrigatorio" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-white">
+                            <option value="SIM">Sim, possuo</option>
+                            <option value="NAO">Não possuo</option>
+                            <option value="VENCIDO">Vencido</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão Final -->
+            <button type="submit" class="w-full btn-gradient text-white font-bold py-5 rounded-2xl text-xl hover:opacity-90 transition">
+                🎉 FINALIZAR CADASTRO COMPLETO
+            </button>
+        </form>
+
+        <!-- Info -->
+        <div class="mt-6 text-center text-gray-500 text-sm">
+            <p>Planilha: CAPTACAO_FRETES | Todas as colunas da Fase 5</p>
+            <p class="mt-2">ENSIDE LOGISTICS - Sistema Integrado v19.0</p>
+        </div>
+    </div>
+
+    <script>
+        const SPREADSHEET_ID = '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE';
+
+        document.getElementById('formCompleto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const dados = {
+                timestamp: new Date().toISOString(),
+                tipoProfissional: document.getElementById('tipoProfissional').value,
+                tipoVeiculo: document.getElementById('tipoVeiculo').value,
+                capacidadeCarga: document.getElementById('capacidadeCarga').value,
+                anoFabricacao: document.getElementById('anoFabricacao').value,
+                tipoCarroceria: document.getElementById('tipoCarroceria').value,
+                possuiRastreador: document.getElementById('possuiRastreador').value,
+                regiaoSul: document.getElementById('regiaoSul').checked,
+                regiaoSudeste: document.getElementById('regiaoSudeste').checked,
+                regiaoCentroOeste: document.getElementById('regiaoCentroOeste').checked,
+                regiaoNordeste: document.getElementById('regiaoNordeste').checked,
+                regiaoNorte: document.getElementById('regiaoNorte').checked,
+                cargaMadeira: document.getElementById('cargaMadeira').checked,
+                cargaCompensados: document.getElementById('cargaCompensados').checked,
+                cargaMDF: document.getElementById('cargaMDF').checked,
+                cargaMoveis: document.getElementById('cargaMoveis').checked,
+                cargaGeral: document.getElementById('cargaGeral').checked,
+                cargaPerecivel: document.getElementById('cargaPerecivel').checked,
+                cargaGranel: document.getElementById('cargaGranel').checked,
+                disponibilidadeInicio: document.getElementById('disponibilidadeInicio').value,
+                aceitaCargaRetorno: document.getElementById('aceitaCargaRetorno').value,
+                formaPagamento: document.getElementById('formaPagamento').value,
+                aceitaAdiantamento: document.getElementById('aceitaAdiantamento').value,
+                banco: document.getElementById('banco').value,
+                agencia: document.getElementById('agencia').value,
+                conta: document.getElementById('conta').value,
+                pix: document.getElementById('pix').value,
+                cpfCnpj: document.getElementById('cpfCnpj').value,
+                rg: document.getElementById('rg').value,
+                cnh: document.getElementById('cnh').value,
+                antt: document.getElementById('antt').value,
+                seguroObrigatorio: document.getElementById('seguroObrigatorio').value
+            };
+
+            localStorage.setItem('dados_profissionais', JSON.stringify(dados));
+
+            alert('🎉 CADASTRO COMPLETO FINALIZADO!\n\nSeus dados foram salvos com sucesso.\nEm breve você receberá as melhores cargas no seu WhatsApp!');
+            
+            // Redirecionar para página de sucesso ou sistema principal
+            window.location.href = '../ENSIDE_MASTER_v19.0_INTEGRADO.html';
+        });
+    </script>
+</body>
+</html>

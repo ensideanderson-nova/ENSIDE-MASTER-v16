@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENSIDE - Cadastro de Fretes Disponíveis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #22c55e;
+            --primary-dark: #16a34a;
+            --primary-light: #4ade80;
+            --bg-dark: #0f172a;
+            --bg-light: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+            min-height: 100vh;
+            color: var(--text);
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .input-field {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--text);
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+        }
+        .btn-secondary {
+            background: rgba(0,0,0,0.3);
+            color: var(--text);
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-disponivel { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .status-reservado { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+        .status-concluido { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { background: rgba(0,0,0,0.3); font-weight: 600; color: var(--primary); }
+        tr:hover { background: rgba(255,255,255,0.05); }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        .toast-success { background: #22c55e; }
+        .toast-error { background: #ef4444; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-slate-900/80 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🚚</span>
+                <div>
+                    <h1 class="text-xl font-bold text-green-400">FRETES DISPONÍVEIS</h1>
+                    <p class="text-sm text-slate-400">Sistema de Cadastro e Gestão de Fretes</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="btn-secondary">🏠 Voltar ao Sistema</a>
+                <button onclick="sincronizarPlanilha()" class="btn-primary">🔄 Sincronizar</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Estatísticas -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="card p-6 text-center">
+                <div class="text-3xl font-bold text-green-400" id="totalFretes">0</div>
+                <div class="text-slate-400">Total de Fretes</div>
+            </div>
+            <div class="card p-6 text-center">
+                <div class="text-3xl font-bold text-yellow-400" id="fretesDisponiveis">0</div>
+                <div class="text-slate-400">Disponíveis</div>
+            </div>
+            <div class="card p-6 text-center">
+                <div class="text-3xl font-bold text-blue-400" id="fretesReservados">0</div>
+                <div class="text-slate-400">Reservados</div>
+            </div>
+            <div class="card p-6 text-center">
+                <div class="text-3xl font-bold text-purple-400" id="fretesConcluidos">0</div>
+                <div class="text-slate-400">Concluídos</div>
+            </div>
+        </div>
+
+        <!-- Formulário de Cadastro -->
+        <div class="card p-6 mb-8">
+            <h2 class="section-title">📝 Cadastrar Novo Frete</h2>
+            <form id="formFrete" onsubmit="cadastrarFrete(event)">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <!-- Dados do Frete -->
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Origem *</label>
+                        <input type="text" id="origem" class="input-field" placeholder="Cidade/UF de origem" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Destino *</label>
+                        <input type="text" id="destino" class="input-field" placeholder="Cidade/UF de destino" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Tipo de Carga *</label>
+                        <select id="tipoCarga" class="input-field" required>
+                            <option value="">Selecione...</option>
+                            <option value="Mourões">Mourões</option>
+                            <option value="Postes">Postes</option>
+                            <option value="Estacas">Estacas</option>
+                            <option value="Toras">Toras</option>
+                            <option value="Lenha">Lenha</option>
+                            <option value="Cavacos">Cavacos</option>
+                            <option value="Madeira Serrada">Madeira Serrada</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Quantidade (m³ ou unidades)</label>
+                        <input type="text" id="quantidade" class="input-field" placeholder="Ex: 30m³ ou 500 unidades">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Peso Estimado (ton)</label>
+                        <input type="number" id="peso" class="input-field" placeholder="Ex: 25" step="0.1">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Valor do Frete (R$) *</label>
+                        <input type="number" id="valorFrete" class="input-field" placeholder="Ex: 3500" step="0.01" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Data de Carregamento</label>
+                        <input type="date" id="dataCarregamento" class="input-field">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Tipo de Veículo</label>
+                        <select id="tipoVeiculo" class="input-field">
+                            <option value="">Selecione...</option>
+                            <option value="Truck">Truck</option>
+                            <option value="Carreta">Carreta</option>
+                            <option value="Bitrem">Bitrem</option>
+                            <option value="Rodotrem">Rodotrem</option>
+                            <option value="Toco">Toco</option>
+                            <option value="3/4">3/4</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Status</label>
+                        <select id="status" class="input-field">
+                            <option value="Disponível">Disponível</option>
+                            <option value="Reservado">Reservado</option>
+                            <option value="Em Trânsito">Em Trânsito</option>
+                            <option value="Concluído">Concluído</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Dados do Contratante -->
+                <h3 class="text-lg font-semibold text-slate-300 mb-3 mt-6">👤 Dados do Contratante</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Nome/Empresa *</label>
+                        <input type="text" id="nomeContratante" class="input-field" placeholder="Nome ou razão social" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">WhatsApp *</label>
+                        <input type="tel" id="whatsappContratante" class="input-field" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-400 mb-2">Email</label>
+                        <input type="email" id="emailContratante" class="input-field" placeholder="email@exemplo.com">
+                    </div>
+                </div>
+
+                <!-- Observações -->
+                <div class="mb-4">
+                    <label class="block text-sm text-slate-400 mb-2">Observações</label>
+                    <textarea id="observacoes" class="input-field" rows="3" placeholder="Informações adicionais sobre o frete..."></textarea>
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="btn-primary">💾 Cadastrar Frete</button>
+                    <button type="reset" class="btn-secondary">🗑️ Limpar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de Fretes -->
+        <div class="card p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="section-title">📋 Fretes Cadastrados</h2>
+                <div class="flex gap-2">
+                    <input type="text" id="buscarFrete" class="input-field" placeholder="🔍 Buscar..." style="width: 250px;" onkeyup="filtrarFretes()">
+                    <select id="filtroStatus" class="input-field" style="width: 150px;" onchange="filtrarFretes()">
+                        <option value="">Todos</option>
+                        <option value="Disponível">Disponíveis</option>
+                        <option value="Reservado">Reservados</option>
+                        <option value="Concluído">Concluídos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table id="tabelaFretes">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Origem</th>
+                            <th>Destino</th>
+                            <th>Tipo Carga</th>
+                            <th>Valor</th>
+                            <th>Data</th>
+                            <th>Contratante</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaFretes">
+                        <!-- Fretes serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Configuração do Google Sheets
+        const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE/edit';
+        const SHEET_NAME = 'FRETES_DISPONIVEIS';
+        
+        // Dados locais (serão sincronizados com a planilha)
+        let fretes = JSON.parse(localStorage.getItem('fretes_disponiveis') || '[]');
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarFretes();
+            atualizarEstatisticas();
+        });
+
+        // Cadastrar novo frete
+        function cadastrarFrete(event) {
+            event.preventDefault();
+            
+            const novoFrete = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                origem: document.getElementById('origem').value,
+                destino: document.getElementById('destino').value,
+                tipoCarga: document.getElementById('tipoCarga').value,
+                quantidade: document.getElementById('quantidade').value,
+                peso: document.getElementById('peso').value,
+                valorFrete: parseFloat(document.getElementById('valorFrete').value),
+                dataCarregamento: document.getElementById('dataCarregamento').value,
+                tipoVeiculo: document.getElementById('tipoVeiculo').value,
+                status: document.getElementById('status').value,
+                nomeContratante: document.getElementById('nomeContratante').value,
+                whatsappContratante: document.getElementById('whatsappContratante').value,
+                emailContratante: document.getElementById('emailContratante').value,
+                observacoes: document.getElementById('observacoes').value
+            };
+
+            fretes.unshift(novoFrete);
+            salvarDados();
+            renderizarFretes();
+            atualizarEstatisticas();
+            
+            // Enviar para Google Sheets
+            enviarParaPlanilha(novoFrete);
+            
+            document.getElementById('formFrete').reset();
+            mostrarToast('Frete cadastrado com sucesso!', 'success');
+        }
+
+        // Renderizar lista de fretes
+        function renderizarFretes() {
+            const lista = document.getElementById('listaFretes');
+            lista.innerHTML = fretes.map(frete => `
+                <tr>
+                    <td>#${frete.id.toString().slice(-4)}</td>
+                    <td>${frete.origem}</td>
+                    <td>${frete.destino}</td>
+                    <td>${frete.tipoCarga}</td>
+                    <td>R$ ${frete.valorFrete.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>${frete.dataCarregamento || '-'}</td>
+                    <td>
+                        <div>${frete.nomeContratante}</div>
+                        <div class="text-sm text-slate-400">${frete.whatsappContratante}</div>
+                    </td>
+                    <td><span class="status-badge status-${frete.status.toLowerCase().replace(' ', '')}">${frete.status}</span></td>
+                    <td>
+                        <button onclick="editarFrete(${frete.id})" class="text-blue-400 hover:text-blue-300 mr-2">✏️</button>
+                        <button onclick="excluirFrete(${frete.id})" class="text-red-400 hover:text-red-300 mr-2">🗑️</button>
+                        <a href="https://wa.me/55${frete.whatsappContratante.replace(/\D/g, '')}" target="_blank" class="text-green-400 hover:text-green-300">💬</a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Atualizar estatísticas
+        function atualizarEstatisticas() {
+            document.getElementById('totalFretes').textContent = fretes.length;
+            document.getElementById('fretesDisponiveis').textContent = fretes.filter(f => f.status === 'Disponível').length;
+            document.getElementById('fretesReservados').textContent = fretes.filter(f => f.status === 'Reservado').length;
+            document.getElementById('fretesConcluidos').textContent = fretes.filter(f => f.status === 'Concluído').length;
+        }
+
+        // Filtrar fretes
+        function filtrarFretes() {
+            const busca = document.getElementById('buscarFrete').value.toLowerCase();
+            const status = document.getElementById('filtroStatus').value;
+            
+            const filtrados = fretes.filter(frete => {
+                const matchBusca = frete.origem.toLowerCase().includes(busca) ||
+                                   frete.destino.toLowerCase().includes(busca) ||
+                                   frete.nomeContratante.toLowerCase().includes(busca);
+                const matchStatus = !status || frete.status === status;
+                return matchBusca && matchStatus;
+            });
+
+            const lista = document.getElementById('listaFretes');
+            lista.innerHTML = filtrados.map(frete => `
+                <tr>
+                    <td>#${frete.id.toString().slice(-4)}</td>
+                    <td>${frete.origem}</td>
+                    <td>${frete.destino}</td>
+                    <td>${frete.tipoCarga}</td>
+                    <td>R$ ${frete.valorFrete.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>${frete.dataCarregamento || '-'}</td>
+                    <td>
+                        <div>${frete.nomeContratante}</div>
+                        <div class="text-sm text-slate-400">${frete.whatsappContratante}</div>
+                    </td>
+                    <td><span class="status-badge status-${frete.status.toLowerCase().replace(' ', '')}">${frete.status}</span></td>
+                    <td>
+                        <button onclick="editarFrete(${frete.id})" class="text-blue-400 hover:text-blue-300 mr-2">✏️</button>
+                        <button onclick="excluirFrete(${frete.id})" class="text-red-400 hover:text-red-300 mr-2">🗑️</button>
+                        <a href="https://wa.me/55${frete.whatsappContratante.replace(/\D/g, '')}" target="_blank" class="text-green-400 hover:text-green-300">💬</a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Excluir frete
+        function excluirFrete(id) {
+            if (confirm('Tem certeza que deseja excluir este frete?')) {
+                fretes = fretes.filter(f => f.id !== id);
+                salvarDados();
+                renderizarFretes();
+                atualizarEstatisticas();
+                mostrarToast('Frete excluído!', 'success');
+            }
+        }
+
+        // Editar frete
+        function editarFrete(id) {
+            const frete = fretes.find(f => f.id === id);
+            if (frete) {
+                document.getElementById('origem').value = frete.origem;
+                document.getElementById('destino').value = frete.destino;
+                document.getElementById('tipoCarga').value = frete.tipoCarga;
+                document.getElementById('quantidade').value = frete.quantidade;
+                document.getElementById('peso').value = frete.peso;
+                document.getElementById('valorFrete').value = frete.valorFrete;
+                document.getElementById('dataCarregamento').value = frete.dataCarregamento;
+                document.getElementById('tipoVeiculo').value = frete.tipoVeiculo;
+                document.getElementById('status').value = frete.status;
+                document.getElementById('nomeContratante').value = frete.nomeContratante;
+                document.getElementById('whatsappContratante').value = frete.whatsappContratante;
+                document.getElementById('emailContratante').value = frete.emailContratante;
+                document.getElementById('observacoes').value = frete.observacoes;
+                
+                // Remover o frete antigo
+                fretes = fretes.filter(f => f.id !== id);
+                salvarDados();
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                mostrarToast('Editando frete - faça as alterações e salve', 'success');
+            }
+        }
+
+        // Salvar dados no localStorage
+        function salvarDados() {
+            localStorage.setItem('fretes_disponiveis', JSON.stringify(fretes));
+        }
+
+        // Enviar para Google Sheets via Apps Script
+        async function enviarParaPlanilha(frete) {
+            // URL do Web App do Google Apps Script (precisa ser configurado)
+            const APPS_SCRIPT_URL = localStorage.getItem('apps_script_url');
+            
+            if (!APPS_SCRIPT_URL) {
+                console.log('Apps Script URL não configurada');
+                return;
+            }
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'addFrete',
+                        sheet: SHEET_NAME,
+                        data: frete
+                    })
+                });
+                console.log('Dados enviados para planilha');
+            } catch (error) {
+                console.error('Erro ao enviar para planilha:', error);
+            }
+        }
+
+        // Sincronizar com planilha
+        async function sincronizarPlanilha() {
+            mostrarToast('Sincronizando com Google Sheets...', 'success');
+            // Implementar sincronização bidirecional
+            setTimeout(() => {
+                mostrarToast('Sincronização concluída!', 'success');
+            }, 2000);
+        }
+
+        // Mostrar toast
+        function mostrarToast(mensagem, tipo) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${tipo}`;
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

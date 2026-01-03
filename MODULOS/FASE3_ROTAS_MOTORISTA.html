@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FASE 3 - Rotas Preferidas do Motorista</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); min-height: 100vh; }
+        .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .route-card { transition: all 0.3s ease; }
+        .route-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3); }
+        .route-card.selected { border-color: #667eea; background: rgba(102, 126, 234, 0.2); }
+    </style>
+</head>
+<body class="text-white p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-full text-purple-400 text-sm mb-4">
+                <span>📍</span> FASE 3 - Cadastro de Rotas
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">
+                Selecione suas <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Rotas Preferidas</span>
+            </h1>
+            <p class="text-gray-400">Escolha até 5 rotas que você mais trabalha</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="glass rounded-2xl p-4 mb-8">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-400">Progresso do Cadastro</span>
+                <span class="text-sm text-purple-400">Fase 3 de 5</span>
+            </div>
+            <div class="w-full bg-white/10 rounded-full h-2">
+                <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style="width: 60%"></div>
+            </div>
+        </div>
+
+        <!-- Seleção de Rotas -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span>🛣️</span> Rotas Disponíveis
+                <span class="ml-auto text-sm text-gray-400" id="contadorRotas">0/5 selecionadas</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="listaRotas">
+                <!-- Rotas serão inseridas via JS -->
+            </div>
+        </div>
+
+        <!-- Rotas Selecionadas -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                <span>✅</span> Suas Rotas Preferidas
+            </h2>
+            <div id="rotasSelecionadas" class="space-y-2">
+                <p class="text-gray-500 text-center py-4">Nenhuma rota selecionada ainda</p>
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex gap-4">
+            <button onclick="voltarFase()" class="flex-1 glass text-white font-semibold py-4 rounded-xl hover:bg-white/10 transition">
+                ← Voltar
+            </button>
+            <button onclick="salvarRotas()" class="flex-1 btn-gradient text-white font-semibold py-4 rounded-xl hover:opacity-90 transition">
+                Continuar → Fase 4
+            </button>
+        </div>
+
+        <!-- Info -->
+        <div class="mt-6 text-center text-gray-500 text-sm">
+            <p>Planilha: CAPTACAO_FRETES | Colunas: Rota Preferida 1-5</p>
+        </div>
+    </div>
+
+    <script>
+        const SPREADSHEET_ID = '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE';
+        
+        // Rotas disponíveis
+        const rotasDisponiveis = [
+            { id: 1, origem: 'São Paulo', destino: 'Curitiba', uf: 'SP→PR', km: 408, valor: 'R$ 1.800 - 2.500' },
+            { id: 2, origem: 'Curitiba', destino: 'Porto Alegre', uf: 'PR→RS', km: 711, valor: 'R$ 2.800 - 3.800' },
+            { id: 3, origem: 'São Paulo', destino: 'Belo Horizonte', uf: 'SP→MG', km: 586, valor: 'R$ 2.200 - 3.200' },
+            { id: 4, origem: 'Rio de Janeiro', destino: 'São Paulo', uf: 'RJ→SP', km: 429, valor: 'R$ 1.900 - 2.800' },
+            { id: 5, origem: 'Curitiba', destino: 'Florianópolis', uf: 'PR→SC', km: 300, valor: 'R$ 1.400 - 2.000' },
+            { id: 6, origem: 'São Paulo', destino: 'Goiânia', uf: 'SP→GO', km: 926, valor: 'R$ 3.500 - 4.800' },
+            { id: 7, origem: 'Belo Horizonte', destino: 'Brasília', uf: 'MG→DF', km: 716, valor: 'R$ 2.800 - 3.900' },
+            { id: 8, origem: 'Porto Alegre', destino: 'São Paulo', uf: 'RS→SP', km: 1109, valor: 'R$ 4.200 - 5.500' },
+            { id: 9, origem: 'Curitiba', destino: 'São Paulo', uf: 'PR→SP', km: 408, valor: 'R$ 1.800 - 2.500' },
+            { id: 10, origem: 'Florianópolis', destino: 'Curitiba', uf: 'SC→PR', km: 300, valor: 'R$ 1.400 - 2.000' },
+            { id: 11, origem: 'São Paulo', destino: 'Campo Grande', uf: 'SP→MS', km: 1014, valor: 'R$ 3.800 - 5.000' },
+            { id: 12, origem: 'Curitiba', destino: 'Londrina', uf: 'PR→PR', km: 381, valor: 'R$ 1.600 - 2.200' },
+        ];
+
+        let rotasSelecionadas = [];
+
+        function renderizarRotas() {
+            const container = document.getElementById('listaRotas');
+            container.innerHTML = rotasDisponiveis.map(rota => `
+                <div class="route-card glass rounded-xl p-4 cursor-pointer ${rotasSelecionadas.includes(rota.id) ? 'selected' : ''}" 
+                     onclick="toggleRota(${rota.id})" id="rota-${rota.id}">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <div class="font-semibold text-lg">${rota.origem} → ${rota.destino}</div>
+                            <div class="text-sm text-gray-400">${rota.uf} | ${rota.km} km</div>
+                        </div>
+                        <div class="w-6 h-6 rounded-full border-2 ${rotasSelecionadas.includes(rota.id) ? 'bg-purple-500 border-purple-500' : 'border-gray-500'} flex items-center justify-center">
+                            ${rotasSelecionadas.includes(rota.id) ? '✓' : ''}
+                        </div>
+                    </div>
+                    <div class="text-green-400 font-semibold">${rota.valor}</div>
+                </div>
+            `).join('');
+            
+            atualizarSelecionadas();
+        }
+
+        function toggleRota(id) {
+            const index = rotasSelecionadas.indexOf(id);
+            if (index > -1) {
+                rotasSelecionadas.splice(index, 1);
+            } else if (rotasSelecionadas.length < 5) {
+                rotasSelecionadas.push(id);
+            } else {
+                alert('⚠️ Você pode selecionar no máximo 5 rotas!');
+                return;
+            }
+            renderizarRotas();
+        }
+
+        function atualizarSelecionadas() {
+            document.getElementById('contadorRotas').textContent = `${rotasSelecionadas.length}/5 selecionadas`;
+            
+            const container = document.getElementById('rotasSelecionadas');
+            if (rotasSelecionadas.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhuma rota selecionada ainda</p>';
+            } else {
+                container.innerHTML = rotasSelecionadas.map((id, index) => {
+                    const rota = rotasDisponiveis.find(r => r.id === id);
+                    return `
+                        <div class="flex items-center justify-between bg-purple-500/20 rounded-lg p-3">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center font-bold">${index + 1}</span>
+                                <div>
+                                    <div class="font-semibold">${rota.origem} → ${rota.destino}</div>
+                                    <div class="text-sm text-gray-400">${rota.km} km</div>
+                                </div>
+                            </div>
+                            <button onclick="toggleRota(${id})" class="text-red-400 hover:text-red-300">✕</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function salvarRotas() {
+            if (rotasSelecionadas.length === 0) {
+                alert('⚠️ Selecione pelo menos uma rota preferida!');
+                return;
+            }
+
+            const dados = {
+                timestamp: new Date().toISOString(),
+                rotas: rotasSelecionadas.map((id, index) => {
+                    const rota = rotasDisponiveis.find(r => r.id === id);
+                    return {
+                        preferencia: index + 1,
+                        rota: `${rota.origem} → ${rota.destino}`,
+                        uf: rota.uf
+                    };
+                })
+            };
+
+            // Salvar localmente
+            localStorage.setItem('rotas_preferidas', JSON.stringify(dados));
+
+            alert(`✅ ${rotasSelecionadas.length} rotas salvas com sucesso!\n\nAvançando para Fase 4...`);
+            
+            // Avançar para próxima fase
+            window.location.href = 'FASE4_PROPOSTAS.html';
+        }
+
+        function voltarFase() {
+            window.location.href = 'FASE2_MARKETING.html';
+        }
+
+        // Inicializar
+        renderizarRotas();
+    </script>
+</body>
+</html>

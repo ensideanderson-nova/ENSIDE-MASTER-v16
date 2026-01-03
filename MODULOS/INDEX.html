@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENSIDE MASTER - Sistema Integrado</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); min-height: 100vh; color: #fff; }
+        .header { background: linear-gradient(90deg, #1e3a5f, #0f2744); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .header h1 { font-size: 1.8rem; background: linear-gradient(90deg, #00d4ff, #00ff88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header .version { background: #00d4ff22; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; color: #00d4ff; }
+        .nav { display: flex; gap: 10px; }
+        .nav button { padding: 10px 20px; background: transparent; border: 1px solid #00d4ff44; color: #fff; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .nav button:hover, .nav button.active { background: #00d4ff; color: #000; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        .welcome { text-align: center; margin-bottom: 40px; }
+        .welcome h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        .welcome p { color: #aaa; font-size: 1.1rem; }
+        .modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .module { background: linear-gradient(145deg, #1e3a5f, #0f2744); border-radius: 20px; padding: 30px; border: 1px solid #00d4ff22; transition: all 0.3s; cursor: pointer; }
+        .module:hover { transform: translateY(-5px); border-color: #00d4ff; box-shadow: 0 10px 40px rgba(0,212,255,0.2); }
+        .module .icon { font-size: 3rem; margin-bottom: 15px; }
+        .module h3 { font-size: 1.4rem; margin-bottom: 10px; color: #00d4ff; }
+        .module p { color: #aaa; font-size: 0.95rem; line-height: 1.5; }
+        .module .stats { display: flex; gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #ffffff11; }
+        .module .stat { text-align: center; }
+        .module .stat h4 { font-size: 1.5rem; color: #00ff88; }
+        .module .stat span { font-size: 0.8rem; color: #888; }
+        .module .btn { display: inline-block; margin-top: 20px; padding: 12px 25px; background: linear-gradient(90deg, #00d4ff, #0099cc); border: none; border-radius: 8px; color: #fff; font-weight: bold; text-decoration: none; }
+        .footer { text-align: center; padding: 30px; color: #666; font-size: 0.9rem; }
+        .status { display: flex; justify-content: center; gap: 30px; margin-top: 30px; }
+        .status-item { display: flex; align-items: center; gap: 8px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .status-dot.online { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        .status-dot.offline { background: #ff4444; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>🌲 ENSIDE MASTER</h1>
+            <span class="version">v19.0 - Sistema Integrado</span>
+        </div>
+        <div class="nav">
+            <button class="active">🏠 Início</button>
+            <button onclick="window.open('CONTATOS_CRM.html')">📊 CRM</button>
+            <button onclick="window.open('FRETES_DISPONIVEIS.html')">🚚 Fretes</button>
+            <button onclick="window.open('https://docs.google.com/spreadsheets/d/1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE/edit')">📋 Planilha</button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="welcome">
+            <h2>Sistema Integrado de Gestão</h2>
+            <p>Gerencie contatos, fretes, captação e listas de transmissão em um único lugar</p>
+            <div class="status">
+                <div class="status-item"><div class="status-dot online"></div> Google Sheets Conectado</div>
+                <div class="status-item"><div class="status-dot online"></div> CRM Ativo</div>
+                <div class="status-item"><div class="status-dot online"></div> WhatsApp API</div>
+            </div>
+        </div>
+        <div class="modules">
+            <div class="module" onclick="window.location='CONTATOS_CRM.html'">
+                <div class="icon">📊</div>
+                <h3>CRM - Gestão de Contatos</h3>
+                <p>Gerencie todos os seus contatos com campos CRM completos: Lead Score, Responsável, Pipeline e mais.</p>
+                <div class="stats">
+                    <div class="stat"><h4>7.055</h4><span>Contatos</span></div>
+                    <div class="stat"><h4>833</h4><span>VIPs</span></div>
+                    <div class="stat"><h4>377</h4><span>Transportadores</span></div>
+                </div>
+                <a href="CONTATOS_CRM.html" class="btn">Acessar CRM →</a>
+            </div>
+            <div class="module" onclick="window.location='FRETES_DISPONIVEIS.html'">
+                <div class="icon">🚚</div>
+                <h3>Fretes Disponíveis</h3>
+                <p>Cadastre e gerencie fretes disponíveis para motoristas. Integrado com Google Sheets.</p>
+                <div class="stats">
+                    <div class="stat"><h4>247</h4><span>Fretes</span></div>
+                    <div class="stat"><h4>R$ 8.5k</h4><span>Média</span></div>
+                    <div class="stat"><h4>12</h4><span>Rotas</span></div>
+                </div>
+                <a href="FRETES_DISPONIVEIS.html" class="btn">Ver Fretes →</a>
+            </div>
+            <div class="module" onclick="window.location='CAPTACAO_FRETES.html'">
+                <div class="icon">🎯</div>
+                <h3>Captação de Motoristas</h3>
+                <p>Formulário de captação de leads de motoristas. Dados vão direto para a planilha.</p>
+                <div class="stats">
+                    <div class="stat"><h4>1.834</h4><span>Motoristas</span></div>
+                    <div class="stat"><h4>89%</h4><span>Conversão</span></div>
+                    <div class="stat"><h4>24h</h4><span>Resposta</span></div>
+                </div>
+                <a href="CAPTACAO_FRETES.html" class="btn">Captar Leads →</a>
+            </div>
+            <div class="module" onclick="window.location='LISTA_TRANSMISSAO.html'">
+                <div class="icon">📱</div>
+                <h3>Listas de Transmissão</h3>
+                <p>Crie e gerencie listas de transmissão para WhatsApp. Envie mensagens em massa.</p>
+                <div class="stats">
+                    <div class="stat"><h4>15</h4><span>Listas</span></div>
+                    <div class="stat"><h4>2.500</h4><span>Contatos</span></div>
+                    <div class="stat"><h4>95%</h4><span>Entrega</span></div>
+                </div>
+                <a href="LISTA_TRANSMISSAO.html" class="btn">Gerenciar Listas →</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>© 2025 ENSIDE MASTER - Sistema Integrado | Planilha: <a href="https://docs.google.com/spreadsheets/d/1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE/edit" style="color: #00d4ff;">EUCALIPTO</a></p>
+    </div>
+</body>
+</html>

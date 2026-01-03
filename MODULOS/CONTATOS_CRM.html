@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENSIDE CRM - Gestão de Contatos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --bg-dark: #0f172a;
+            --bg-light: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(14,165,233,0.4); }
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(0,0,0,0.3);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-btn:hover { background: rgba(14,165,233,0.3); color: var(--text); }
+        .filter-btn.active { background: var(--primary); color: white; }
+        .status-ativo { background: #22c55e; color: white; }
+        .status-novo { background: #3b82f6; color: white; }
+        .status-vip { background: #f59e0b; color: white; }
+        .status-inativo { background: #6b7280; color: white; }
+        .cat-fornecedor { background: #22c55e; }
+        .cat-cliente { background: #3b82f6; }
+        .cat-transportador { background: #f59e0b; }
+        .cat-representante { background: #a855f7; }
+        .cat-parceiro { background: #ec4899; }
+        .cat-prospect { background: #06b6d4; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { background: rgba(0,0,0,0.3); font-weight: 600; position: sticky; top: 0; }
+        tr:hover { background: rgba(14,165,233,0.1); }
+        .search-input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: var(--text);
+            width: 100%;
+        }
+        .search-input:focus { outline: none; border-color: var(--primary); }
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(14,165,233,0.2) 0%, rgba(14,165,233,0.1) 100%);
+            border: 1px solid rgba(14,165,233,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .kpi-value { font-size: 2rem; font-weight: 700; color: var(--primary); }
+        .kpi-label { font-size: 0.85rem; color: var(--text-muted); }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="p-4 border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <h1 class="text-2xl font-bold">📇 ENSIDE CRM</h1>
+                <span class="text-sm text-gray-400">Gestão de Contatos Integrada</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="sincronizarPlanilha()" class="btn-primary">🔄 Sincronizar</button>
+                <button onclick="abrirModalNovoContato()" class="btn-primary">➕ Novo Contato</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- KPIs -->
+    <section class="max-w-7xl mx-auto p-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+            <div class="kpi-card">
+                <div class="kpi-value" id="totalContatos">7.055</div>
+                <div class="kpi-label">Total Contatos</div>
+            </div>
+            <div class="kpi-card" style="border-color: #22c55e;">
+                <div class="kpi-value" style="color: #22c55e;" id="totalFornecedores">2.450</div>
+                <div class="kpi-label">Fornecedores</div>
+            </div>
+            <div class="kpi-card" style="border-color: #3b82f6;">
+                <div class="kpi-value" style="color: #3b82f6;" id="totalClientes">1.890</div>
+                <div class="kpi-label">Clientes</div>
+            </div>
+            <div class="kpi-card" style="border-color: #f59e0b;">
+                <div class="kpi-value" style="color: #f59e0b;" id="totalTransportadores">2.979</div>
+                <div class="kpi-label">Transportadores</div>
+            </div>
+            <div class="kpi-card" style="border-color: #a855f7;">
+                <div class="kpi-value" style="color: #a855f7;" id="totalRepresentantes">156</div>
+                <div class="kpi-label">Representantes</div>
+            </div>
+            <div class="kpi-card" style="border-color: #ec4899;">
+                <div class="kpi-value" style="color: #ec4899;" id="totalVIP">89</div>
+                <div class="kpi-label">VIPs</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filtros e Busca -->
+    <section class="max-w-7xl mx-auto px-4 mb-4">
+        <div class="card p-4">
+            <div class="flex flex-wrap gap-4 items-center justify-between">
+                <div class="flex flex-wrap gap-2">
+                    <button class="filter-btn active" onclick="filtrarCategoria('todos')">📋 Todos</button>
+                    <button class="filter-btn" onclick="filtrarCategoria('FORNECEDOR')">🏭 Fornecedores</button>
+                    <button class="filter-btn" onclick="filtrarCategoria('CLIENTE')">👤 Clientes</button>
+                    <button class="filter-btn" onclick="filtrarCategoria('TRANSPORTADOR')">🚚 Transportadores</button>
+                    <button class="filter-btn" onclick="filtrarCategoria('REPRESENTANTE')">🤝 Representantes</button>
+                    <button class="filter-btn" onclick="filtrarCategoria('PARCEIRO')">🤲 Parceiros</button>
+                    <button class="filter-btn" onclick="filtrarCategoria('PROSPECT')">🎯 Prospects</button>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar por nome, telefone, cidade..." onkeyup="buscarContatos()">
+                    <select id="statusFilter" class="search-input" style="width: auto;" onchange="filtrarStatus()">
+                        <option value="">Status</option>
+                        <option value="ATIVO">Ativo</option>
+                        <option value="NOVO">Novo</option>
+                        <option value="VIP">VIP</option>
+                        <option value="INATIVO">Inativo</option>
+                    </select>
+                    <select id="ufFilter" class="search-input" style="width: auto;" onchange="filtrarUF()">
+                        <option value="">UF</option>
+                        <option value="SP">SP</option>
+                        <option value="PR">PR</option>
+                        <option value="SC">SC</option>
+                        <option value="RS">RS</option>
+                        <option value="MG">MG</option>
+                        <option value="RJ">RJ</option>
+                        <option value="GO">GO</option>
+                        <option value="MS">MS</option>
+                        <option value="MT">MT</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabela de Contatos -->
+    <section class="max-w-7xl mx-auto px-4 pb-8">
+        <div class="card" style="max-height: 600px; overflow-y: auto;">
+            <table id="tabelaContatos">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onclick="selecionarTodos()"></th>
+                        <th>Nome</th>
+                        <th>Telefone</th>
+                        <th>Categoria</th>
+                        <th>Subcategoria</th>
+                        <th>Cidade</th>
+                        <th>UF</th>
+                        <th>Email</th>
+                        <th>Empresa</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="contatosBody">
+                    <!-- Dados serão carregados via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        <div class="flex justify-between items-center mt-4 text-sm text-gray-400">
+            <span id="contatosInfo">Mostrando 1-50 de 7.055 contatos</span>
+            <div class="flex gap-2">
+                <button class="filter-btn" onclick="paginaAnterior()">← Anterior</button>
+                <span class="px-4 py-2">Página <span id="paginaAtual">1</span> de <span id="totalPaginas">142</span></span>
+                <button class="filter-btn" onclick="proximaPagina()">Próxima →</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Novo Contato -->
+    <div id="modalNovoContato" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">➕ Novo Contato</h2>
+                <button onclick="fecharModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <form id="formNovoContato" onsubmit="salvarContato(event)">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-sm text-gray-400 mb-1">Nome Completo *</label>
+                        <input type="text" name="nome" required class="search-input">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Telefone *</label>
+                        <input type="tel" name="telefone" required class="search-input" placeholder="(00) 00000-0000">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">WhatsApp</label>
+                        <input type="tel" name="whatsapp" class="search-input" placeholder="(00) 00000-0000">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Categoria *</label>
+                        <select name="categoria" required class="search-input">
+                            <option value="">Selecione...</option>
+                            <option value="FORNECEDOR">Fornecedor</option>
+                            <option value="CLIENTE">Cliente</option>
+                            <option value="TRANSPORTADOR">Transportador</option>
+                            <option value="REPRESENTANTE">Representante</option>
+                            <option value="PARCEIRO">Parceiro</option>
+                            <option value="PROSPECT">Prospect</option>
+                            <option value="LEAD">Lead</option>
+                            <option value="COLABORADOR">Colaborador</option>
+                            <option value="GOVERNO">Governo</option>
+                            <option value="INVESTIDOR">Investidor</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Subcategoria</label>
+                        <input type="text" name="subcategoria" class="search-input" placeholder="Ex: Palanques, Briquetes...">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Email</label>
+                        <input type="email" name="email" class="search-input">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Empresa</label>
+                        <input type="text" name="empresa" class="search-input">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Cidade</label>
+                        <input type="text" name="cidade" class="search-input">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">UF</label>
+                        <select name="uf" class="search-input">
+                            <option value="">Selecione...</option>
+                            <option value="SP">SP</option>
+                            <option value="PR">PR</option>
+                            <option value="SC">SC</option>
+                            <option value="RS">RS</option>
+                            <option value="MG">MG</option>
+                            <option value="RJ">RJ</option>
+                            <option value="GO">GO</option>
+                            <option value="MS">MS</option>
+                            <option value="MT">MT</option>
+                            <option value="BA">BA</option>
+                            <option value="ES">ES</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Status</label>
+                        <select name="status" class="search-input">
+                            <option value="NOVO">Novo</option>
+                            <option value="ATIVO">Ativo</option>
+                            <option value="VIP">VIP</option>
+                            <option value="INATIVO">Inativo</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-sm text-gray-400 mb-1">Observações</label>
+                        <textarea name="observacoes" class="search-input" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-4 mt-6">
+                    <button type="button" onclick="fecharModal()" class="filter-btn">Cancelar</button>
+                    <button type="submit" class="btn-primary">💾 Salvar Contato</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CONFIGURAÇÃO GOOGLE SHEETS ====================
+        const SPREADSHEET_ID = '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE';
+        const SHEET_NAME = 'CONTATOS';
+        const SHEETS_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+        
+        // Variáveis globais
+        let contatos = [];
+        let paginaAtual = 1;
+        const itensPorPagina = 50;
+        let contatosFiltrados = [];
+        let carregando = false;
+
+        // ==================== CARREGAR DADOS DO GOOGLE SHEETS ====================
+        async function carregarContatosGoogleSheets() {
+            if (carregando) return;
+            carregando = true;
+            
+            // Mostrar loading
+            document.getElementById('contatosBody').innerHTML = `
+                <tr><td colspan="11" class="text-center py-8">
+                    <div class="animate-pulse">
+                        <div class="text-2xl mb-2">🔄</div>
+                        <div>Carregando contatos da planilha Google Sheets...</div>
+                        <div class="text-sm text-gray-500 mt-2">Planilha: EUCALIPTO | Aba: CONTATOS</div>
+                    </div>
+                </td></tr>
+            `;
+            
+            try {
+                const response = await fetch(SHEETS_URL);
+                const text = await response.text();
+                
+                // Extrair JSON do response do Google Sheets
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const jsonString = text.substring(jsonStart, jsonEnd);
+                const data = JSON.parse(jsonString);
+                
+                if (!data.table || !data.table.rows) {
+                    throw new Error('Formato de dados inválido');
+                }
+                
+                // Mapear colunas (baseado na estrutura da planilha EUCALIPTO)
+                const cols = data.table.cols.map(c => c.label || '');
+                console.log('Colunas encontradas:', cols);
+                
+                // Converter rows para objetos
+                contatos = data.table.rows.map((row, index) => {
+                    const cells = row.c || [];
+                    return {
+                        id: index + 1,
+                        selecionar: cells[0]?.v || '',
+                        nome: cells[1]?.v || '',
+                        telefone: cells[2]?.v || '',
+                        categoria: cells[3]?.v || 'CLIENTE',
+                        subcategoria: cells[4]?.v || '',
+                        cidade: cells[5]?.v || '',
+                        uf: cells[6]?.v || '',
+                        email: cells[7]?.v || '',
+                        empresa: cells[8]?.v || '',
+                        status: cells[9]?.v || 'ATIVO',
+                        ultimaCompra: cells[10]?.v || '',
+                        origemLead: cells[11]?.v || '',
+                        dataCadastro: cells[12]?.v || '',
+                        responsavel: cells[13]?.v || '',
+                        prioridade: cells[14]?.v || '',
+                        valorPotencial: cells[15]?.v || '',
+                        etapaFunil: cells[16]?.v || '',
+                        proximoContato: cells[17]?.v || '',
+                        observacoes: cells[18]?.v || '',
+                        tags: cells[19]?.v || '',
+                        telefone2: cells[20]?.v || '',
+                        whatsapp: cells[21]?.v || '',
+                        linkedin: cells[22]?.v || '',
+                        instagram: cells[23]?.v || '',
+                        cargo: cells[24]?.v || ''
+                    };
+                }).filter(c => c.nome && c.nome.trim() !== '' && c.nome !== 'NOME');
+                
+                console.log(`✅ ${contatos.length} contatos carregados do Google Sheets`);
+                
+                contatosFiltrados = [...contatos];
+                renderizarTabela();
+                atualizarKPIs();
+                
+            } catch (error) {
+                console.error('Erro ao carregar contatos:', error);
+                document.getElementById('contatosBody').innerHTML = `
+                    <tr><td colspan="11" class="text-center py-8 text-red-400">
+                        <div class="text-2xl mb-2">❌</div>
+                        <div>Erro ao carregar contatos</div>
+                        <div class="text-sm mt-2">${error.message}</div>
+                        <button onclick="carregarContatosGoogleSheets()" class="btn-primary mt-4">🔄 Tentar Novamente</button>
+                    </td></tr>
+                `;
+            } finally {
+                carregando = false;
+            }
+        }
+
+        // Carregar contatos ao iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarContatosGoogleSheets();
+        });
+
+        function renderizarTabela() {
+            const tbody = document.getElementById('contatosBody');
+            const inicio = (paginaAtual - 1) * itensPorPagina;
+            const fim = inicio + itensPorPagina;
+            const contatosPagina = contatosFiltrados.slice(inicio, fim);
+
+            tbody.innerHTML = contatosPagina.map((c, i) => `
+                <tr>
+                    <td><input type="checkbox" class="contato-check" data-index="${inicio + i}"></td>
+                    <td><strong>${c.nome}</strong></td>
+                    <td>${formatarTelefone(c.telefone)}</td>
+                    <td><span class="px-2 py-1 rounded text-xs cat-${c.categoria.toLowerCase()}">${c.categoria}</span></td>
+                    <td>${c.subcategoria || '-'}</td>
+                    <td>${c.cidade || '-'}</td>
+                    <td>${c.uf || '-'}</td>
+                    <td>${c.email || '-'}</td>
+                    <td>${c.empresa || '-'}</td>
+                    <td><span class="px-2 py-1 rounded text-xs status-${c.status.toLowerCase()}">${c.status}</span></td>
+                    <td>
+                        <button onclick="editarContato(${inicio + i})" class="text-blue-400 hover:text-blue-300 mr-2">✏️</button>
+                        <button onclick="enviarWhatsApp('${c.telefone}')" class="text-green-400 hover:text-green-300 mr-2">📱</button>
+                        <button onclick="excluirContato(${inicio + i})" class="text-red-400 hover:text-red-300">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Atualizar info de paginação
+            document.getElementById('contatosInfo').textContent = `Mostrando ${inicio + 1}-${Math.min(fim, contatosFiltrados.length)} de ${contatosFiltrados.length} contatos`;
+            document.getElementById('paginaAtual').textContent = paginaAtual;
+            document.getElementById('totalPaginas').textContent = Math.ceil(contatosFiltrados.length / itensPorPagina);
+        }
+
+        function formatarTelefone(tel) {
+            if (!tel) return '-';
+            // Garantir que tel seja string
+            const telStr = String(tel);
+            const nums = telStr.replace(/\D/g, '');
+            if (nums.length === 13) return `+${nums.slice(0,2)} (${nums.slice(2,4)}) ${nums.slice(4,9)}-${nums.slice(9)}`;
+            if (nums.length === 11) return `(${nums.slice(0,2)}) ${nums.slice(2,7)}-${nums.slice(7)}`;
+            return telStr;
+        }
+
+        function atualizarKPIs() {
+            document.getElementById('totalContatos').textContent = contatos.length.toLocaleString();
+            document.getElementById('totalFornecedores').textContent = contatos.filter(c => c.categoria === 'FORNECEDOR').length.toLocaleString();
+            document.getElementById('totalClientes').textContent = contatos.filter(c => c.categoria === 'CLIENTE').length.toLocaleString();
+            document.getElementById('totalTransportadores').textContent = contatos.filter(c => c.categoria === 'TRANSPORTADOR').length.toLocaleString();
+            document.getElementById('totalRepresentantes').textContent = contatos.filter(c => c.categoria === 'REPRESENTANTE').length.toLocaleString();
+            document.getElementById('totalVIP').textContent = contatos.filter(c => c.status === 'VIP').length.toLocaleString();
+        }
+
+        function filtrarCategoria(categoria) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (categoria === 'todos') {
+                contatosFiltrados = [...contatos];
+            } else {
+                contatosFiltrados = contatos.filter(c => c.categoria === categoria);
+            }
+            paginaAtual = 1;
+            renderizarTabela();
+        }
+
+        function buscarContatos() {
+            const termo = document.getElementById('searchInput').value.toLowerCase();
+            contatosFiltrados = contatos.filter(c => 
+                c.nome.toLowerCase().includes(termo) ||
+                c.telefone.includes(termo) ||
+                (c.cidade && c.cidade.toLowerCase().includes(termo)) ||
+                (c.empresa && c.empresa.toLowerCase().includes(termo))
+            );
+            paginaAtual = 1;
+            renderizarTabela();
+        }
+
+        function filtrarStatus() {
+            const status = document.getElementById('statusFilter').value;
+            if (status) {
+                contatosFiltrados = contatos.filter(c => c.status === status);
+            } else {
+                contatosFiltrados = [...contatos];
+            }
+            paginaAtual = 1;
+            renderizarTabela();
+        }
+
+        function filtrarUF() {
+            const uf = document.getElementById('ufFilter').value;
+            if (uf) {
+                contatosFiltrados = contatos.filter(c => c.uf === uf);
+            } else {
+                contatosFiltrados = [...contatos];
+            }
+            paginaAtual = 1;
+            renderizarTabela();
+        }
+
+        function paginaAnterior() {
+            if (paginaAtual > 1) {
+                paginaAtual--;
+                renderizarTabela();
+            }
+        }
+
+        function proximaPagina() {
+            const totalPaginas = Math.ceil(contatosFiltrados.length / itensPorPagina);
+            if (paginaAtual < totalPaginas) {
+                paginaAtual++;
+                renderizarTabela();
+            }
+        }
+
+        function abrirModalNovoContato() {
+            document.getElementById('modalNovoContato').classList.add('active');
+        }
+
+        function fecharModal() {
+            document.getElementById('modalNovoContato').classList.remove('active');
+            document.getElementById('formNovoContato').reset();
+        }
+
+        function salvarContato(event) {
+            event.preventDefault();
+            const form = event.target;
+            const novoContato = {
+                nome: form.nome.value,
+                telefone: form.telefone.value,
+                whatsapp: form.whatsapp.value,
+                categoria: form.categoria.value,
+                subcategoria: form.subcategoria.value,
+                email: form.email.value,
+                empresa: form.empresa.value,
+                cidade: form.cidade.value,
+                uf: form.uf.value,
+                status: form.status.value,
+                observacoes: form.observacoes.value
+            };
+            
+            contatos.unshift(novoContato);
+            contatosFiltrados = [...contatos];
+            renderizarTabela();
+            atualizarKPIs();
+            fecharModal();
+            alert('✅ Contato salvo com sucesso!');
+        }
+
+        function editarContato(index) {
+            alert('Editar contato: ' + contatos[index].nome);
+        }
+
+        function excluirContato(index) {
+            if (confirm('Deseja excluir o contato ' + contatos[index].nome + '?')) {
+                contatos.splice(index, 1);
+                contatosFiltrados = [...contatos];
+                renderizarTabela();
+                atualizarKPIs();
+            }
+        }
+
+        function enviarWhatsApp(telefone) {
+            if (!telefone) { alert('Telefone não disponível'); return; }
+            const nums = String(telefone).replace(/\D/g, '');
+            window.open(`https://wa.me/${nums}`, '_blank');
+        }
+
+        function selecionarTodos() {
+            const checked = document.getElementById('selectAll').checked;
+            document.querySelectorAll('.contato-check').forEach(cb => cb.checked = checked);
+        }
+
+        async function sincronizarPlanilha() {
+            await carregarContatosGoogleSheets();
+            alert(`✅ Sincronização concluída!\n\n${contatos.length} contatos carregados da planilha EUCALIPTO.`);
+        }
+    </script>
+</body>
+</html>

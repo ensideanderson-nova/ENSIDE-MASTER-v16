@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENSIDE - Captação de Motoristas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #22c55e; --bg-dark: #0f172a; --bg-light: #1e293b; --text: #e2e8f0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, var(--bg-dark), var(--bg-light)); color: var(--text); min-height: 100vh; }
+        .card { background: rgba(30,41,59,0.8); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-primary { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(34,197,94,0.4); }
+        .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .form-input { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 15px; color: var(--text); width: 100%; transition: all 0.3s; }
+        .form-input:focus { outline: none; border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.2); }
+        .hero { background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.05)); border: 1px solid rgba(34,197,94,0.3); }
+        .step { background: rgba(34,197,94,0.1); border: 2px solid rgba(34,197,94,0.3); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .step.active { background: #22c55e; border-color: #22c55e; }
+        .step.completed { background: #22c55e; border-color: #22c55e; }
+        .checkbox-custom { width: 20px; height: 20px; accent-color: #22c55e; }
+        .region-btn { padding: 10px 16px; border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; background: transparent; color: var(--text); cursor: pointer; transition: all 0.3s; }
+        .region-btn:hover { border-color: #22c55e; }
+        .region-btn.selected { background: rgba(34,197,94,0.2); border-color: #22c55e; }
+    </style>
+</head>
+<body>
+    <header class="p-4 border-b border-white/10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <h1 class="text-2xl font-bold">🚚 ANDERSON ENSIDE LOGISTICS</h1>
+            </div>
+            <span class="text-sm text-gray-400">Freight & Cargo Solutions</span>
+        </div>
+    </header>
+
+    <section class="max-w-4xl mx-auto p-4">
+        <div class="hero rounded-xl p-8 text-center mb-8">
+            <h2 class="text-3xl font-bold mb-4">🔥 PARE DE RODAR VAZIO!</h2>
+            <p class="text-xl text-gray-300 mb-6">Cadastre-se e receba as melhores oportunidades de frete diretamente no seu WhatsApp</p>
+            <div class="flex justify-center gap-8 text-center">
+                <div><div class="text-3xl font-bold text-green-400">247</div><div class="text-sm text-gray-400">Fretes Disponíveis</div></div>
+                <div><div class="text-3xl font-bold text-green-400">R$ 8.500</div><div class="text-sm text-gray-400">Média Mensal</div></div>
+                <div><div class="text-3xl font-bold text-green-400">1.834</div><div class="text-sm text-gray-400">Motoristas Ativos</div></div>
+            </div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="flex justify-center items-center gap-4 mb-8">
+            <div class="step active" id="step1">1</div>
+            <div class="h-1 w-16 bg-gray-600 rounded" id="line1"></div>
+            <div class="step" id="step2">2</div>
+            <div class="h-1 w-16 bg-gray-600 rounded" id="line2"></div>
+            <div class="step" id="step3">3</div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="card p-8">
+            <!-- Step 1: Dados Básicos -->
+            <div id="formStep1">
+                <h3 class="text-xl font-bold mb-6 text-center">📝 Seus Dados</h3>
+                <div class="grid gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Nome Completo *</label>
+                        <input type="text" id="nome" class="form-input" placeholder="Digite seu nome completo" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">WhatsApp *</label>
+                        <input type="tel" id="whatsapp" class="form-input" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div class="p-4 rounded-lg" style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="interesseSeguro" class="checkbox-custom">
+                            <div>
+                                <div class="font-semibold">🛡️ Tenho interesse em Seguro de Carga</div>
+                                <div class="text-sm text-gray-400">Proteção completa a partir de R$ 17,99/dia</div>
+                            </div>
+                        </label>
+                    </div>
+                    <button onclick="proximoStep(2)" class="btn-primary w-full mt-4">Continuar →</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Veículo e Regiões -->
+            <div id="formStep2" style="display: none;">
+                <h3 class="text-xl font-bold mb-6 text-center">🚚 Seu Veículo</h3>
+                <div class="grid gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Tipo de Veículo *</label>
+                        <select id="tipoVeiculo" class="form-input">
+                            <option value="">Selecione...</option>
+                            <option value="Carreta">Carreta</option>
+                            <option value="Truck">Truck</option>
+                            <option value="Toco">Toco</option>
+                            <option value="VUC">VUC</option>
+                            <option value="Bitrem">Bitrem</option>
+                            <option value="Rodotrem">Rodotrem</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Placa do Veículo *</label>
+                        <input type="text" id="placa" class="form-input" placeholder="ABC-1234" maxlength="8">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-3">Regiões de Atuação</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <button type="button" class="region-btn" onclick="toggleRegion(this)">🇧🇷 Sul</button>
+                            <button type="button" class="region-btn" onclick="toggleRegion(this)">🇧🇷 Sudeste</button>
+                            <button type="button" class="region-btn" onclick="toggleRegion(this)">🇧🇷 Centro-Oeste</button>
+                            <button type="button" class="region-btn" onclick="toggleRegion(this)">🇧🇷 Nordeste</button>
+                            <button type="button" class="region-btn" onclick="toggleRegion(this)">🇧🇷 Norte</button>
+                            <button type="button" class="region-btn" onclick="toggleRegion(this)">🌎 Todo Brasil</button>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 mt-4">
+                        <button onclick="voltarStep(1)" class="btn-primary w-full" style="background: #475569;">← Voltar</button>
+                        <button onclick="proximoStep(3)" class="btn-primary w-full">Continuar →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Rotas Preferidas -->
+            <div id="formStep3" style="display: none;">
+                <h3 class="text-xl font-bold mb-6 text-center">📍 Rotas Preferidas</h3>
+                <div class="grid gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Rota Preferida 1</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="rota1Origem" class="form-input" placeholder="Origem (ex: São Paulo - SP)">
+                            <input type="text" id="rota1Destino" class="form-input" placeholder="Destino (ex: Curitiba - PR)">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Rota Preferida 2</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="rota2Origem" class="form-input" placeholder="Origem">
+                            <input type="text" id="rota2Destino" class="form-input" placeholder="Destino">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Rota Preferida 3</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="rota3Origem" class="form-input" placeholder="Origem">
+                            <input type="text" id="rota3Destino" class="form-input" placeholder="Destino">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Observações</label>
+                        <textarea id="observacoes" class="form-input" rows="3" placeholder="Alguma informação adicional..."></textarea>
+                    </div>
+                    <div class="flex gap-4 mt-4">
+                        <button onclick="voltarStep(2)" class="btn-primary w-full" style="background: #475569;">← Voltar</button>
+                        <button onclick="finalizarCadastro()" class="btn-primary w-full">✅ FINALIZAR CADASTRO</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage" style="display: none;" class="text-center py-8">
+                <div class="text-6xl mb-4">🎉</div>
+                <h3 class="text-2xl font-bold text-green-400 mb-4">Cadastro Realizado com Sucesso!</h3>
+                <p class="text-gray-300 mb-6">Você receberá as melhores oportunidades de frete diretamente no seu WhatsApp.</p>
+                <button onclick="location.reload()" class="btn-primary">Fazer Novo Cadastro</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const SPREADSHEET_ID = '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE';
+        const SHEET_NAME = 'CAPTACAO_FRETES';
+        let currentStep = 1;
+        let selectedRegions = [];
+
+        function proximoStep(step) {
+            if (step === 2) {
+                const nome = document.getElementById('nome').value;
+                const whatsapp = document.getElementById('whatsapp').value;
+                if (!nome || !whatsapp) { alert('Preencha nome e WhatsApp!'); return; }
+            }
+            if (step === 3) {
+                const tipo = document.getElementById('tipoVeiculo').value;
+                const placa = document.getElementById('placa').value;
+                if (!tipo || !placa) { alert('Preencha tipo de veículo e placa!'); return; }
+            }
+            document.getElementById('formStep' + currentStep).style.display = 'none';
+            document.getElementById('formStep' + step).style.display = 'block';
+            document.getElementById('step' + currentStep).classList.remove('active');
+            document.getElementById('step' + currentStep).classList.add('completed');
+            document.getElementById('step' + step).classList.add('active');
+            if (currentStep < step) document.getElementById('line' + currentStep).style.background = '#22c55e';
+            currentStep = step;
+        }
+
+        function voltarStep(step) {
+            document.getElementById('formStep' + currentStep).style.display = 'none';
+            document.getElementById('formStep' + step).style.display = 'block';
+            document.getElementById('step' + currentStep).classList.remove('active');
+            document.getElementById('step' + step).classList.add('active');
+            document.getElementById('step' + step).classList.remove('completed');
+            currentStep = step;
+        }
+
+        function toggleRegion(btn) {
+            btn.classList.toggle('selected');
+            const region = btn.textContent.trim();
+            if (btn.classList.contains('selected')) {
+                selectedRegions.push(region);
+            } else {
+                selectedRegions = selectedRegions.filter(r => r !== region);
+            }
+        }
+
+        async function finalizarCadastro() {
+            const dados = {
+                timestamp: new Date().toLocaleString('pt-BR'),
+                nome: document.getElementById('nome').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                interesseSeguro: document.getElementById('interesseSeguro').checked ? 'SIM' : 'NAO',
+                tipoVeiculo: document.getElementById('tipoVeiculo').value,
+                placa: document.getElementById('placa').value,
+                regioes: selectedRegions.join(', '),
+                rota1: document.getElementById('rota1Origem').value + ' -> ' + document.getElementById('rota1Destino').value,
+                rota2: document.getElementById('rota2Origem').value + ' -> ' + document.getElementById('rota2Destino').value,
+                rota3: document.getElementById('rota3Origem').value + ' -> ' + document.getElementById('rota3Destino').value,
+                observacoes: document.getElementById('observacoes').value
+            };
+            console.log('Dados do cadastro:', dados);
+            document.getElementById('formStep3').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step3').classList.add('completed');
+            document.getElementById('line2').style.background = '#22c55e';
+        }
+
+        // Máscara de telefone
+        document.getElementById('whatsapp').addEventListener('input', function(e) {
+            let v = e.target.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.slice(0, 11);
+            if (v.length > 6) v = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+            else if (v.length > 2) v = '(' + v.slice(0,2) + ') ' + v.slice(2);
+            e.target.value = v;
+        });
+
+        // Máscara de placa
+        document.getElementById('placa').addEventListener('input', function(e) {
+            let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (v.length > 7) v = v.slice(0, 7);
+            if (v.length > 3) v = v.slice(0,3) + '-' + v.slice(3);
+            e.target.value = v;
+        });
+    </script>
+</body>
+</html>
