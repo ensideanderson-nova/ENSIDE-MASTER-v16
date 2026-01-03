@@ -4,11 +4,11 @@
  */
 
 const EVOLUTION_CONFIG = {
-    // URL da API no Render
-    apiUrl: 'https://evolution-api-enside.onrender.com',
+    // URL da API via ngrok (expõe localhost:8080)
+    apiUrl: 'https://isa-unawed-marquetta.ngrok-free.dev',
     
     // Chave de autenticação
-    apiKey: 'evolution-api-enside-2024-secret',
+    apiKey: '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
     
     // Nome da instância
     instanceName: 'enside',
