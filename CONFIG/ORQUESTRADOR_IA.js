@@ -56,7 +56,7 @@ const ORQUESTRADOR_IA = {
         evolutionAPI: {
             nome: 'Evolution API',
             tipo: 'whatsapp_automation',
-            apiKey: '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
+            apiKey: 'evolution-api-enside-2024-secret',
             instancia: 'enside',
             whatsapp: '5518996540492',
             capacidades: ['enviar_mensagem', 'receber_mensagem', 'webhook', 'lista_transmissao'],
@@ -69,8 +69,8 @@ const ORQUESTRADOR_IA = {
     credenciais: {
         github_token: 'Github_pat_11B2HPWRQ0jAY7HwKQQBR9_XBQOZWISGDOf45h8a0ByyrbMlfw2r3peS4J2IGNQax3HOF6FYPXFVRng6A8',
         google_sheets_id: '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE',
-        evolution_api_key: '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
-        evolution_url: 'http://localhost:8080'
+        evolution_api_key: 'evolution-api-enside-2024-secret',
+        evolution_url: 'https://evolution-api-latest-poc1.onrender.com'
     },
 
     // Comandos disponíveis para Mac

@@ -13,8 +13,8 @@ const ENSIDE_CONFIG = {
     },
     // Evolution API
     evolution: {
-        url: 'http://localhost:8080',
-        apiKey: '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
+        url: 'https://evolution-api-latest-poc1.onrender.com',
+        apiKey: 'evolution-api-enside-2024-secret',
         instance: 'enside',
         webhook: 'https://enside-sistema.vercel.app/api/webhook'
     },

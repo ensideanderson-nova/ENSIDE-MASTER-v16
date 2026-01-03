@@ -607,7 +607,7 @@
         .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
         .animate-slideIn { animation: slideIn 0.3s ease-out; }
     </style>
-<script src="CONFIG/INTEGRACAO_COMPLETA.js"></script></head>
+<script src="CONFIG/INTEGRACAO_COMPLETA.js"></script><script src="CONFIG/ESPECIALISTA_IA.js"></script><script src="CONFIG/PADRAO_IMPORTACAO_SHEETS.js"></script><script src="CONFIG/SINCRONIZAR_LISTAS_TRANSMISSAO.js"></script></head>
 <body class="theme-blue">
     <!-- THEME SWITCHER -->
     <div class="theme-switcher">
@@ -666,6 +666,7 @@
             <button class="tab-btn" onclick="mudarAba('fretesdisponiveis')" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white;">📦 Fretes Disponíveis</button>
             <button class="tab-btn" onclick="abrirCRMContatos()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white;">📇 CRM Contatos</button>
             <button class="tab-btn" onclick="abrirFretesDisponiveis()" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white;">📦 Fretes Disponíveis</button>
+            <button class="tab-btn" onclick="mudarAba('especialistaia')" style="background: linear-gradient(135deg, #f43f5e, #e11d48); color: white;">🤖 ESPECIALISTA-IA</button>
         </div>
 
         <!-- ==================== ABA MARKETING/INÍCIO ==================== -->
@@ -1193,7 +1194,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label>URL da API</label>
-                        <input type="text" id="evolutionUrl" placeholder="http://localhost:8080" value="http://localhost:8080">
+                        <input type="text" id="evolutionUrl" placeholder="https://evolution-api-latest-poc1.onrender.com" value="https://evolution-api-latest-poc1.onrender.com">
                     </div>
                     <div class="form-group">
                         <label>API Key</label>
@@ -2372,6 +2373,150 @@ XML: Estrutura hierárquica de elementos
                 <button onclick="window.open('https://docs.google.com/spreadsheets/d/1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE/edit#gid=1234567890', '_blank')" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 1.1em; cursor: pointer; font-weight: 600;">📊 Abrir Planilha</button>
             </div>
             <p style="color: #64748b; font-size: 0.85em; margin-top: 10px;">⚠️ Por segurança, o Safari não permite iframes de arquivos locais. Clique no botão acima.</p>
+        </div>
+    </div>
+
+    <!-- ABA ESPECIALISTA-IA -->
+    <div id="especialistaia" class="tab-content">
+        <div class="section-title" style="background: linear-gradient(135deg, rgba(244,63,94,0.2), rgba(225,29,72,0.1)); border-left: 4px solid #f43f5e;">
+            🤖 ESPECIALISTA-IA - Cérebro Central do Sistema
+        </div>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">
+            Assistente inteligente que conhece TODAS as funcionalidades | Pode ser ENSINADO | Integrado com GitHub App
+        </p>
+        
+        <!-- Status do ESPECIALISTA-IA -->
+        <div class="grid" style="margin-bottom: 30px;">
+            <div class="grid-card" style="text-align: center; border-left: 4px solid #f43f5e;">
+                <div style="font-size: 2.5em; margin-bottom: 10px;">🤖</div>
+                <h3 style="color: #f43f5e;">ESPECIALISTA-IA</h3>
+                <p style="color: #94a3b8;">Versão 2.0</p>
+            </div>
+            <div class="grid-card" style="text-align: center; border-left: 4px solid #22c55e;">
+                <div style="font-size: 2.5em; margin-bottom: 10px;">📚</div>
+                <h3 style="color: #22c55e;" id="totalAprendizadosIA">4</h3>
+                <p style="color: #94a3b8;">Aprendizados</p>
+            </div>
+            <div class="grid-card" style="text-align: center; border-left: 4px solid #0ea5e9;">
+                <div style="font-size: 2.5em; margin-bottom: 10px;">🔗</div>
+                <h3 style="color: #0ea5e9;">6 APIs</h3>
+                <p style="color: #94a3b8;">Integradas</p>
+            </div>
+            <div class="grid-card" style="text-align: center; border-left: 4px solid #a855f7;">
+                <div style="font-size: 2.5em; margin-bottom: 10px;">🐙</div>
+                <h3 style="color: #a855f7;">GitHub App</h3>
+                <p style="color: #94a3b8;">ID: 2302130</p>
+            </div>
+        </div>
+
+        <!-- Credenciais GitHub App -->
+        <div class="section" style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(109,40,217,0.1)); border: 2px solid rgba(139,92,246,0.4); border-radius: 15px; padding: 25px; margin-bottom: 25px;">
+            <h3 style="color: #a855f7; margin-bottom: 20px;">🐙 GitHub App - ESPECIALISTA-IA</h3>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                    <p style="color: #a855f7; font-size: 0.85em; margin-bottom: 5px;">App ID</p>
+                    <p style="color: #fff; font-weight: bold; font-family: monospace;">2302130</p>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                    <p style="color: #a855f7; font-size: 0.85em; margin-bottom: 5px;">Client ID</p>
+                    <p style="color: #fff; font-weight: bold; font-family: monospace;">Iv23liLTN3V5XvOzhjW7</p>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                    <p style="color: #a855f7; font-size: 0.85em; margin-bottom: 5px;">Installation ID</p>
+                    <p style="color: #fff; font-weight: bold; font-family: monospace;">95179240</p>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                    <p style="color: #a855f7; font-size: 0.85em; margin-bottom: 5px;">Repositório</p>
+                    <p style="color: #fff; font-weight: bold;">ENSIDE-MASTER-v16</p>
+                </div>
+            </div>
+            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="window.open('https://github.com/apps/especialista-ia', '_blank')" class="btn" style="background: linear-gradient(135deg, #a855f7, #7c3aed);">🔗 Ver GitHub App</button>
+                <button onclick="window.open('https://github.com/ensideanderson-nova/ENSIDE-MASTER-v16', '_blank')" class="btn" style="background: linear-gradient(135deg, #22c55e, #16a34a);">📂 Abrir Repositório</button>
+            </div>
+        </div>
+
+        <!-- APIs Integradas -->
+        <div class="section" style="background: linear-gradient(135deg, rgba(14,165,233,0.15), rgba(6,182,212,0.1)); border: 2px solid rgba(14,165,233,0.4); border-radius: 15px; padding: 25px; margin-bottom: 25px;">
+            <h3 style="color: #0ea5e9; margin-bottom: 20px;">🔗 APIs Integradas</h3>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                <div style="background: rgba(37,211,102,0.2); padding: 15px; border-radius: 10px; border: 1px solid #25d366; text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 8px;">📱</div>
+                    <p style="color: #25d366; font-weight: bold;">Evolution API</p>
+                    <p style="color: #94a3b8; font-size: 0.8em;">WhatsApp</p>
+                </div>
+                <div style="background: rgba(139,92,246,0.2); padding: 15px; border-radius: 10px; border: 1px solid #8b5cf6; text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 8px;">🐙</div>
+                    <p style="color: #8b5cf6; font-weight: bold;">GitHub</p>
+                    <p style="color: #94a3b8; font-size: 0.8em;">Repositório</p>
+                </div>
+                <div style="background: rgba(34,197,94,0.2); padding: 15px; border-radius: 10px; border: 1px solid #22c55e; text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 8px;">📊</div>
+                    <p style="color: #22c55e; font-weight: bold;">Google Sheets</p>
+                    <p style="color: #94a3b8; font-size: 0.8em;">Planilhas</p>
+                </div>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px solid #fff; text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 8px;">▲</div>
+                    <p style="color: #fff; font-weight: bold;">Vercel</p>
+                    <p style="color: #94a3b8; font-size: 0.8em;">Deploy</p>
+                </div>
+                <div style="background: rgba(79,70,229,0.2); padding: 15px; border-radius: 10px; border: 1px solid #4f46e5; text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 8px;">🚀</div>
+                    <p style="color: #4f46e5; font-weight: bold;">Render</p>
+                    <p style="color: #94a3b8; font-size: 0.8em;">Backend</p>
+                </div>
+                <div style="background: rgba(66,133,244,0.2); padding: 15px; border-radius: 10px; border: 1px solid #4285f4; text-align: center;">
+                    <div style="font-size: 2em; margin-bottom: 8px;">🧠</div>
+                    <p style="color: #4285f4; font-weight: bold;">Google AI</p>
+                    <p style="color: #94a3b8; font-size: 0.8em;">Gemini</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ensinar o ESPECIALISTA-IA -->
+        <div class="section" style="background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(22,163,74,0.1)); border: 2px solid rgba(34,197,94,0.4); border-radius: 15px; padding: 25px; margin-bottom: 25px;">
+            <h3 style="color: #22c55e; margin-bottom: 20px;">🎓 Ensinar Novo Conhecimento</h3>
+            <div style="display: grid; gap: 15px;">
+                <div>
+                    <label style="color: #22c55e; font-weight: 600; display: block; margin-bottom: 8px;">Título do Aprendizado</label>
+                    <input type="text" id="novoAprendizadoTitulo" placeholder="Ex: Como calcular frete por km" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 2px solid rgba(34,197,94,0.3); border-radius: 8px; color: #fff;">
+                </div>
+                <div>
+                    <label style="color: #22c55e; font-weight: 600; display: block; margin-bottom: 8px;">Conteúdo/Conhecimento</label>
+                    <textarea id="novoAprendizadoConteudo" rows="4" placeholder="Descreva o conhecimento que o ESPECIALISTA-IA deve aprender..." style="width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 2px solid rgba(34,197,94,0.3); border-radius: 8px; color: #fff; resize: vertical;"></textarea>
+                </div>
+                <button onclick="ensinarEspecialistaIA()" class="btn" style="background: linear-gradient(135deg, #22c55e, #16a34a); padding: 15px;">
+                    🎓 Ensinar ESPECIALISTA-IA
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de Aprendizados -->
+        <div class="section" style="background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.1)); border: 2px solid rgba(245,158,11,0.4); border-radius: 15px; padding: 25px; margin-bottom: 25px;">
+            <h3 style="color: #f59e0b; margin-bottom: 20px;">📚 Aprendizados do ESPECIALISTA-IA</h3>
+            <div id="listaAprendizadosIA" style="display: grid; gap: 10px;">
+                <!-- Aprendizados serão carregados aqui -->
+            </div>
+        </div>
+
+        <!-- Console do ESPECIALISTA-IA -->
+        <div class="section" style="background: rgba(0,0,0,0.5); border: 2px solid #333; border-radius: 15px; padding: 25px;">
+            <h3 style="color: #22c55e; margin-bottom: 15px;">💻 Console do ESPECIALISTA-IA</h3>
+            <div id="consoleEspecialistaIA" style="background: #000; padding: 15px; border-radius: 8px; font-family: monospace; color: #22c55e; height: 200px; overflow-y: auto; font-size: 0.9em;">
+                <p>🤖 ESPECIALISTA-IA v2.0 carregado!</p>
+                <p>   Digite ESPECIALISTA_IA.ajuda() para ver comandos disponíveis</p>
+                <p style="color: #0ea5e9;">────────────────────────────────────────</p>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <input type="text" id="comandoEspecialistaIA" placeholder="Digite um comando..." style="flex: 1; padding: 12px; background: rgba(0,0,0,0.6); border: 2px solid #333; border-radius: 8px; color: #22c55e; font-family: monospace;">
+                <button onclick="executarComandoEspecialistaIA()" class="btn" style="background: #22c55e; color: #000;">▶ Executar</button>
+            </div>
+            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button onclick="executarComandoRapido('ESPECIALISTA_IA.gerarRelatorio()')" class="btn" style="background: rgba(34,197,94,0.2); border: 1px solid #22c55e; font-size: 0.85em;">📋 Relatório</button>
+                <button onclick="executarComandoRapido('ESPECIALISTA_IA.verificarStatus()')" class="btn" style="background: rgba(14,165,233,0.2); border: 1px solid #0ea5e9; font-size: 0.85em;">📊 Status</button>
+                <button onclick="executarComandoRapido('ESPECIALISTA_IA.ajuda()')" class="btn" style="background: rgba(245,158,11,0.2); border: 1px solid #f59e0b; font-size: 0.85em;">❓ Ajuda</button>
+                <button onclick="executarComandoRapido('ESPECIALISTA_IA.conhecimentos.apis')" class="btn" style="background: rgba(168,85,247,0.2); border: 1px solid #a855f7; font-size: 0.85em;">🔗 APIs</button>
+            </div>
         </div>
     </div>
 
@@ -3609,7 +3754,7 @@ XML: Estrutura hierárquica de elementos
 
         // ==================== EVOLUTION API ====================
         let evolutionConfig = {
-            url: localStorage.getItem('evolutionUrl') || 'http://localhost:8080',
+            url: localStorage.getItem('evolutionUrl') || 'https://evolution-api-latest-poc1.onrender.com',
             apiKey: localStorage.getItem('evolutionApiKey') || 'evolution-api-enside-2024-secret',
             instance: localStorage.getItem('evolutionInstance') || 'ENSIDE'
         };
@@ -4906,7 +5051,7 @@ ${filtros.join('\n') || 'Nenhum filtro'}
             // 4. Testar Evolution API
             console.log('4. Testando Evolution API...');
             try {
-                const evolutionUrl = localStorage.getItem('evolutionUrl') || 'http://localhost:8080';
+                const evolutionUrl = localStorage.getItem('evolutionUrl') || 'https://evolution-api-latest-poc1.onrender.com';
                 const evolutionKey = localStorage.getItem('evolutionApiKey') || 'evolution-api-enside-2024-secret';
                 const response = await fetch(`${evolutionUrl}/instance/fetchInstances`, {
                     headers: { 'apikey': evolutionKey }
@@ -5206,7 +5351,7 @@ ${filtros.join('\n') || 'Nenhum filtro'}
                         },
                         body: JSON.stringify({
                             number: numeroFormatado,
-                            text: mensagem
+                            textMessage: { text: mensagem }
                         })
                     });
                     
@@ -6029,10 +6174,134 @@ Em breve entraremos em contato com ofertas de frete!`);
             console.log('✅ Sistema ENSIDE MASTER v16.0 carregado com persistência GitHub');
             // Inicializar Captação de Fretes
             initFretesIntegrado();
+            // Inicializar ESPECIALISTA-IA
+            inicializarEspecialistaIA();
         });
+
+        // ==================== FUNÇÕES ESPECIALISTA-IA ====================
+        function inicializarEspecialistaIA() {
+            if (typeof ESPECIALISTA_IA !== 'undefined') {
+                console.log('🤖 ESPECIALISTA-IA integrado ao sistema principal!');
+                carregarAprendizadosIA();
+                atualizarConsoleIA('🤖 ESPECIALISTA-IA v' + ESPECIALISTA_IA.versao + ' inicializado com sucesso!');
+                atualizarConsoleIA('📚 ' + ESPECIALISTA_IA.aprendizados.length + ' aprendizados carregados');
+            }
+        }
+
+        function carregarAprendizadosIA() {
+            const container = document.getElementById('listaAprendizadosIA');
+            if (!container || typeof ESPECIALISTA_IA === 'undefined') return;
+            
+            const aprendizados = ESPECIALISTA_IA.aprendizados || [];
+            document.getElementById('totalAprendizadosIA').textContent = aprendizados.length;
+            
+            container.innerHTML = aprendizados.map((a, index) => `
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border-left: 4px solid #f59e0b;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <h4 style="color: #f59e0b; margin: 0;">#${a.id} - ${a.titulo}</h4>
+                        <span style="color: #64748b; font-size: 0.8em;">${a.data}</span>
+                    </div>
+                    <p style="color: #cbd5e1; margin: 0; font-size: 0.95em;">${a.conteudo}</p>
+                </div>
+            `).join('');
+        }
+
+        function ensinarEspecialistaIA() {
+            const titulo = document.getElementById('novoAprendizadoTitulo').value.trim();
+            const conteudo = document.getElementById('novoAprendizadoConteudo').value.trim();
+            
+            if (!titulo || !conteudo) {
+                alert('⚠️ Preencha o título e o conteúdo do aprendizado!');
+                return;
+            }
+            
+            if (typeof ESPECIALISTA_IA !== 'undefined') {
+                const novoAprendizado = ESPECIALISTA_IA.aprender(titulo, conteudo);
+                carregarAprendizadosIA();
+                atualizarConsoleIA(`✅ Novo aprendizado adicionado: ${titulo}`);
+                
+                // Limpar campos
+                document.getElementById('novoAprendizadoTitulo').value = '';
+                document.getElementById('novoAprendizadoConteudo').value = '';
+                
+                alert(`✅ ESPECIALISTA-IA aprendeu:
+
+"${titulo}"
+
+Total de aprendizados: ${ESPECIALISTA_IA.aprendizados.length}`);
+            }
+        }
+
+        function atualizarConsoleIA(mensagem) {
+            const console = document.getElementById('consoleEspecialistaIA');
+            if (!console) return;
+            
+            const timestamp = new Date().toLocaleTimeString('pt-BR');
+            console.innerHTML += `<p><span style="color: #64748b;">[${timestamp}]</span> ${mensagem}</p>`;
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function executarComandoEspecialistaIA() {
+            const input = document.getElementById('comandoEspecialistaIA');
+            const comando = input.value.trim();
+            if (!comando) return;
+            
+            atualizarConsoleIA(`<span style="color: #0ea5e9;">▶</span> ${comando}`);
+            
+            try {
+                const resultado = eval(comando);
+                if (resultado !== undefined) {
+                    if (typeof resultado === 'object') {
+                        atualizarConsoleIA(`<pre style="color: #22c55e; white-space: pre-wrap;">${JSON.stringify(resultado, null, 2)}</pre>`);
+                    } else {
+                        atualizarConsoleIA(`<span style="color: #22c55e;">${resultado}</span>`);
+                    }
+                }
+            } catch (error) {
+                atualizarConsoleIA(`<span style="color: #ef4444;">❌ Erro: ${error.message}</span>`);
+            }
+            
+            input.value = '';
+        }
+
+        function executarComandoRapido(comando) {
+            document.getElementById('comandoEspecialistaIA').value = comando;
+            executarComandoEspecialistaIA();
+        }
     </script>
     <!-- Scripts externos ENSIDE -->
     <script src="SCRIPTS/enside_ia_widget.js"></script>
     <script src="SCRIPTS/evolution_api_config.js"></script>
+    <!-- 🤖 ESPECIALISTA-IA - Integração Central -->
+    <script src="CONFIG/ESPECIALISTA_IA.js"></script>
+    <script src="CONFIG/COMANDO_CENTRAL_IA.js"></script>
+    <!-- Script para sincronizar 7.055 contatos -->
+    <script src="CONFIG/SINCRONIZAR_7055_CONTATOS.js"></script>
+    
+    <script>
+        // Inicializar ESPECIALISTA-IA no sistema
+        if (typeof ESPECIALISTA_IA !== 'undefined') {
+            console.log('🤖 ESPECIALISTA-IA integrado ao sistema principal!');
+            console.log(ESPECIALISTA_IA.gerarRelatorio());
+        }
+        if (typeof COMANDO_CENTRAL !== 'undefined') {
+            console.log('🎯 COMANDO CENTRAL DE IAs ativo!');
+            console.log(COMANDO_CENTRAL.getStatus());
+        }
+        
+        // Forçar sincronização de 7.055 contatos ao carregar
+        window.addEventListener('load', async () => {
+            if (typeof SINCRONIZAR_CONTATOS !== 'undefined') {
+                console.log('🔄 Iniciando sincronização de 7.055 contatos...');
+                const resultado = await SINCRONIZAR_CONTATOS.sincronizar();
+                if (resultado.sucesso) {
+                    console.log(`✅ ${resultado.total} contatos sincronizados!`);
+                    // Atualizar contador principal
+                    const totalEl = document.querySelector('.text-4xl.font-bold.text-pink-400');
+                    if (totalEl) totalEl.textContent = resultado.total.toLocaleString('pt-BR') + '+';
+                }
+            }
+        });
+    </script>
 </body>
 </html>
