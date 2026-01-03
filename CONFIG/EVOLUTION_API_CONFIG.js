@@ -1,55 +1,71 @@
 /**
  * CONFIGURAÇÃO EVOLUTION API - ENSIDE SISTEMA
- * Servidor hospedado no Render
+ * 3 Ambientes disponíveis
+ * Atualizado: 03/01/2026
  */
 
 const EVOLUTION_CONFIG = {
-    // URL da API via ngrok (expõe localhost:8080)
-    apiUrl: 'https://isa-unawed-marquetta.ngrok-free.dev',
     
-    // Chave de autenticação
-    apiKey: '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
+    // ==================== AMBIENTE 1: RENDER (PRODUÇÃO) ====================
+    render: {
+        apiUrl: 'https://evolution-api-latest-poc1.onrender.com',
+        apiKey: 'evolution-api-enside-2024-secret',
+        instanceName: 'ENSIDE',
+        managerUrl: 'https://evolution-api-latest-poc1.onrender.com/manager'
+    },
     
-    // Nome da instância
-    instanceName: 'enside',
+    // ==================== AMBIENTE 2: LOCAL (DOCKER) ====================
+    local: {
+        apiUrl: 'http://localhost:8080',
+        apiKey: '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
+        instanceName: 'enside',
+        managerUrl: 'http://localhost:8080/manager/enside'
+    },
+    
+    // ==================== AMBIENTE 3: VERCEL (FRONTEND) ====================
+    vercel: {
+        url: 'https://enside-sistema.vercel.app',
+        webhookUrl: 'https://enside-sistema.vercel.app/api/webhook'
+    },
+    
+    // ==================== CONFIGURAÇÃO ATIVA ====================
+    ambienteAtivo: 'local',
     
     // WhatsApp conectado
     whatsappNumber: '5518996540492',
     
-    // Webhook URL (Vercel)
-    webhookUrl: 'https://enside-sistema.vercel.app/api/webhook',
-    
-    // Database (PostgreSQL no Render)
-    database: {
-        provider: 'postgresql',
-        url: 'postgresql://enside_evolution_db_user:8zdmCeHn1qj3moiCCb4r6rJl5ygFuXzP@dpg-d58npdn5r7bs738r1ft0-a.internal/enside_evolution_db'
+    // Retorna config do ambiente ativo
+    getConfig() {
+        return this[this.ambienteAtivo];
     },
     
     // Função para testar conexão
-    async testarConexao() {
+    async testarConexao(ambiente = null) {
+        const config = ambiente ? this[ambiente] : this.getConfig();
         try {
-            const response = await fetch(`${this.apiUrl}/instance/connectionState/${this.instanceName}`, {
+            const response = await fetch(`${config.apiUrl}/instance/connectionState/${config.instanceName}`, {
                 headers: {
-                    'apikey': this.apiKey
+                    'apikey': config.apiKey
                 }
             });
             const data = await response.json();
-            console.log('✅ Evolution API conectada:', data);
-            return { sucesso: true, data };
+            console.log(`✅ Evolution API (${ambiente || this.ambienteAtivo}) conectada:`, data);
+            return { sucesso: true, data, ambiente: ambiente || this.ambienteAtivo };
         } catch (error) {
-            console.error('❌ Erro ao conectar Evolution API:', error);
+            console.error(`❌ Erro ao conectar Evolution API (${ambiente || this.ambienteAtivo}):`, error);
             return { sucesso: false, erro: error.message };
         }
     },
     
     // Função para enviar mensagem
-    async enviarMensagem(numero, mensagem) {
+    async enviarMensagem(numero, mensagem, ambiente = null) {
+        const config = ambiente ? this[ambiente] : this.getConfig();
         try {
-            const response = await fetch(`${this.apiUrl}/message/sendText/${this.instanceName}`, {
+            const response = await fetch(`${config.apiUrl}/message/sendText/${config.instanceName}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'apikey': this.apiKey
+                    'apikey': config.apiKey
                 },
                 body: JSON.stringify({
                     number: numero,
@@ -66,11 +82,12 @@ const EVOLUTION_CONFIG = {
     },
     
     // Função para gerar QR Code
-    async gerarQRCode() {
+    async gerarQRCode(ambiente = null) {
+        const config = ambiente ? this[ambiente] : this.getConfig();
         try {
-            const response = await fetch(`${this.apiUrl}/instance/connect/${this.instanceName}`, {
+            const response = await fetch(`${config.apiUrl}/instance/connect/${config.instanceName}`, {
                 headers: {
-                    'apikey': this.apiKey
+                    'apikey': config.apiKey
                 }
             });
             const data = await response.json();
@@ -83,6 +100,17 @@ const EVOLUTION_CONFIG = {
             console.error('❌ Erro ao gerar QR Code:', error);
             return { sucesso: false, erro: error.message };
         }
+    },
+    
+    // Testar todos os ambientes
+    async testarTodos() {
+        console.log('🔍 Testando todos os ambientes...');
+        const resultados = {
+            local: await this.testarConexao('local'),
+            render: await this.testarConexao('render')
+        };
+        console.log('📊 Resultados:', resultados);
+        return resultados;
     }
 };
 
@@ -91,4 +119,10 @@ if (typeof window !== 'undefined') {
     window.EVOLUTION_CONFIG = EVOLUTION_CONFIG;
 }
 
-console.log('✅ Evolution API Config carregado - URL:', EVOLUTION_CONFIG.apiUrl);
+if (typeof module !== 'undefined') {
+    module.exports = EVOLUTION_CONFIG;
+}
+
+console.log('✅ Evolution API Config carregado');
+console.log('   Ambiente ativo:', EVOLUTION_CONFIG.ambienteAtivo);
+console.log('   URL:', EVOLUTION_CONFIG.getConfig().apiUrl);
