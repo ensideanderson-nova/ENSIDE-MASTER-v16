@@ -608,7 +608,7 @@
         .animate-slideIn { animation: slideIn 0.3s ease-out; }
     </style>
 <script src="CONFIG/INTEGRACAO_COMPLETA.js"></script><script src="CONFIG/ESPECIALISTA_IA.js"></script><script src="CONFIG/PADRAO_IMPORTACAO_SHEETS.js"></script><script src="CONFIG/SINCRONIZAR_LISTAS_TRANSMISSAO.js"></script></head>
-<body class="theme-blue">
+<body class="theme-orange">
     <!-- THEME SWITCHER -->
     <div class="theme-switcher">
         <button class="theme-btn blue active" onclick="setTheme('blue')" title="Azul"></button>
@@ -4542,7 +4542,7 @@ ${filtros.join('\n') || 'Nenhum filtro'}
         }
 
         function carregarTema() {
-            const savedTheme = localStorage.getItem('enside-theme') || 'blue';
+            const savedTheme = localStorage.getItem('enside-theme') || 'orange';
             const savedMode = localStorage.getItem('enside-dark-mode') || 'dark';
             
             setTheme(savedTheme);
