@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes dos Fretes - Anderson Enside Logística</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --color-black: #000000;
+            --color-gold: #FFD700;
+            --color-gold-dark: #C9A961;
+            --color-white: #FFFFFF;
+            --color-green-neon: #00FF00;
+            --color-red: #FF0000;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: var(--color-white);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px;
+            border-bottom: 2px solid var(--color-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 1.5em; font-weight: 900; color: var(--color-gold); }
+        .user-info {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--color-green-neon);
+            border-radius: 10px;
+            padding: 10px 20px;
+            color: var(--color-green-neon);
+        }
+        .main-container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        .welcome-box {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1) 0%, rgba(0, 0, 0, 0.9) 100%);
+            border: 2px solid var(--color-green-neon);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .welcome-title { font-size: 2em; color: var(--color-gold); margin-bottom: 10px; }
+        .welcome-subtitle { font-size: 1.2em; color: var(--color-green-neon); }
+        .section-title {
+            font-size: 1.8em;
+            color: var(--color-gold);
+            margin: 40px 0 20px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        .fretes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
+        .frete-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 26, 0.9) 100%);
+            border: 2px solid var(--color-gold);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        .frete-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-green-neon);
+            box-shadow: 0 10px 40px rgba(0, 255, 0, 0.3);
+        }
+        .frete-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .frete-rota { font-size: 1.3em; font-weight: 900; color: var(--color-gold); }
+        .frete-valor { font-size: 1.5em; font-weight: 900; color: var(--color-green-neon); }
+        .frete-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .frete-info-item { font-size: 0.95em; color: #ccc; }
+        .frete-info-item strong { color: var(--color-white); }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+        }
+        .btn-whatsapp:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4); }
+        .footer {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 2px solid var(--color-gold);
+            margin-top: 60px;
+        }
+        @media (max-width: 768px) {
+            .header { flex-direction: column; gap: 15px; }
+            .fretes-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🚚 ANDERSON ENSIDE LOGISTICS</div>
+        <div class="user-info" id="userInfo">
+            ✅ Bem-vindo, <span id="userName">Visitante</span>!
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="welcome-box">
+            <h1 class="welcome-title">🎉 Parabéns! Você está cadastrado!</h1>
+            <p class="welcome-subtitle">Agora você tem acesso a todos os fretes disponíveis</p>
+        </div>
+
+        <h2 class="section-title">📦 Fretes Disponíveis Agora</h2>
+        
+        <div class="fretes-grid">
+            <div class="frete-card">
+                <div class="frete-header">
+                    <span class="frete-rota">📍 Assis/SP → Curitiba/PR</span>
+                    <span class="frete-valor">R$ 2.800</span>
+                </div>
+                <div class="frete-info">
+                    <div class="frete-info-item"><strong>Carga:</strong> Eucalipto Tratado</div>
+                    <div class="frete-info-item"><strong>Peso:</strong> 28 toneladas</div>
+                    <div class="frete-info-item"><strong>Distância:</strong> 420 km</div>
+                    <div class="frete-info-item"><strong>Veículo:</strong> Carreta</div>
+                </div>
+                <button class="btn btn-whatsapp" onclick="solicitarFrete('Assis/SP - Curitiba/PR', 'R$ 2.800')">
+                    📱 Solicitar via WhatsApp
+                </button>
+            </div>
+
+            <div class="frete-card">
+                <div class="frete-header">
+                    <span class="frete-rota">📍 Assis/SP → Tubarão/SC</span>
+                    <span class="frete-valor">R$ 3.500</span>
+                </div>
+                <div class="frete-info">
+                    <div class="frete-info-item"><strong>Carga:</strong> Mourões CCA</div>
+                    <div class="frete-info-item"><strong>Peso:</strong> 25 toneladas</div>
+                    <div class="frete-info-item"><strong>Distância:</strong> 580 km</div>
+                    <div class="frete-info-item"><strong>Veículo:</strong> Bitrem</div>
+                </div>
+                <button class="btn btn-whatsapp" onclick="solicitarFrete('Assis/SP - Tubarão/SC', 'R$ 3.500')">
+                    📱 Solicitar via WhatsApp
+                </button>
+            </div>
+
+            <div class="frete-card">
+                <div class="frete-header">
+                    <span class="frete-rota">📍 Assis/SP → São Paulo/SP</span>
+                    <span class="frete-valor">R$ 1.800</span>
+                </div>
+                <div class="frete-info">
+                    <div class="frete-info-item"><strong>Carga:</strong> Palanques</div>
+                    <div class="frete-info-item"><strong>Peso:</strong> 20 toneladas</div>
+                    <div class="frete-info-item"><strong>Distância:</strong> 430 km</div>
+                    <div class="frete-info-item"><strong>Veículo:</strong> Truck</div>
+                </div>
+                <button class="btn btn-whatsapp" onclick="solicitarFrete('Assis/SP - São Paulo/SP', 'R$ 1.800')">
+                    📱 Solicitar via WhatsApp
+                </button>
+            </div>
+
+            <div class="frete-card">
+                <div class="frete-header">
+                    <span class="frete-rota">📍 Assis/SP → Porto Alegre/RS</span>
+                    <span class="frete-valor">R$ 4.200</span>
+                </div>
+                <div class="frete-info">
+                    <div class="frete-info-item"><strong>Carga:</strong> Eucalipto Tratado</div>
+                    <div class="frete-info-item"><strong>Peso:</strong> 30 toneladas</div>
+                    <div class="frete-info-item"><strong>Distância:</strong> 850 km</div>
+                    <div class="frete-info-item"><strong>Veículo:</strong> Rodotrem</div>
+                </div>
+                <button class="btn btn-whatsapp" onclick="solicitarFrete('Assis/SP - Porto Alegre/RS', 'R$ 4.200')">
+                    📱 Solicitar via WhatsApp
+                </button>
+            </div>
+
+            <div class="frete-card">
+                <div class="frete-header">
+                    <span class="frete-rota">📍 Assis/SP → Belo Horizonte/MG</span>
+                    <span class="frete-valor">R$ 2.500</span>
+                </div>
+                <div class="frete-info">
+                    <div class="frete-info-item"><strong>Carga:</strong> Mourões</div>
+                    <div class="frete-info-item"><strong>Peso:</strong> 22 toneladas</div>
+                    <div class="frete-info-item"><strong>Distância:</strong> 680 km</div>
+                    <div class="frete-info-item"><strong>Veículo:</strong> Carreta</div>
+                </div>
+                <button class="btn btn-whatsapp" onclick="solicitarFrete('Assis/SP - Belo Horizonte/MG', 'R$ 2.500')">
+                    📱 Solicitar via WhatsApp
+                </button>
+            </div>
+
+            <div class="frete-card">
+                <div class="frete-header">
+                    <span class="frete-rota">📍 Assis/SP → Rio de Janeiro/RJ</span>
+                    <span class="frete-valor">R$ 3.200</span>
+                </div>
+                <div class="frete-info">
+                    <div class="frete-info-item"><strong>Carga:</strong> Palanques CCA</div>
+                    <div class="frete-info-item"><strong>Peso:</strong> 26 toneladas</div>
+                    <div class="frete-info-item"><strong>Distância:</strong> 620 km</div>
+                    <div class="frete-info-item"><strong>Veículo:</strong> Bitrem</div>
+                </div>
+                <button class="btn btn-whatsapp" onclick="solicitarFrete('Assis/SP - Rio de Janeiro/RJ', 'R$ 3.200')">
+                    📱 Solicitar via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>ANDERSON ENSIDE LOGISTICS</strong></p>
+        <p>✨ Conectando o Brasil com Qualidade ✨</p>
+    </div>
+
+    <script>
+        // Recuperar dados do lead
+        const urlParams = new URLSearchParams(window.location.search);
+        const nome = urlParams.get('nome') || localStorage.getItem('leadData') ? JSON.parse(localStorage.getItem('leadData')).nome : 'Visitante';
+        const whatsapp = urlParams.get('whatsapp') || localStorage.getItem('leadData') ? JSON.parse(localStorage.getItem('leadData')).whatsapp : '';
+        
+        // Exibir nome do usuario
+        document.getElementById('userName').textContent = nome.split(' ')[0];
+        
+        // Funcao para solicitar frete via WhatsApp
+        function solicitarFrete(rota, valor) {
+            const mensagem = `Olá! Sou ${nome} e tenho interesse no frete:
+
+📦 Rota: ${rota}
+💰 Valor: ${valor}
+
+Gostaria de mais informações!`;
+            
+            const whatsappNumber = '5518996540492'; // Numero da empresa
+            const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(mensagem)}`;
+            
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>

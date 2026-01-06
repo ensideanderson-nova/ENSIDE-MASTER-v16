@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Captação de Fretes - Anderson Enside Logística</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-black: #000000;
+            --color-gold: #FFD700;
+            --color-gold-dark: #C9A961;
+            --color-white: #FFFFFF;
+            --color-green-neon: #00FF00;
+            --color-orange: #FFA500;
+            --color-red: #FF0000;
+            --color-red-dark: #CC0000;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: var(--color-white);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--color-gold);
+            box-shadow: 0 5px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 900;
+            color: var(--color-gold);
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 0.4em;
+            color: var(--color-white);
+            font-weight: 400;
+            letter-spacing: 4px;
+            margin-top: 5px;
+        }
+
+        .progress-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .progress-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1;
+        }
+
+        .progress-line-active {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-gold) 0%, var(--color-green-neon) 100%);
+            z-index: 2;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            flex: 1;
+        }
+
+        .progress-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.2em;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .progress-circle {
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-dark) 100%);
+            border-color: var(--color-gold);
+            color: var(--color-black);
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            animation: pulse-slow 2s infinite;
+        }
+
+        .progress-step.completed .progress-circle {
+            background: linear-gradient(135deg, var(--color-green-neon) 0%, #00CC00 100%);
+            border-color: var(--color-green-neon);
+            color: var(--color-black);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+        }
+
+        .progress-step.completed .progress-circle::before {
+            content: '✓';
+            font-size: 1.2em;
+        }
+
+        .progress-label {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .progress-label,
+        .progress-step.completed .progress-label {
+            color: var(--color-white);
+            font-weight: 700;
+        }
+
+        .stats-bar {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.9) 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.2em;
+            font-weight: 900;
+            color: var(--color-green-neon);
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+            animation: pulse 2s infinite;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: var(--color-gold);
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .alert-box {
+            background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-dark) 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: 900;
+            color: var(--color-white);
+            margin-bottom: 40px;
+            border: 3px solid var(--color-gold);
+            box-shadow: 0 10px 40px rgba(255, 0, 0, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .titulo-impacto {
+            font-size: 2.8em;
+            font-weight: 900;
+            color: var(--color-gold);
+            text-align: center;
+            margin: 40px 0;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            line-height: 1.2;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1) 0%, rgba(0, 0, 0, 0.9) 100%);
+            border: 2px solid var(--color-gold);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--color-green-neon);
+            box-shadow: 0 15px 50px rgba(0, 255, 0, 0.4);
+        }
+
+        .card-cidade {
+            text-align: center;
+        }
+
+        .card-emoji {
+            font-size: 4em;
+            display: block;
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        .card-titulo {
+            font-size: 1.4em;
+            font-weight: 900;
+            color: var(--color-gold);
+            margin-bottom: 10px;
+        }
+
+        .card-info {
+            font-size: 1.1em;
+            color: var(--color-white);
+            margin: 5px 0;
+        }
+
+        .card-valor {
+            font-size: 1.3em;
+            font-weight: 900;
+            color: var(--color-green-neon);
+            margin-top: 10px;
+            text-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-dark) 100%);
+            color: var(--color-white);
+            box-shadow: 0 10px 40px rgba(255, 0, 0, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(255, 0, 0, 0.6);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 1em;
+            font-weight: 700;
+            color: var(--color-gold);
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            color: var(--color-white);
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--color-green-neon);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+            border: 3px solid var(--color-gold);
+            border-radius: 25px;
+            padding: 50px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 100px rgba(255, 215, 0, 0.5);
+        }
+
+        .modal-titulo {
+            font-size: 2.2em;
+            font-weight: 900;
+            color: var(--color-gold);
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2.5em;
+            color: var(--color-gold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--color-red);
+            transform: rotate(90deg);
+        }
+
+        .mensagem {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: 700;
+            display: none;
+        }
+
+        .mensagem.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .mensagem-sucesso {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2) 0%, rgba(0, 0, 0, 0.8) 100%);
+            border: 2px solid var(--color-green-neon);
+            color: var(--color-green-neon);
+        }
+
+        .mensagem-erro {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.8) 100%);
+            border: 2px solid var(--color-red);
+            color: var(--color-red);
+        }
+
+        .footer {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 2px solid var(--color-gold);
+            margin-top: 80px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 1.3em; }
+            .stat-number { font-size: 1.8em; }
+            .titulo-impacto { font-size: 2em; }
+            .grid, .grid-3 { grid-template-columns: 1fr; }
+            .progress-bar { flex-direction: column; gap: 20px; }
+            .progress-line, .progress-line-active { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">
+            ANDERSON ENSIDE LOGISTICS
+            <span>Freight & Cargo Solutions</span>
+        </div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-line"></div>
+            <div class="progress-line-active" id="progressLineActive" style="width: 0%;"></div>
+            <div class="progress-step active" id="step1" data-step="1">
+                <div class="progress-circle">1</div>
+                <div class="progress-label">Interesse</div>
+            </div>
+            <div class="progress-step" id="step2" data-step="2">
+                <div class="progress-circle">2</div>
+                <div class="progress-label">Rotas & Propostas</div>
+            </div>
+            <div class="progress-step" id="step3" data-step="3">
+                <div class="progress-circle">3</div>
+                <div class="progress-label">Dados Completos</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number" id="totalFretes">247</div>
+            <div class="stat-label">Fretes Disponíveis</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">R$ 8.500</div>
+            <div class="stat-label">Média Mensal</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">1.834</div>
+            <div class="stat-label">Motoristas Ativos</div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="page-section active" id="page1">
+            <div class="alert-box">
+                🔥 PARE DE RODAR VAZIO - CARGAS DISPONÍVEIS AGORA! 🔥
+            </div>
+
+            <h1 class="titulo-impacto">
+                VEJA TODOS OS FRETES E VALORES AGORA!
+            </h1>
+
+            <div class="grid grid-3">
+                <div class="card card-cidade">
+                    <span class="card-emoji">🇧🇷</span>
+                    <div class="card-titulo">CURITIBA - PR</div>
+                    <div class="card-info">47 fretes disponíveis</div>
+                    <div class="card-valor">R$ 1.800 - 4.200</div>
+                </div>
+                <div class="card card-cidade">
+                    <span class="card-emoji">🇧🇷</span>
+                    <div class="card-titulo">TUBARÃO - SC</div>
+                    <div class="card-info">38 fretes disponíveis</div>
+                    <div class="card-valor">R$ 2.100 - 5.800</div>
+                </div>
+                <div class="card card-cidade">
+                    <span class="card-emoji">🇧🇷</span>
+                    <div class="card-titulo">SÃO PAULO - SP</div>
+                    <div class="card-info">62 fretes disponíveis</div>
+                    <div class="card-valor">R$ 1.500 - 6.500</div>
+                </div>
+                <div class="card card-cidade">
+                    <span class="card-emoji">🇧🇷</span>
+                    <div class="card-titulo">RIO DE JANEIRO - RJ</div>
+                    <div class="card-info">41 fretes disponíveis</div>
+                    <div class="card-valor">R$ 2.200 - 5.200</div>
+                </div>
+                <div class="card card-cidade">
+                    <span class="card-emoji">🇧🇷</span>
+                    <div class="card-titulo">BELO HORIZONTE - MG</div>
+                    <div class="card-info">35 fretes disponíveis</div>
+                    <div class="card-valor">R$ 1.900 - 4.800</div>
+                </div>
+                <div class="card card-cidade">
+                    <span class="card-emoji">🇧🇷</span>
+                    <div class="card-titulo">PORTO ALEGRE - RS</div>
+                    <div class="card-info">24 fretes disponíveis</div>
+                    <div class="card-valor">R$ 2.400 - 5.100</div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="abrirModalFormulario()">
+                🚀 VER FRETES E FAZER MINHA PROPOSTA AGORA!
+            </button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalFormulario">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModal()">&times;</span>
+            <div class="modal-header">
+                <h2 class="modal-titulo">🚀 COMECE AGORA!</h2>
+                <p style="color: var(--color-white); margin-top: 15px;">Preencha os dados abaixo para ver todos os fretes disponíveis</p>
+            </div>
+            <form id="formInicial" onsubmit="event.preventDefault(); validarFormInicial();">
+                <div class="form-group">
+                    <label class="form-label">Nome Completo *</label>
+                    <input type="text" class="form-input" id="nomeCompleto" placeholder="Digite seu nome completo" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">WhatsApp *</label>
+                    <input type="tel" class="form-input" id="whatsapp" placeholder="(00) 00000-0000" required>
+                </div>
+                <div id="mensagemModal" class="mensagem"></div>
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 30px;">
+                    ✅ CONTINUAR PARA VER FRETES
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>ANDERSON ENSIDE LOGISTICS - Freight & Cargo Solutions</strong></p>
+        <p>✨ 30+ Anos Conectando o Brasil ✨</p>
+        <p style="font-size: 0.9em; color: #999; margin-top: 15px;">© 2024 Anderson Enside Logística. Todos os direitos reservados.</p>
+    </div>
+
+    <script>
+        function abrirModalFormulario() {
+            document.getElementById('modalFormulario').classList.add('active');
+        }
+
+        function fecharModal() {
+            document.getElementById('modalFormulario').classList.remove('active');
+        }
+
+        function validarFormInicial() {
+            const nome = document.getElementById('nomeCompleto').value.trim();
+            const whatsapp = document.getElementById('whatsapp').value.trim();
+            
+            if (nome.length < 3) {
+                mostrarMensagem('mensagemModal', 'Nome deve ter pelo menos 3 caracteres', 'erro');
+                return false;
+            }
+            
+            // Salvar dados do lead no localStorage
+            const leadData = {
+                nome: nome,
+                whatsapp: whatsapp,
+                data: new Date().toLocaleString('pt-BR'),
+                seguro: 'Nao',
+                status: 'NOVO'
+            };
+            localStorage.setItem('leadData', JSON.stringify(leadData));
+            
+            // Enviar para Google Sheets
+            enviarParaPlanilha(nome, whatsapp);
+            
+            // Mostrar mensagem de sucesso
+            mostrarMensagem('mensagemModal', '✅ Cadastro realizado! Redirecionando...', 'sucesso');
+            
+            // Redirecionar para o segundo HTML apos 2 segundos
+            setTimeout(() => {
+                window.location.href = 'FRETES_DETALHES.html?nome=' + encodeURIComponent(nome) + '&whatsapp=' + encodeURIComponent(whatsapp);
+            }, 2000);
+        }
+        
+        function enviarParaPlanilha(nome, whatsapp) {
+            const SHEET_ID = '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE';
+            const SHEET_NAME = 'CAPTACAO_FRETES';
+            const data = new Date().toLocaleString('pt-BR');
+            
+            // URL do Google Apps Script (precisa ser configurado)
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJIb5zbNPgaySoQKAPzQRYN4W3EUdtO1Oni7Qn0ObNX4c0pS-4QczvIwMHI-IrxhpYhQ/exec';
+            
+            const params = {
+                nome: nome,
+                whatsapp: whatsapp,
+                data: data,
+                seguro: 'Não',
+                status: 'NOVO'
+            };
+            
+            console.log('Dados para enviar:', params);
+            console.log('Planilha ID:', SHEET_ID);
+            console.log('Aba:', SHEET_NAME);
+        }
+
+        function mostrarMensagem(elementId, texto, tipo) {
+            const elemento = document.getElementById(elementId);
+            elemento.textContent = texto;
+            elemento.className = 'mensagem mensagem-' + tipo + ' active';
+            setTimeout(() => { elemento.classList.remove('active'); }, 5000);
+        }
+
+        document.getElementById('whatsapp').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.substring(0, 11);
+            if (value.length >= 11) {
+                e.target.value = '(' + value.substring(0,2) + ') ' + value.substring(2,7) + '-' + value.substring(7,11);
+            } else if (value.length >= 7) {
+                e.target.value = '(' + value.substring(0,2) + ') ' + value.substring(2,7) + '-' + value.substring(7);
+            } else if (value.length >= 2) {
+                e.target.value = '(' + value.substring(0,2) + ') ' + value.substring(2);
+            } else {
+                e.target.value = value;
+            }
+        });
+    </script>
+</body>
+</html>

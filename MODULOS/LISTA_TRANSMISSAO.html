@@ -113,13 +113,14 @@
                 
                 todosContatos = json.table.rows.slice(1).map((row, idx) => ({
                     id: idx,
-                    nome: row.c[1]?.v || '',
-                    telefone: String(row.c[2]?.v || ''),
-                    categoria: row.c[3]?.v || '',
-                    cidade: row.c[5]?.v || '',
-                    uf: row.c[6]?.v || '',
-                    status: row.c[9]?.v || ''
-                })).filter(c => c.nome && c.telefone);
+                    nome: row.c[1]?.v || '',           // Coluna B = NOME
+                    telefone: String(row.c[2]?.v || ''), // Coluna C = TELEFONE
+                    categoria: row.c[3]?.v || '',       // Coluna D = CATEGORIA
+                    subcategoria: row.c[4]?.v || '',    // Coluna E = SUBCATEGORIA
+                    cidade: '',
+                    uf: '',
+                    status: 'ATIVO'
+                })).filter(c => c.nome && c.telefone && c.telefone.length >= 10);
                 
                 contatosFiltrados = [...todosContatos];
                 renderizarTabela();
@@ -162,13 +163,27 @@
             const status = document.getElementById('filterStatus').value;
             const uf = document.getElementById('filterUF').value;
             
+            console.log('Filtros aplicados:', { nome, categoria, status, uf });
+            console.log('Total contatos antes do filtro:', todosContatos.length);
+            
             contatosFiltrados = todosContatos.filter(c => {
+                // Filtro por nome
                 if (nome && !c.nome.toLowerCase().includes(nome)) return false;
-                if (categoria && c.categoria !== categoria) return false;
-                if (status && c.status !== status) return false;
-                if (uf && c.uf !== uf) return false;
+                
+                // Filtro por categoria (case insensitive)
+                if (categoria && c.categoria.toUpperCase() !== categoria.toUpperCase()) return false;
+                
+                // Filtro por status (case insensitive)
+                if (status && c.status.toUpperCase() !== status.toUpperCase()) return false;
+                
+                // Filtro por UF (case insensitive)
+                if (uf && c.uf.toUpperCase() !== uf.toUpperCase()) return false;
+                
                 return true;
             });
+            
+            console.log('Total contatos após filtro:', contatosFiltrados.length);
+            document.getElementById('totalContatos').textContent = `${contatosFiltrados.length} contatos filtrados de ${todosContatos.length}`;
             renderizarTabela();
         }
 
@@ -206,11 +221,11 @@
             carregarContatos();
         }
 
-        // Configuração da Evolution API
+        // Configuração da Evolution API - LOCALHOST (Docker)
         const EVOLUTION_CONFIG = {
-            url: 'https://evolution-api-latest-poc1.onrender.com',
-            apiKey: 'evolution-api-enside-2024-secret',
-            instance: 'ENSIDE'
+            url: 'http://localhost:8080',
+            apiKey: '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
+            instance: 'enside'
         };
 
         // Função para enviar mensagem com retry
@@ -225,7 +240,7 @@
                         },
                         body: JSON.stringify({
                             number: numero,
-                            text: mensagem
+                            textMessage: { text: mensagem }
                         })
                     });
                     
@@ -268,7 +283,16 @@
             }
             
             const nomeLista = document.getElementById('nomeLista').value || 'Lista ' + new Date().toLocaleDateString();
-            const contatos = todosContatos.filter(c => selecionados.has(c.id));
+            let contatos = todosContatos.filter(c => selecionados.has(c.id));
+            
+            // Limitar a 30 contatos para teste
+            const LIMITE = 30;
+            if (contatos.length > LIMITE) {
+                if (!confirm(`⚠️ Você selecionou ${contatos.length} contatos.\n\nDeseja enviar apenas para os primeiros ${LIMITE}?`)) {
+                    return;
+                }
+                contatos = contatos.slice(0, LIMITE);
+            }
             
             // Perguntar a mensagem
             const mensagem = prompt('Digite a mensagem para enviar:', '🌲 Olá! Somos a ENSIDE MADEIRAS. Confira nossas ofertas de eucalipto tratado!');

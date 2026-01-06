@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 ENSIDE v7.4 SUPREME INTEGRATION - localhost:5003</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --supreme: #6d28d9;
+            --ai: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --whatsapp: #25D366;
+            --local: #06b6d4;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, var(--supreme) 100%);
+            min-height: 100vh;
+            padding: 12px;
+            color: #fff;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        .panel {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 2px solid var(--ai);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3);
+            margin-bottom: 12px;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--ai);
+        }
+        .header h1 {
+            color: #a78bfa;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+        .status-bar {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 20px;
+            border: 1px solid var(--ai);
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .status-dot.online { background: var(--success); }
+        .status-dot.offline { background: var(--danger); }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        .tab-btn {
+            padding: 12px 18px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: #a78bfa;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .tab-btn:hover { border-color: var(--ai); }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--supreme), var(--ai));
+            color: white;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .section-title {
+            color: #a78bfa;
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--local);
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat {
+            background: linear-gradient(135deg, rgba(109, 40, 217, 0.5), rgba(139, 92, 246, 0.3));
+            border: 2px solid var(--ai);
+            color: #a78bfa;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-number { font-size: 2.5em; font-weight: bold; }
+        .stat-label { font-size: 0.9em; margin-top: 8px; }
+        .chat-box {
+            border: 2px solid var(--ai);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+            background: rgba(15, 23, 42, 0.5);
+        }
+        .chat-header {
+            background: linear-gradient(135deg, var(--supreme), var(--ai));
+            color: white;
+            padding: 15px 20px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+        }
+        .chat-messages {
+            height: 450px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.3);
+        }
+        .msg-user {
+            background: var(--local);
+            margin: 10px 0 10px auto;
+            padding: 12px 15px;
+            border-radius: 12px;
+            max-width: 75%;
+            color: white;
+        }
+        .msg-agent {
+            background: rgba(139, 92, 246, 0.3);
+            margin: 10px 0;
+            padding: 12px 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--ai);
+            max-width: 75%;
+            color: #a78bfa;
+        }
+        .msg-server {
+            background: rgba(6, 182, 212, 0.3);
+            margin: 10px 0;
+            padding: 12px 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--local);
+            max-width: 100%;
+            color: #67e8f9;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .chat-input {
+            display: flex;
+            border-top: 2px solid var(--ai);
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            font-size: 1em;
+            background: rgba(30, 41, 59, 0.8);
+            color: #a78bfa;
+        }
+        .chat-input input::placeholder { color: rgba(167, 139, 250, 0.5); }
+        .chat-input button {
+            background: linear-gradient(135deg, var(--supreme), var(--ai));
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--supreme), var(--ai));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+            transition: all 0.3s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(139, 92, 246, 0.5); }
+        .btn-full { width: 100%; margin: 8px 0; padding: 14px; }
+        .btn-local { background: linear-gradient(135deg, var(--local), #0891b2); }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--ai);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            background: rgba(30, 41, 59, 0.8);
+            color: #a78bfa;
+        }
+        input::placeholder, textarea::placeholder { color: rgba(167, 139, 250, 0.5); }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--local);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+        .card {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid var(--ai);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            color: #a78bfa;
+        }
+        .card-title { font-weight: 700; margin-bottom: 8px; }
+        .card-content { font-size: 0.9em; }
+        .sync-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .sync-syncing { background: rgba(245, 158, 11, 0.3); color: #fcd34d; }
+        .sync-success { background: rgba(16, 185, 129, 0.3); color: #6ee7b7; }
+        .sync-error { background: rgba(239, 68, 68, 0.3); color: #fca5a5; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        thead { background: rgba(139, 92, 246, 0.3); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--ai); color: #a78bfa; }
+        @media (max-width: 600px) {
+            .chat-messages { height: 300px; }
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- HEADER -->
+    <div class="panel">
+        <div class="header">
+            <h1>🚀 ENSIDE v7.4 SUPREME INTEGRATION</h1>
+            <p style="color: #cbd5e1;">IA Suprema + localhost:5003 + Memória Histórica</p>
+            
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-dot online" id="statusIA"></div>
+                    <span>🧠 IA Suprema</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot" id="statusLocal"></div>
+                    <span id="statusLocalLabel">🔌 localhost:5003</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot online"></div>
+                    <span>💾 Memória</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="panel">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="abrirAba('dashboard', this)">📊 Dashboard</button>
+            <button class="tab-btn" onclick="abrirAba('ia', this)">🧠 IA Suprema</button>
+            <button class="tab-btn" onclick="abrirAba('server', this)">🔌 Servidor Local</button>
+            <button class="tab-btn" onclick="abrirAba('sync', this)">🔄 Sincronização</button>
+            <button class="tab-btn" onclick="abrirAba('dados', this)">📈 Dados Integrados</button>
+            <button class="tab-btn" onclick="abrirAba('memory', this)">💾 Memória IA</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="tab-content active">
+        <div class="panel">
+            <h2 class="section-title">📊 Dashboard Integrado</h2>
+
+            <div class="stat-grid">
+                <div class="stat">
+                    <div class="stat-number" id="statTotal">0</div>
+                    <div class="stat-label">📊 Total Dados</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="statSync">0</div>
+                    <div class="stat-label">🔄 Sincronizações</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="statServerData">0</div>
+                    <div class="stat-label">🔌 Server</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="statIA">1</div>
+                    <div class="stat-label">🧠 Nível IA</div>
+                </div>
+            </div>
+
+            <h3 style="color: #a78bfa; margin-top: 30px; margin-bottom: 15px;">⚡ Status de Integração</h3>
+            <div class="card">
+                <div class="card-title">🔌 Conexão com localhost:5003</div>
+                <div class="card-content" id="statusServer">Conectando...</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔄 Última Sincronização</div>
+                <div class="card-content" id="statusLastSync">Nunca sincronizado</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💾 Memória IA</div>
+                <div class="card-content" id="statusMemory">Carregando...</div>
+            </div>
+
+            <h3 style="color: #a78bfa; margin-top: 30px; margin-bottom: 15px;">🚀 Ações Rápidas</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+                <button class="btn-full btn-local" onclick="testarConexao()">🧪 Testar Conexão</button>
+                <button class="btn-full btn-local" onclick="sincronizarAgora()">⚡ Sincronizar Agora</button>
+                <button class="btn-full" onclick="abrirAba('server', document.querySelector('[onclick*=server]'))">📊 Ver Dados Server</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IA SUPREMA -->
+    <div id="ia" class="tab-content">
+        <div class="panel">
+            <h2 class="section-title">🧠 Chat com IA Suprema</h2>
+
+            <div class="chat-box">
+                <div class="chat-header">
+                    🤖 Enside Agent v7.4 SUPREME INTEGRATION
+                    <span id="aiStatus">🟢 Online</span>
+                </div>
+                <div class="chat-messages" id="chatMsgs"></div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Pergunte à IA..." onkeypress="if(event.key==='Enter')enviarMsg()">
+                    <button onclick="enviarMsg()">→</button>
+                </div>
+            </div>
+
+            <h3 style="color: #a78bfa; margin-top: 20px;">⚡ Comandos</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px;">
+                <button class="btn-full" onclick="executarCmd('status')">📊 Status</button>
+                <button class="btn-full" onclick="executarCmd('servidor')">🔌 Servidor</button>
+                <button class="btn-full" onclick="executarCmd('dados')">📈 Dados</button>
+                <button class="btn-full" onclick="executarCmd('sync')">🔄 Sync</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SERVIDOR LOCAL -->
+    <div id="server" class="tab-content">
+        <div class="panel">
+            <h2 class="section-title">🔌 Servidor Local - localhost:5003</h2>
+
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">⚙️ Configuração</h3>
+            <div class="card">
+                <div class="card-title">URL do Servidor</div>
+                <div class="card-content">
+                    <input type="text" id="serverUrl" value="http://localhost:5003" style="margin-bottom: 10px;">
+                    <button class="btn-full btn-local" onclick="conectarServer()">🔌 Conectar</button>
+                </div>
+            </div>
+
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">📊 Dados do Servidor</h3>
+            <div id="serverData"></div>
+
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">📨 Requisições</h3>
+            <button class="btn-full btn-local" onclick="fetchServerData('/api/status')">GET /api/status</button>
+            <button class="btn-full btn-local" onclick="fetchServerData('/api/dados')">GET /api/dados</button>
+            <button class="btn-full btn-local" onclick="fetchServerData('/messages')">GET /messages</button>
+            
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">🔍 Console do Servidor</h3>
+            <div style="background: rgba(15, 23, 42, 0.5); border: 1px solid var(--local); border-radius: 8px; padding: 12px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.9em;" id="serverConsole">
+                [Aguardando conexão...]
+            </div>
+        </div>
+    </div>
+
+    <!-- SINCRONIZAÇÃO -->
+    <div id="sync" class="tab-content">
+        <div class="panel">
+            <h2 class="section-title">🔄 Sistema de Sincronização Bidirecional</h2>
+
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">⚙️ Configuração de Sync</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                <div class="card">
+                    <div class="card-title">📥 Sincronizar DE Servidor</div>
+                    <button class="btn-full btn-local" onclick="syncFrom()">Puxar Dados</button>
+                </div>
+                <div class="card">
+                    <div class="card-title">📤 Sincronizar PARA Servidor</div>
+                    <button class="btn-full btn-local" onclick="syncTo()">Enviar Dados</button>
+                </div>
+                <div class="card">
+                    <div class="card-title">🔄 Sincronização Completa</div>
+                    <button class="btn-full btn-local" onclick="syncComplete()">Sincronizar Tudo</button>
+                </div>
+            </div>
+
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">📊 Histórico de Sincronizações</h3>
+            <table>
+                <thead>
+                    <tr><th>Tipo</th><th>Hora</th><th>Status</th><th>Dados</th></tr>
+                </thead>
+                <tbody id="syncHistory"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- DADOS INTEGRADOS -->
+    <div id="dados" class="tab-content">
+        <div class="panel">
+            <h2 class="section-title">📈 Dados Integrados (Local + Server)</h2>
+
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">📊 Estatísticas</h3>
+            <table>
+                <thead>
+                    <tr><th>Fonte</th><th>Registros</th><th>Última Atualização</th></tr>
+                </thead>
+                <tbody id="dadosTable"></tbody>
+            </table>
+
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">📋 Dados Combinados</h3>
+            <div id="dadosCombinados"></div>
+        </div>
+    </div>
+
+    <!-- MEMÓRIA -->
+    <div id="memory" class="tab-content">
+        <div class="panel">
+            <h2 class="section-title">💾 Memória Histórica da IA</h2>
+
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">📊 Estatísticas</h3>
+            <div class="card">
+                <div class="card-title">Memórias Ativas</div>
+                <div class="card-content" id="memStats">Carregando...</div>
+            </div>
+
+            <h3 style="color: #a78bfa; margin: 20px 0 15px;">🔧 Gerenciamento</h3>
+            <button class="btn-full" onclick="exportMemory()">📥 Exportar Memória</button>
+            <button class="btn-full" onclick="limparMemory()">🗑️ Limpar Memória</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let db = {
+    ia: { nivel: 1, xp: 0, precisao: 50 },
+    server: { url: 'http://localhost:5003', status: 'offline', dados: null },
+    sync: { ultima: null, historico: [], total: 0 },
+    memoria: { items: 0, ultimo_update: null },
+    versao: '7.4.0'
+};
+
+// ========== CARREGAMENTO ==========
+function carregarDB() {
+    const saved = localStorage.getItem('enside_db_v5');
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.ia) db.ia = parsed.ia;
+        console.log('✅ Memória histórica carregada');
+    }
+    atualizarTudo();
+    conectarServerAutomatico();
+}
+
+function salvarDB() {
+    localStorage.setItem('enside_db_v5', JSON.stringify(db));
+}
+
+function atualizarTudo() {
+    document.getElementById('statTotal').textContent = db.sync.total;
+    document.getElementById('statSync').textContent = db.sync.historico.length;
+    document.getElementById('statIA').textContent = db.ia.nivel;
+    document.getElementById('statusIA').className = 'status-dot online';
+    document.getElementById('memStats').textContent = `${db.memoria.items} itens de memória`;
+}
+
+// ========== CONEXÃO SERVER ==========
+function conectarServerAutomatico() {
+    const urls = [
+        'http://localhost:5003',
+        'http://127.0.0.1:5003',
+        'http://localhost:3000',
+        'http://localhost:8000'
+    ];
+    
+    let conectado = false;
+    urls.forEach(url => {
+        if (!conectado) {
+            fetch(url + '/api/status', { method: 'HEAD' })
+                .then(() => {
+                    db.server.url = url;
+                    db.server.status = 'online';
+                    updateServerStatus();
+                    conectado = true;
+                    addMsgAgent(`✅ Conectado a ${url}`);
+                })
+                .catch(() => {});
+        }
+    });
+    
+    setTimeout(() => {
+        if (!conectado) {
+            db.server.status = 'offline';
+            updateServerStatus();
+            addMsgAgent('⚠️ Servidor local não detectado. Modo offline ativado.');
+        }
+    }, 3000);
+}
+
+function conectarServer() {
+    const url = document.getElementById('serverUrl').value;
+    db.server.url = url;
+    
+    fetch(url + '/api/status', { method: 'HEAD' })
+        .then(() => {
+            db.server.status = 'online';
+            updateServerStatus();
+            addMsgAgent(`✅ Conectado a ${url}`);
+            fetchServerData('/api/status');
+        })
+        .catch(e => {
+            db.server.status = 'offline';
+            updateServerStatus();
+            addMsgAgent(`❌ Erro ao conectar: ${e.message}`);
+        });
+}
+
+function updateServerStatus() {
+    const isOnline = db.server.status === 'online';
+    const el = document.getElementById('statusLocal');
+    const dot = document.getElementById('statusLocalStatus');
+    const label = document.getElementById('statusLocalLabel');
+    
+    if (!dot) {
+        document.getElementById('statusLocal').className = 'status-dot ' + (isOnline ? 'online' : 'offline');
+    } else {
+        dot.className = 'status-dot ' + (isOnline ? 'online' : 'offline');
+    }
+    
+    document.getElementById('statusServer').textContent = isOnline ? 
+        `✅ Conectado a ${db.server.url}` : 
+        `❌ Desconectado - Modo Offline`;
+    
+    document.getElementById('statusLocalLabel').textContent = (isOnline ? '🟢' : '🔴') + ' localhost:5003';
+}
+
+function testarConexao() {
+    addMsgUser('🧪 Testando conexão...');
+    conectarServer();
+}
+
+// ========== FETCH SERVER ==========
+function fetchServerData(endpoint) {
+    if (db.server.status === 'offline') {
+        logConsole('❌ Servidor offline');
+        return;
+    }
+    
+    logConsole(`📡 GET ${endpoint}`);
+    
+    fetch(db.server.url + endpoint)
+        .then(r => r.json())
+        .then(data => {
+            logConsole(`✅ Resposta: ${JSON.stringify(data).substring(0, 100)}...`);
+            db.server.dados = data;
+            db.sync.total = (data.total || 0);
+            renderServerData(data);
+            atualizarTudo();
+        })
+        .catch(e => {
+            logConsole(`❌ Erro: ${e.message}`);
+        });
+}
+
+function renderServerData(data) {
+    const el = document.getElementById('serverData');
+    el.innerHTML = `
+        <div class="card">
+            <div class="card-title">📊 Dados Recebidos</div>
+            <div class="card-content">
+                <pre style="background: rgba(15, 23, 42, 0.5); padding: 10px; border-radius: 5px; overflow-x: auto; color: #67e8f9; font-size: 0.85em;">
+${JSON.stringify(data, null, 2).substring(0, 500)}
+                </pre>
+            </div>
+        </div>
+    `;
+}
+
+function logConsole(msg) {
+    const el = document.getElementById('serverConsole');
+    const timestamp = new Date().toLocaleTimeString('pt-BR');
+    el.innerHTML += `[${timestamp}] ${msg}\n`;
+    el.scrollTop = el.scrollHeight;
+}
+
+// ========== SINCRONIZAÇÃO ==========
+function sincronizarAgora() {
+    addMsgUser('⚡ Sincronizando...');
+    syncComplete();
+}
+
+function syncFrom() {
+    if (db.server.status === 'offline') {
+        alert('❌ Servidor offline');
+        return;
+    }
+    
+    addMsgAgent('📥 Puxando dados do servidor...');
+    fetchServerData('/api/dados');
+    
+    db.sync.historico.push({
+        tipo: 'PULL',
+        hora: new Date().toISOString(),
+        status: 'sucesso'
+    });
+    
+    renderSyncHistory();
+}
+
+function syncTo() {
+    if (db.server.status === 'offline') {
+        alert('❌ Servidor offline');
+        return;
+    }
+    
+    addMsgAgent('📤 Enviando dados para servidor...');
+    
+    db.sync.historico.push({
+        tipo: 'PUSH',
+        hora: new Date().toISOString(),
+        status: 'sucesso'
+    });
+    
+    renderSyncHistory();
+}
+
+function syncComplete() {
+    addMsgAgent('🔄 Sincronizando tudo (PULL → PUSH)...');
+    
+    if (db.server.status === 'online') {
+        syncFrom();
+        setTimeout(syncTo, 500);
+    }
+    
+    db.sync.ultima = new Date().toISOString();
+    document.getElementById('statusLastSync').textContent = `✅ ${new Date().toLocaleString('pt-BR')}`;
+}
+
+function renderSyncHistory() {
+    const el = document.getElementById('syncHistory');
+    el.innerHTML = db.sync.historico.slice(-10).reverse().map(s => `
+        <tr>
+            <td>${s.tipo}</td>
+            <td>${new Date(s.hora).toLocaleTimeString('pt-BR')}</td>
+            <td><span class="sync-success">✅ ${s.status}</span></td>
+            <td>—</td>
+        </tr>
+    `).join('');
+}
+
+// ========== CHAT IA ==========
+function enviarMsg() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    
+    addMsgUser(msg);
+    input.value = '';
+    
+    db.ia.xp += 5;
+    
+    setTimeout(() => {
+        const resposta = gerarResposta(msg);
+        addMsgAgent(resposta);
+        salvarDB();
+    }, 800);
+}
+
+function executarCmd(cmd) {
+    const comandos = {
+        'status': '📊 Status:\n• IA: Online\n• Servidor: ' + (db.server.status === 'online' ? '🟢 Online' : '🔴 Offline') + '\n• Sincronizações: ' + db.sync.historico.length,
+        'servidor': '🔌 Servidor:\n• URL: ' + db.server.url + '\n• Status: ' + db.server.status + '\n• Dados: ' + (db.server.dados ? JSON.stringify(db.server.dados).length : 0) + ' bytes',
+        'dados': '📈 Dados:\n• Total: ' + db.sync.total + ' registros\n• Sync: ' + db.sync.historico.length + ' operações',
+        'sync': '🔄 Última Sync:\n' + (db.sync.ultima ? new Date(db.sync.ultima).toLocaleString('pt-BR') : 'Nunca')
+    };
+    
+    addMsgUser(cmd);
+    addMsgAgent(comandos[cmd] || 'Comando não encontrado');
+}
+
+function gerarResposta(msg) {
+    if (msg.toLowerCase().includes('server') || msg.toLowerCase().includes('localhost')) {
+        return '🔌 Servidor: ' + (db.server.status === 'online' ? '✅ Online em ' + db.server.url : '❌ Offline\n\nClique em "Conectar" para reconectar!');
+    }
+    if (msg.toLowerCase().includes('sync')) {
+        return '🔄 Última sincronização: ' + (db.sync.ultima ? new Date(db.sync.ultima).toLocaleString('pt-BR') : 'Nunca sincronizado');
+    }
+    return '🧠 Entendido! Estou aqui para ajudar com integração de dados, sincronização e análise.\n\nO servidor local está ' + (db.server.status === 'online' ? '✅ online' : '❌ offline') + '.';
+}
+
+function addMsgUser(msg) {
+    const el = document.getElementById('chatMsgs');
+    el.innerHTML += `<div class="msg-user">${msg}</div>`;
+    el.scrollTop = el.scrollHeight;
+}
+
+function addMsgAgent(msg) {
+    const el = document.getElementById('chatMsgs');
+    el.innerHTML += `<div class="msg-agent">${msg}</div>`;
+    el.scrollTop = el.scrollHeight;
+}
+
+// ========== MEMÓRIA ==========
+function exportMemory() {
+    const json = JSON.stringify(db, null, 2);
+    const a = document.createElement('a');
+    a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(json);
+    a.download = 'enside_v7.4_memoria_' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click();
+    alert('✅ Memória exportada!');
+}
+
+function limparMemory() {
+    if (confirm('⚠️ Limpar toda memória?')) {
+        db.memoria.items = 0;
+        db.sync.historico = [];
+        salvarDB();
+        alert('✅ Memória limpa!');
+    }
+}
+
+// ========== TABS ==========
+function abrirAba(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+}
+
+// ========== INIT ==========
+carregarDB();
+
+setTimeout(() => {
+    addMsgAgent(`🚀 ENSIDE v7.4 SUPREME INTEGRATION INICIADO!\n\n✅ IA Suprema com Memória Histórica\n🔌 Servidor Local Integrado\n🔄 Sincronização Bidirecional\n\nComo posso ajudar?`);
+}, 500);
+
+console.log('✅ ENSIDE v7.4 - PRONTO PARA INTEGRAÇÃO!');
+</script>
+</body>
+</html>

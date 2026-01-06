@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Enside - Cotação de Fretes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #FFFFFF;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #FFD700;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 0.5rem;
+            color: #aaa;
+            -webkit-text-fill-color: #aaa;
+            letter-spacing: 2px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-tab {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: #FFD700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Seções */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            color: #FFD700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Grid de Formulário */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #FFD700;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .form-group select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        /* Botões */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFD700;
+            border: 1px solid #FFD700;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        /* Tabela */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        th {
+            background: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #FFD700;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 0.5rem;
+        }
+
+        /* Resultado Cotação */
+        .resultado-cotacao {
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.2), rgba(0, 206, 201, 0.2));
+            border: 2px solid #00b894;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .resultado-cotacao.show {
+            display: block;
+        }
+
+        .resultado-valor {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #00b894;
+            text-align: center;
+        }
+
+        .resultado-detalhes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .detalhe-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .detalhe-valor {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFD700;
+        }
+
+        .detalhe-label {
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border: 2px solid #FFD700;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #FFD700;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-verde { background: #00b894; color: white; }
+        .badge-seca { background: #fdcb6e; color: #000; }
+        .badge-murcha { background: #e17055; color: white; }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        /* Fornecedores List */
+        .fornecedor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .fornecedor-info h4 {
+            color: #FFD700;
+            margin-bottom: 0.25rem;
+        }
+
+        .fornecedor-info p {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .fornecedor-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .fornecedor-actions button {
+            padding: 0.5rem;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 6px;
+            color: #FFD700;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            ENSIDE
+            <span>MADEIRAS • B2B DROPSHIPPING</span>
+        </div>
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('cotacao')">📊 Cotação</button>
+            <button class="nav-tab" onclick="showSection('fornecedores')">🏭 Fornecedores</button>
+            <button class="nav-tab" onclick="showSection('historico')">📋 Histórico</button>
+            <button class="nav-tab" onclick="showSection('config')">⚙️ Config</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- SEÇÃO: COTAÇÃO -->
+        <section id="cotacao" class="section active animate-in">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-cotacoes">0</div>
+                    <div class="stat-label">Cotações Hoje</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-fornecedores">0</div>
+                    <div class="stat-label">Fornecedores Ativos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-valor">R$ 0</div>
+                    <div class="stat-label">Volume Total</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">🚚 Nova Cotação de Frete</h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Origem (Cidade/UF)</label>
+                        <input type="text" id="origem" placeholder="Ex: Araçatuba/SP">
+                    </div>
+                    <div class="form-group">
+                        <label>Destino (Cidade/UF)</label>
+                        <input type="text" id="destino" placeholder="Ex: São Paulo/SP">
+                    </div>
+                    <div class="form-group">
+                        <label>Fornecedor</label>
+                        <select id="fornecedor">
+                            <option value="">Selecione...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Madeira</label>
+                        <select id="tipoMadeira" onchange="atualizarPeso()">
+                            <option value="seca">Seca (500 kg/m³)</option>
+                            <option value="verde">Verde (1000 kg/m³)</option>
+                            <option value="murcha">Murcha (750 kg/m³)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Volume (m³)</label>
+                        <input type="number" id="volume" placeholder="Ex: 25" oninput="atualizarPeso()">
+                    </div>
+                    <div class="form-group">
+                        <label>Peso Calculado (ton)</label>
+                        <input type="text" id="pesoCalculado" readonly style="background: rgba(255,215,0,0.1);">
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Caminhão</label>
+                        <select id="tipoCaminhao">
+                            <option value="truck">Truck (14t)</option>
+                            <option value="carreta">Carreta (27t)</option>
+                            <option value="bitrem">Bitrem (37t)</option>
+                            <option value="rodotrem">Rodotrem (57t)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor por Tonelada (R$)</label>
+                        <input type="number" id="valorTonelada" placeholder="Ex: 150">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button class="btn btn-primary" onclick="calcularCotacao()">📊 Calcular Cotação</button>
+                    <button class="btn btn-secondary" onclick="limparFormulario()">🗑️ Limpar</button>
+                </div>
+
+                <!-- Resultado da Cotação -->
+                <div class="resultado-cotacao" id="resultadoCotacao">
+                    <h3 style="text-align: center; color: #00b894; margin-bottom: 1rem;">✅ COTAÇÃO CALCULADA</h3>
+                    <div class="resultado-valor" id="valorTotal">R$ 0,00</div>
+                    
+                    <div class="resultado-detalhes">
+                        <div class="detalhe-item">
+                            <div class="detalhe-valor" id="detalhePeso">0 t</div>
+                            <div class="detalhe-label">Peso Total</div>
+                        </div>
+                        <div class="detalhe-item">
+                            <div class="detalhe-valor" id="detalheVolume">0 m³</div>
+                            <div class="detalhe-label">Volume</div>
+                        </div>
+                        <div class="detalhe-item">
+                            <div class="detalhe-valor" id="detalheViagens">0</div>
+                            <div class="detalhe-label">Viagens</div>
+                        </div>
+                        <div class="detalhe-item">
+                            <div class="detalhe-valor" id="detalheRota">-</div>
+                            <div class="detalhe-label">Rota</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                        <button class="btn btn-success" onclick="salvarCotacao()">💾 Salvar</button>
+                        <button class="btn btn-primary" onclick="enviarWhatsApp()">📱 WhatsApp</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: FORNECEDORES -->
+        <section id="fornecedores" class="section">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 class="card-title">🏭 Fornecedores Cadastrados</h3>
+                    <button class="btn btn-primary" onclick="abrirModalFornecedor()">+ Novo Fornecedor</button>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <input type="text" id="buscarFornecedor" placeholder="🔍 Buscar fornecedor..." oninput="filtrarFornecedores()">
+                </div>
+
+                <div id="listaFornecedores">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: HISTÓRICO -->
+        <section id="historico" class="section">
+            <div class="card">
+                <h3 class="card-title">📋 Histórico de Cotações</h3>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Rota</th>
+                                <th>Fornecedor</th>
+                                <th>Volume</th>
+                                <th>Peso</th>
+                                <th>Valor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaHistorico">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: CONFIGURAÇÕES -->
+        <section id="config" class="section">
+            <div class="card">
+                <h3 class="card-title">⚙️ Configurações</h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Margem Padrão (%)</label>
+                        <input type="number" id="margemPadrao" value="30">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Padrão</label>
+                        <input type="text" id="whatsappPadrao" placeholder="5518999999999">
+                    </div>
+                </div>
+
+                <h4 style="color: #FFD700; margin: 1.5rem 0 1rem;">Pesos por Tipo de Madeira (kg/m³)</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Madeira Seca</label>
+                        <input type="number" id="pesoSeca" value="500">
+                    </div>
+                    <div class="form-group">
+                        <label>Madeira Verde</label>
+                        <input type="number" id="pesoVerde" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>Madeira Murcha</label>
+                        <input type="number" id="pesoMurcha" value="750">
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn btn-primary" onclick="salvarConfig()">💾 Salvar Configurações</button>
+                    <button class="btn btn-danger" onclick="exportarDados()" style="margin-left: 1rem;">📤 Exportar Dados</button>
+                    <button class="btn btn-secondary" onclick="importarDados()" style="margin-left: 1rem;">📥 Importar</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Fornecedor -->
+    <div class="modal" id="modalFornecedor">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: #FFD700;">🏭 Cadastrar Fornecedor</h3>
+                <button class="modal-close" onclick="fecharModal()">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Nome da Empresa</label>
+                <input type="text" id="fornNome" placeholder="Ex: Serraria São Paulo">
+            </div>
+            <div class="form-group">
+                <label>Tipo</label>
+                <select id="fornTipo">
+                    <option value="serraria">Serraria</option>
+                    <option value="marcenaria">Marcenaria</option>
+                    <option value="fabrica">Fábrica de Móveis</option>
+                    <option value="deposito">Depósito</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Cidade/UF</label>
+                <input type="text" id="fornCidade" placeholder="Ex: Araçatuba/SP">
+            </div>
+            <div class="form-group">
+                <label>WhatsApp</label>
+                <input type="text" id="fornWhatsApp" placeholder="Ex: 5518999999999">
+            </div>
+            <div class="form-group">
+                <label>Produtos</label>
+                <textarea id="fornProdutos" rows="3" placeholder="Ex: Pinus, Eucalipto, Teca"></textarea>
+            </div>
+
+            <button class="btn btn-primary" onclick="salvarFornecedor()" style="width: 100%; margin-top: 1rem;">💾 Salvar Fornecedor</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== DADOS LOCAIS ==========
+        const STORAGE_KEYS = {
+            fornecedores: 'enside_fornecedores',
+            cotacoes: 'enside_cotacoes',
+            config: 'enside_config'
+        };
+
+        // Dados padrão
+        let fornecedores = JSON.parse(localStorage.getItem(STORAGE_KEYS.fornecedores)) || [];
+        let cotacoes = JSON.parse(localStorage.getItem(STORAGE_KEYS.cotacoes)) || [];
+        let config = JSON.parse(localStorage.getItem(STORAGE_KEYS.config)) || {
+            margemPadrao: 30,
+            whatsappPadrao: '',
+            pesoSeca: 500,
+            pesoVerde: 1000,
+            pesoMurcha: 750
+        };
+
+        // Capacidade dos caminhões em toneladas
+        const CAPACIDADE_CAMINHAO = {
+            truck: 14,
+            carreta: 27,
+            bitrem: 37,
+            rodotrem: 57
+        };
+
+        // ========== INICIALIZAÇÃO ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarConfig();
+            atualizarSelectFornecedores();
+            renderizarFornecedores();
+            renderizarHistorico();
+            atualizarStats();
+        });
+
+        // ========== NAVEGAÇÃO ==========
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active', 'animate-in');
+            event.target.classList.add('active');
+        }
+
+        // ========== COTAÇÃO ==========
+        function atualizarPeso() {
+            const tipo = document.getElementById('tipoMadeira').value;
+            const volume = parseFloat(document.getElementById('volume').value) || 0;
+            
+            const pesos = {
+                seca: config.pesoSeca,
+                verde: config.pesoVerde,
+                murcha: config.pesoMurcha
+            };
+
+            const peso = (volume * pesos[tipo]) / 1000; // Converter para toneladas
+            document.getElementById('pesoCalculado').value = peso.toFixed(2) + ' toneladas';
+        }
+
+        function calcularCotacao() {
+            const origem = document.getElementById('origem').value;
+            const destino = document.getElementById('destino').value;
+            const tipo = document.getElementById('tipoMadeira').value;
+            const volume = parseFloat(document.getElementById('volume').value) || 0;
+            const valorTon = parseFloat(document.getElementById('valorTonelada').value) || 0;
+            const tipoCaminhao = document.getElementById('tipoCaminhao').value;
+
+            if (!origem || !destino || !volume || !valorTon) {
+                alert('Preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            const pesos = {
+                seca: config.pesoSeca,
+                verde: config.pesoVerde,
+                murcha: config.pesoMurcha
+            };
+
+            const pesoTotal = (volume * pesos[tipo]) / 1000;
+            const capacidade = CAPACIDADE_CAMINHAO[tipoCaminhao];
+            const viagens = Math.ceil(pesoTotal / capacidade);
+            const valorTotal = pesoTotal * valorTon;
+
+            // Exibir resultado
+            document.getElementById('valorTotal').textContent = 'R$ ' + valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById('detalhePeso').textContent = pesoTotal.toFixed(2) + ' t';
+            document.getElementById('detalheVolume').textContent = volume + ' m³';
+            document.getElementById('detalheViagens').textContent = viagens;
+            document.getElementById('detalheRota').textContent = origem.split('/')[0] + ' → ' + destino.split('/')[0];
+
+            document.getElementById('resultadoCotacao').classList.add('show');
+
+            // Armazenar cotação atual
+            window.cotacaoAtual = {
+                origem,
+                destino,
+                tipo,
+                volume,
+                pesoTotal,
+                valorTon,
+                valorTotal,
+                viagens,
+                tipoCaminhao,
+                fornecedor: document.getElementById('fornecedor').value,
+                data: new Date().toISOString()
+            };
+        }
+
+        function salvarCotacao() {
+            if (!window.cotacaoAtual) {
+                alert('Calcule uma cotação primeiro!');
+                return;
+            }
+
+            cotacoes.unshift(window.cotacaoAtual);
+            localStorage.setItem(STORAGE_KEYS.cotacoes, JSON.stringify(cotacoes));
+            
+            renderizarHistorico();
+            atualizarStats();
+            alert('✅ Cotação salva com sucesso!');
+        }
+
+        function enviarWhatsApp() {
+            if (!window.cotacaoAtual) {
+                alert('Calcule uma cotação primeiro!');
+                return;
+            }
+
+            const c = window.cotacaoAtual;
+            const texto = `🌲 *COTAÇÃO ENSIDE MADEIRAS*
+
+📍 *Rota:* ${c.origem} → ${c.destino}
+🪵 *Tipo:* Madeira ${c.tipo}
+📦 *Volume:* ${c.volume} m³
+⚖️ *Peso:* ${c.pesoTotal.toFixed(2)} toneladas
+🚚 *Caminhão:* ${c.tipoCaminhao}
+🔄 *Viagens:* ${c.viagens}
+
+💰 *VALOR TOTAL: R$ ${c.valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}*
+
+---
+_Enside Madeiras - B2B Dropshipping_`;
+
+            const url = `https://wa.me/${config.whatsappPadrao}?text=${encodeURIComponent(texto)}`;
+            window.open(url, '_blank');
+        }
+
+        function limparFormulario() {
+            document.getElementById('origem').value = '';
+            document.getElementById('destino').value = '';
+            document.getElementById('volume').value = '';
+            document.getElementById('valorTonelada').value = '';
+            document.getElementById('pesoCalculado').value = '';
+            document.getElementById('resultadoCotacao').classList.remove('show');
+            window.cotacaoAtual = null;
+        }
+
+        // ========== FORNECEDORES ==========
+        function abrirModalFornecedor() {
+            document.getElementById('modalFornecedor').classList.add('show');
+        }
+
+        function fecharModal() {
+            document.getElementById('modalFornecedor').classList.remove('show');
+            // Limpar campos
+            document.getElementById('fornNome').value = '';
+            document.getElementById('fornCidade').value = '';
+            document.getElementById('fornWhatsApp').value = '';
+            document.getElementById('fornProdutos').value = '';
+        }
+
+        function salvarFornecedor() {
+            const nome = document.getElementById('fornNome').value;
+            const tipo = document.getElementById('fornTipo').value;
+            const cidade = document.getElementById('fornCidade').value;
+            const whatsapp = document.getElementById('fornWhatsApp').value;
+            const produtos = document.getElementById('fornProdutos').value;
+
+            if (!nome || !cidade) {
+                alert('Preencha nome e cidade!');
+                return;
+            }
+
+            const novoFornecedor = {
+                id: Date.now(),
+                nome,
+                tipo,
+                cidade,
+                whatsapp,
+                produtos,
+                dataCadastro: new Date().toISOString()
+            };
+
+            fornecedores.push(novoFornecedor);
+            localStorage.setItem(STORAGE_KEYS.fornecedores, JSON.stringify(fornecedores));
+
+            fecharModal();
+            renderizarFornecedores();
+            atualizarSelectFornecedores();
+            atualizarStats();
+            alert('✅ Fornecedor cadastrado!');
+        }
+
+        function renderizarFornecedores() {
+            const container = document.getElementById('listaFornecedores');
+            
+            if (fornecedores.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #aaa; padding: 2rem;">Nenhum fornecedor cadastrado</p>';
+                return;
+            }
+
+            container.innerHTML = fornecedores.map(f => `
+                <div class="fornecedor-item">
+                    <div class="fornecedor-info">
+                        <h4>${f.nome}</h4>
+                        <p>📍 ${f.cidade} | 🏭 ${f.tipo} | 📱 ${f.whatsapp || '-'}</p>
+                        <p style="font-size: 0.75rem; color: #666;">Produtos: ${f.produtos || '-'}</p>
+                    </div>
+                    <div class="fornecedor-actions">
+                        <button onclick="editarFornecedor(${f.id})" title="Editar">✏️</button>
+                        <button onclick="excluirFornecedor(${f.id})" title="Excluir">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filtrarFornecedores() {
+            const busca = document.getElementById('buscarFornecedor').value.toLowerCase();
+            const itens = document.querySelectorAll('.fornecedor-item');
+            
+            itens.forEach(item => {
+                const texto = item.textContent.toLowerCase();
+                item.style.display = texto.includes(busca) ? 'flex' : 'none';
+            });
+        }
+
+        function excluirFornecedor(id) {
+            if (!confirm('Deseja excluir este fornecedor?')) return;
+            
+            fornecedores = fornecedores.filter(f => f.id !== id);
+            localStorage.setItem(STORAGE_KEYS.fornecedores, JSON.stringify(fornecedores));
+            renderizarFornecedores();
+            atualizarSelectFornecedores();
+            atualizarStats();
+        }
+
+        function atualizarSelectFornecedores() {
+            const select = document.getElementById('fornecedor');
+            select.innerHTML = '<option value="">Selecione...</option>' +
+                fornecedores.map(f => `<option value="${f.id}">${f.nome} - ${f.cidade}</option>`).join('');
+        }
+
+        // ========== HISTÓRICO ==========
+        function renderizarHistorico() {
+            const tbody = document.getElementById('tabelaHistorico');
+            
+            if (cotacoes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #aaa;">Nenhuma cotação salva</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = cotacoes.slice(0, 50).map((c, i) => {
+                const data = new Date(c.data).toLocaleDateString('pt-BR');
+                const fornecedor = fornecedores.find(f => f.id == c.fornecedor);
+                
+                return `
+                    <tr>
+                        <td>${data}</td>
+                        <td>${c.origem} → ${c.destino}</td>
+                        <td>${fornecedor ? fornecedor.nome : '-'}</td>
+                        <td>${c.volume} m³</td>
+                        <td><span class="badge badge-${c.tipo}">${c.pesoTotal.toFixed(1)}t</span></td>
+                        <td style="color: #00b894; font-weight: 700;">R$ ${c.valorTotal.toLocaleString('pt-BR')}</td>
+                        <td>
+                            <button onclick="excluirCotacao(${i})" style="background: none; border: none; color: #e74c3c; cursor: pointer;">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function excluirCotacao(index) {
+            if (!confirm('Excluir esta cotação?')) return;
+            cotacoes.splice(index, 1);
+            localStorage.setItem(STORAGE_KEYS.cotacoes, JSON.stringify(cotacoes));
+            renderizarHistorico();
+            atualizarStats();
+        }
+
+        // ========== CONFIGURAÇÕES ==========
+        function carregarConfig() {
+            document.getElementById('margemPadrao').value = config.margemPadrao;
+            document.getElementById('whatsappPadrao').value = config.whatsappPadrao;
+            document.getElementById('pesoSeca').value = config.pesoSeca;
+            document.getElementById('pesoVerde').value = config.pesoVerde;
+            document.getElementById('pesoMurcha').value = config.pesoMurcha;
+        }
+
+        function salvarConfig() {
+            config.margemPadrao = parseFloat(document.getElementById('margemPadrao').value);
+            config.whatsappPadrao = document.getElementById('whatsappPadrao').value;
+            config.pesoSeca = parseFloat(document.getElementById('pesoSeca').value);
+            config.pesoVerde = parseFloat(document.getElementById('pesoVerde').value);
+            config.pesoMurcha = parseFloat(document.getElementById('pesoMurcha').value);
+
+            localStorage.setItem(STORAGE_KEYS.config, JSON.stringify(config));
+            alert('✅ Configurações salvas!');
+        }
+
+        // ========== STATS ==========
+        function atualizarStats() {
+            const hoje = new Date().toDateString();
+            const cotacoesHoje = cotacoes.filter(c => new Date(c.data).toDateString() === hoje);
+            const volumeTotal = cotacoes.reduce((acc, c) => acc + (c.valorTotal || 0), 0);
+
+            document.getElementById('stat-cotacoes').textContent = cotacoesHoje.length;
+            document.getElementById('stat-fornecedores').textContent = fornecedores.length;
+            document.getElementById('stat-valor').textContent = 'R$ ' + volumeTotal.toLocaleString('pt-BR');
+        }
+
+        // ========== IMPORT/EXPORT ==========
+        function exportarDados() {
+            const dados = {
+                fornecedores,
+                cotacoes,
+                config,
+                exportadoEm: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(dados, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `enside_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        function importarDados() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const dados = JSON.parse(event.target.result);
+                        
+                        if (dados.fornecedores) {
+                            fornecedores = dados.fornecedores;
+                            localStorage.setItem(STORAGE_KEYS.fornecedores, JSON.stringify(fornecedores));
+                        }
+                        if (dados.cotacoes) {
+                            cotacoes = dados.cotacoes;
+                            localStorage.setItem(STORAGE_KEYS.cotacoes, JSON.stringify(cotacoes));
+                        }
+                        if (dados.config) {
+                            config = dados.config;
+                            localStorage.setItem(STORAGE_KEYS.config, JSON.stringify(config));
+                            carregarConfig();
+                        }
+
+                        renderizarFornecedores();
+                        renderizarHistorico();
+                        atualizarSelectFornecedores();
+                        atualizarStats();
+
+                        alert('✅ Dados importados com sucesso!');
+                    } catch (err) {
+                        alert('❌ Erro ao importar: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+    </script>
+</body>
+</html>

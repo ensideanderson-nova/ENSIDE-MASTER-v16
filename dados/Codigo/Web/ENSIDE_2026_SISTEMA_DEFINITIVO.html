@@ -1,0 +1,3166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌲 ENSIDE 2026 - Sistema Definitivo | Anderson Enside</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Tema Verde Madeira - Padrão */
+            --primary: #1a5f2a;
+            --primary-dark: #0d3d17;
+            --primary-light: #2e8b3e;
+            --accent: #4ade80;
+            --accent-glow: rgba(74, 222, 128, 0.3);
+            --bg-main: #f8faf9;
+            --bg-card: #ffffff;
+            --bg-sidebar: #0f1f13;
+            --text-main: #1a1a1a;
+            --text-muted: #6b7280;
+            --text-light: #9ca3af;
+            --border: #e5e7eb;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --whatsapp: #25D366;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0,0,0,0.25);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        /* Tema Dark */
+        [data-theme="dark"] {
+            --bg-main: #0f1419;
+            --bg-card: #1a2332;
+            --bg-sidebar: #0a0f14;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
+            --border: #334155;
+        }
+
+        /* Temas de Cores */
+        [data-color="purple"] { --primary: #7c3aed; --primary-dark: #5b21b6; --primary-light: #8b5cf6; --accent: #a78bfa; }
+        [data-color="blue"] { --primary: #2563eb; --primary-dark: #1d4ed8; --primary-light: #3b82f6; --accent: #60a5fa; }
+        [data-color="orange"] { --primary: #ea580c; --primary-dark: #c2410c; --primary-light: #f97316; --accent: #fb923c; }
+        [data-color="red"] { --primary: #dc2626; --primary-dark: #b91c1c; --primary-light: #ef4444; --accent: #f87171; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(26,95,42,0.4);
+        }
+
+        .nav-item .icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: var(--primary-dark);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-md);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-info h4 {
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .user-info span {
+            color: var(--accent);
+            font-size: 0.75rem;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .topbar-left p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .topbar-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .topbar-btn.primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .topbar-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .topbar-btn.secondary {
+            background: var(--bg-main);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== CARDS ========== */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* ========== STATS GRID ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .stat-card.success::before { background: linear-gradient(90deg, #22c55e, #4ade80); }
+        .stat-card.warning::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .stat-card.info::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .stat-card.whatsapp::before { background: linear-gradient(90deg, #25D366, #4ade80); }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+
+        .stat-card:not(.success):not(.warning):not(.info):not(.whatsapp) .stat-icon {
+            background: linear-gradient(135deg, rgba(26,95,42,0.1), rgba(74,222,128,0.1));
+        }
+
+        .stat-card.success .stat-icon { background: rgba(34,197,94,0.1); }
+        .stat-card.warning .stat-icon { background: rgba(245,158,11,0.1); }
+        .stat-card.info .stat-icon { background: rgba(59,130,246,0.1); }
+        .stat-card.whatsapp .stat-icon { background: rgba(37,211,102,0.1); }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .stat-change {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .stat-change.up {
+            background: rgba(34,197,94,0.1);
+            color: #22c55e;
+        }
+
+        .stat-change.down {
+            background: rgba(239,68,68,0.1);
+            color: #ef4444;
+        }
+
+        /* ========== GRID LAYOUTS ========== */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+        @media (max-width: 1200px) {
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; }
+        }
+
+        /* ========== FORMS ========== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: var(--bg-main);
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e, #4ade80);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-full { width: 100%; justify-content: center; }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        /* ========== ALERTS ========== */
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+
+        .alert-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .alert-success {
+            background: rgba(34,197,94,0.1);
+            border: 1px solid rgba(34,197,94,0.3);
+            color: #166534;
+        }
+
+        .alert-warning {
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+            color: #92400e;
+        }
+
+        .alert-danger {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #991b1b;
+        }
+
+        .alert-info {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            color: #1e40af;
+        }
+
+        /* ========== TABLES ========== */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg-main);
+        }
+
+        th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        tbody tr:hover {
+            background: var(--bg-main);
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-success { background: rgba(34,197,94,0.1); color: #22c55e; }
+        .badge-warning { background: rgba(245,158,11,0.1); color: #f59e0b; }
+        .badge-danger { background: rgba(239,68,68,0.1); color: #ef4444; }
+        .badge-info { background: rgba(59,130,246,0.1); color: #3b82f6; }
+        .badge-primary { background: rgba(26,95,42,0.1); color: var(--primary); }
+
+        /* ========== CHAT ========== */
+        .chat-container {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+
+        .chat-status .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #e5ddd5;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        [data-theme="dark"] .chat-messages {
+            background: #1a2332;
+        }
+
+        .chat-msg {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .chat-msg.user {
+            background: #dcf8c6;
+            color: #1a1a1a;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-msg.agent {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-msg.system {
+            background: rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 90%;
+            margin: 16px auto;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .chat-msg .time {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .chat-input {
+            display: flex;
+            border-top: 2px solid var(--border);
+            background: var(--bg-card);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            font-size: 0.95rem;
+            background: transparent;
+            color: var(--text-main);
+        }
+
+        .chat-input input:focus {
+            outline: none;
+        }
+
+        .chat-input button {
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--whatsapp), #128C7E);
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-input button:hover {
+            background: linear-gradient(135deg, #128C7E, var(--whatsapp));
+        }
+
+        /* ========== SEARCH ========== */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            background: var(--bg-card);
+            color: var(--text-main);
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+        }
+
+        /* ========== CONTACT CARDS ========== */
+        .contact-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .contact-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .contact-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .contact-info span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .contact-info a {
+            color: var(--whatsapp);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        /* ========== PROGRESS ========== */
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.5s ease;
+        }
+
+        /* ========== TABS ========== */
+        .inner-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .inner-tab {
+            padding: 10px 20px;
+            border: none;
+            background: var(--bg-main);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .inner-tab:hover {
+            background: var(--border);
+        }
+
+        .inner-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ========== UPLOAD AREA ========== */
+        .upload-area {
+            border: 3px dashed var(--border);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-main);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(26,95,42,0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: rgba(74,222,128,0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ========== TRIAGEM PREVIEW ========== */
+        .triagem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .triagem-item {
+            padding: 24px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 2px solid;
+        }
+
+        .triagem-item.motorista {
+            background: rgba(34,197,94,0.1);
+            border-color: #22c55e;
+        }
+
+        .triagem-item.fornecedor {
+            background: rgba(245,158,11,0.1);
+            border-color: #f59e0b;
+        }
+
+        .triagem-item.cliente {
+            background: rgba(59,130,246,0.1);
+            border-color: #3b82f6;
+        }
+
+        .triagem-numero {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .triagem-label {
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* ========== THEME SELECTOR ========== */
+        .theme-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .theme-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            border-color: var(--text-main);
+        }
+
+        .theme-btn.green { background: linear-gradient(135deg, #1a5f2a, #4ade80); }
+        .theme-btn.purple { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+        .theme-btn.blue { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+        .theme-btn.orange { background: linear-gradient(135deg, #ea580c, #fb923c); }
+        .theme-btn.red { background: linear-gradient(135deg, #dc2626, #f87171); }
+
+        /* ========== KNOWLEDGE BASE ========== */
+        .knowledge-card {
+            background: linear-gradient(135deg, var(--bg-main), var(--bg-card));
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .knowledge-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .knowledge-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .knowledge-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .knowledge-tag {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* ========== LISTS ========== */
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+        }
+
+        .list-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .list-info p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .list-count {
+            background: var(--primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ========== API CONFIG ========== */
+        .api-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .api-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .api-header h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .api-status.connected {
+            color: #22c55e;
+        }
+
+        .api-status.disconnected {
+            color: #ef4444;
+        }
+
+        /* ========== SCROLLBAR ========== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* ========== MOBILE MENU ========== */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 200;
+            box-shadow: var(--shadow-xl);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        /* ========== ANIMATIONS ========== */
+        .animate-in {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .inner-content {
+            display: none;
+        }
+
+        .inner-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">🌲</div>
+                <div class="logo-text">
+                    <h1>ENSIDE 2026</h1>
+                    <span>Sistema Definitivo</span>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Principal</div>
+                <div class="nav-item active" onclick="abrirPagina('dashboard', this)">
+                    <span class="icon">📊</span>
+                    Dashboard
+                </div>
+                <div class="nav-item" onclick="abrirPagina('contatos', this)">
+                    <span class="icon">👥</span>
+                    Contatos
+                    <span class="badge" id="badgeContatos">0</span>
+                </div>
+                <div class="nav-item" onclick="abrirPagina('fretes', this)">
+                    <span class="icon">🚛</span>
+                    Fretes
+                    <span class="badge" id="badgeFretes">0</span>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Inteligência</div>
+                <div class="nav-item" onclick="abrirPagina('agente', this)">
+                    <span class="icon">🧠</span>
+                    Agente IA
+                </div>
+                <div class="nav-item" onclick="abrirPagina('multiia', this)">
+                    <span class="icon">🤖</span>
+                    Multi-IA
+                </div>
+                <div class="nav-item" onclick="abrirPagina('conhecimentos', this)">
+                    <span class="icon">📚</span>
+                    Conhecimentos
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Comunicação</div>
+                <div class="nav-item" onclick="abrirPagina('whatsapp', this)">
+                    <span class="icon">📱</span>
+                    WhatsApp
+                </div>
+                <div class="nav-item" onclick="abrirPagina('listas', this)">
+                    <span class="icon">📋</span>
+                    Listas
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Sistema</div>
+                <div class="nav-item" onclick="abrirPagina('importar', this)">
+                    <span class="icon">📤</span>
+                    Importar
+                </div>
+                <div class="nav-item" onclick="abrirPagina('integracoes', this)">
+                    <span class="icon">🔗</span>
+                    Integrações
+                </div>
+                <div class="nav-item" onclick="abrirPagina('config', this)">
+                    <span class="icon">⚙️</span>
+                    Configurações
+                </div>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-avatar">AE</div>
+                <div class="user-info">
+                    <h4>Anderson Enside</h4>
+                    <span>CEO • Grupo Líder Madeiras</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h2 id="pageTitle">📊 Dashboard</h2>
+                <p id="pageSubtitle">Visão geral do sistema ENSIDE 2026</p>
+            </div>
+            <div class="topbar-right">
+                <button class="topbar-btn secondary" onclick="toggleTheme()">
+                    🌙
+                </button>
+                <button class="topbar-btn primary" onclick="exportarBackup()">
+                    💾 Backup
+                </button>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-value" id="statTotal">0</div>
+                        <div class="stat-label">Total de Contatos</div>
+                        <span class="stat-change up">↑ Ativo</span>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">🚛</div>
+                        <div class="stat-value" id="statFretes">0</div>
+                        <div class="stat-label">Fretes/Motoristas</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">🏭</div>
+                        <div class="stat-value" id="statFornecedores">0</div>
+                        <div class="stat-label">Fornecedores</div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-value" id="statClientes">0</div>
+                        <div class="stat-label">Clientes</div>
+                    </div>
+                    <div class="stat-card whatsapp">
+                        <div class="stat-icon">📱</div>
+                        <div class="stat-value" id="statWhatsApp">0</div>
+                        <div class="stat-label">Com WhatsApp</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🧠</div>
+                        <div class="stat-value" id="statNivel">1</div>
+                        <div class="stat-label">Nível da IA</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>🧠 Status do Agente IA</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row" style="margin-bottom: 20px;">
+                                <div>
+                                    <p style="color: var(--text-muted); font-size: 0.85rem;">Nível</p>
+                                    <p style="font-size: 1.5rem; font-weight: 700;" id="dashNivel">1</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-muted); font-size: 0.85rem;">XP</p>
+                                    <p style="font-size: 1.5rem; font-weight: 700;" id="dashXP">0</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-muted); font-size: 0.85rem;">Precisão</p>
+                                    <p style="font-size: 1.5rem; font-weight: 700;" id="dashPrecisao">50%</p>
+                                </div>
+                                <div>
+                                    <p style="color: var(--text-muted); font-size: 0.85rem;">Conhecimentos</p>
+                                    <p style="font-size: 1.5rem; font-weight: 700;" id="dashConhecimentos">0</p>
+                                </div>
+                            </div>
+                            <p style="font-weight: 600; margin-bottom: 8px;">Progresso de Aprendizado</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="dashProgress" style="width: 10%"></div>
+                            </div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;" id="dashProgressText">10% - Iniciante</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📊 Análise por Categoria</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Total</th>
+                                            <th>WhatsApp</th>
+                                            <th>Completos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblAnalise">
+                                        <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Nenhum dado</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3>💡 Sugestões do Agente</h3>
+                    </div>
+                    <div class="card-body" id="sugestoesAgente">
+                        <div class="alert alert-info">
+                            <span class="alert-icon">🧠</span>
+                            <div>Carregando sugestões...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTATOS -->
+            <div id="contatos" class="page">
+                <div class="inner-tabs">
+                    <button class="inner-tab active" onclick="abrirInnerTab('contatos', 'todos', this)">📦 Todos</button>
+                    <button class="inner-tab" onclick="abrirInnerTab('contatos', 'clientes', this)">👥 Clientes</button>
+                    <button class="inner-tab" onclick="abrirInnerTab('contatos', 'fornecedores', this)">🏭 Fornecedores</button>
+                    <button class="inner-tab" onclick="abrirInnerTab('contatos', 'motoristas', this)">🚛 Motoristas</button>
+                    <button class="inner-tab" onclick="abrirInnerTab('contatos', 'cadastrar', this)">➕ Cadastrar</button>
+                </div>
+
+                <div id="contatos-todos" class="inner-content active">
+                    <div class="search-box">
+                        <input type="text" id="buscaContatos" placeholder="Buscar contatos..." oninput="filtrarContatos()">
+                    </div>
+                    <div class="form-row" style="margin-bottom: 20px;">
+                        <select id="filtroTipo" onchange="filtrarContatos()">
+                            <option value="">Todos os tipos</option>
+                            <option value="clientes">👥 Clientes</option>
+                            <option value="fornecedores">🏭 Fornecedores</option>
+                            <option value="motoristas">🚛 Motoristas</option>
+                        </select>
+                        <select id="filtroUF" onchange="filtrarContatos()">
+                            <option value="">Todos os estados</option>
+                        </select>
+                    </div>
+                    <div id="listaContatos"></div>
+                </div>
+
+                <div id="contatos-clientes" class="inner-content">
+                    <div class="search-box">
+                        <input type="text" id="buscaClientes" placeholder="Buscar clientes..." oninput="filtrarClientes()">
+                    </div>
+                    <div id="listaClientes"></div>
+                </div>
+
+                <div id="contatos-fornecedores" class="inner-content">
+                    <div class="search-box">
+                        <input type="text" id="buscaFornecedores" placeholder="Buscar fornecedores..." oninput="filtrarFornecedores()">
+                    </div>
+                    <div id="listaFornecedores"></div>
+                </div>
+
+                <div id="contatos-motoristas" class="inner-content">
+                    <div class="search-box">
+                        <input type="text" id="buscaMotoristas" placeholder="Buscar motoristas..." oninput="filtrarMotoristas()">
+                    </div>
+                    <div id="listaMotoristas"></div>
+                </div>
+
+                <div id="contatos-cadastrar" class="inner-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>➕ Novo Cadastro</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Tipo *</label>
+                                    <select id="cadTipo">
+                                        <option value="clientes">👥 Cliente</option>
+                                        <option value="fornecedores">🏭 Fornecedor</option>
+                                        <option value="motoristas">🚛 Motorista</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Setor</label>
+                                    <select id="cadSetor">
+                                        <option value="">Selecione...</option>
+                                        <option value="madeireira">🪵 Madeireira</option>
+                                        <option value="construcao">🏗️ Construção</option>
+                                        <option value="moveis">🪑 Móveis</option>
+                                        <option value="exportacao">🌐 Exportação</option>
+                                        <option value="varejo">🏪 Varejo</option>
+                                        <option value="industria">🏭 Indústria</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nome *</label>
+                                    <input type="text" id="cadNome" placeholder="Nome completo ou razão social">
+                                </div>
+                                <div class="form-group">
+                                    <label>Telefone</label>
+                                    <input type="text" id="cadTel" placeholder="(00) 00000-0000">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>WhatsApp</label>
+                                    <input type="text" id="cadWa" placeholder="(00) 00000-0000">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="cadEmail" placeholder="email@exemplo.com">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Cidade</label>
+                                    <input type="text" id="cadCidade">
+                                </div>
+                                <div class="form-group">
+                                    <label>Estado</label>
+                                    <input type="text" id="cadUF" maxlength="2" placeholder="SP">
+                                </div>
+                            </div>
+                            <button class="btn btn-success btn-full" onclick="salvarCadastro()">💾 Salvar Cadastro</button>
+                            <div id="alertaCad"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FRETES -->
+            <div id="fretes" class="page">
+                <div class="alert alert-info">
+                    <span class="alert-icon">🚛</span>
+                    <div><strong>Sistema de Fretes</strong> - Gerencie motoristas e transportadoras com 50 campos detalhados.</div>
+                </div>
+
+                <div class="inner-tabs">
+                    <button class="inner-tab active" onclick="abrirInnerTab('fretes', 'lista', this)">📋 Lista</button>
+                    <button class="inner-tab" onclick="abrirInnerTab('fretes', 'novo', this)">➕ Novo Frete</button>
+                </div>
+
+                <div id="fretes-lista" class="inner-content active">
+                    <div class="search-box">
+                        <input type="text" id="buscaFretes" placeholder="Buscar fretes/motoristas..." oninput="filtrarFretes()">
+                    </div>
+                    <div id="listaFretes"></div>
+                </div>
+
+                <div id="fretes-novo" class="inner-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>➕ Cadastro de Frete/Motorista</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nome do Motorista *</label>
+                                    <input type="text" id="freteNome" placeholder="Nome completo">
+                                </div>
+                                <div class="form-group">
+                                    <label>CPF/CNPJ</label>
+                                    <input type="text" id="freteCpf">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>WhatsApp *</label>
+                                    <input type="text" id="freteWa" placeholder="(00) 00000-0000">
+                                </div>
+                                <div class="form-group">
+                                    <label>Placa do Veículo</label>
+                                    <input type="text" id="fretePlaca" placeholder="ABC-1234">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Tipo de Veículo</label>
+                                    <select id="freteTipoVeiculo">
+                                        <option value="">Selecione...</option>
+                                        <option value="truck">Truck</option>
+                                        <option value="carreta">Carreta</option>
+                                        <option value="bitrem">Bi-trem</option>
+                                        <option value="rodotrem">Rodotrem</option>
+                                        <option value="toco">Toco</option>
+                                        <option value="3/4">3/4</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Capacidade (kg)</label>
+                                    <input type="number" id="freteCapacidade">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Origem Preferencial</label>
+                                    <input type="text" id="freteOrigem" placeholder="Cidade/Estado">
+                                </div>
+                                <div class="form-group">
+                                    <label>Destino Preferencial</label>
+                                    <input type="text" id="freteDestino" placeholder="Cidade/Estado">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Observações</label>
+                                <textarea id="freteObs" rows="3" placeholder="Informações adicionais..."></textarea>
+                            </div>
+                            <button class="btn btn-success btn-full" onclick="salvarFrete()">💾 Salvar Frete</button>
+                            <div id="alertaFrete"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AGENTE IA -->
+            <div id="agente" class="page">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>🧠 Status do Agente</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="stats-grid" style="margin-bottom: 0;">
+                                <div class="stat-card">
+                                    <div class="stat-value" id="agNivel">1</div>
+                                    <div class="stat-label">Nível</div>
+                                </div>
+                                <div class="stat-card success">
+                                    <div class="stat-value" id="agXP">0</div>
+                                    <div class="stat-label">XP</div>
+                                </div>
+                                <div class="stat-card warning">
+                                    <div class="stat-value" id="agPrecisao">50%</div>
+                                    <div class="stat-label">Precisão</div>
+                                </div>
+                                <div class="stat-card info">
+                                    <div class="stat-value" id="agChats">0</div>
+                                    <div class="stat-label">Chats</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📈 Evolução</h3>
+                        </div>
+                        <div class="card-body">
+                            <p style="font-weight: 600; margin-bottom: 8px;">Progresso de Aprendizado</p>
+                            <div class="progress-bar" style="height: 12px;">
+                                <div class="progress-fill" id="agProgress" style="width: 10%"></div>
+                            </div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;" id="agProgressText">10% - Iniciante</p>
+                            
+                            <div style="margin-top: 20px;">
+                                <p style="color: var(--text-muted); margin-bottom: 8px;">Importações: <strong id="agImports">0</strong></p>
+                                <p style="color: var(--text-muted); margin-bottom: 8px;">Interações: <strong id="agInteracoes">0</strong></p>
+                                <p style="color: var(--text-muted);">Conversas Analisadas: <strong id="agConversas">0</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-body" style="padding: 0;">
+                        <div class="chat-container">
+                            <div class="chat-header">
+                                <h4>🤖 Enside Agent | <span id="chatWaNum">5518996540492</span></h4>
+                                <div class="chat-status">
+                                    <span class="dot"></span>
+                                    Online
+                                </div>
+                            </div>
+                            <div class="chat-messages" id="chatMsgs"></div>
+                            <div class="chat-input">
+                                <input type="text" id="chatIn" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter')enviarMsg()">
+                                <button onclick="enviarMsg()">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MULTI-IA -->
+            <div id="multiia" class="page">
+                <div class="alert alert-info">
+                    <span class="alert-icon">🤖</span>
+                    <div><strong>Multi-IA</strong> - Chat com múltiplos provedores de IA: OpenAI GPT-4o, Claude 3, Groq Llama 3.3</div>
+                </div>
+
+                <div class="grid-3" style="margin-bottom: 24px;">
+                    <div class="api-card">
+                        <div class="api-header">
+                            <h4>🟢 OpenAI</h4>
+                            <span class="api-status disconnected" id="statusOpenAI">⚪ Não configurado</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <input type="password" id="keyOpenAI" placeholder="sk-...">
+                        </div>
+                    </div>
+
+                    <div class="api-card">
+                        <div class="api-header">
+                            <h4>🟣 Claude</h4>
+                            <span class="api-status disconnected" id="statusClaude">⚪ Não configurado</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <input type="password" id="keyClaude" placeholder="sk-ant-...">
+                        </div>
+                    </div>
+
+                    <div class="api-card">
+                        <div class="api-header">
+                            <h4>🟠 Groq</h4>
+                            <span class="api-status disconnected" id="statusGroq">⚪ Não configurado</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <input type="password" id="keyGroq" placeholder="gsk_...">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="salvarAPIKeys()" style="margin-bottom: 24px;">💾 Salvar API Keys</button>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>💬 Chat Multi-IA</h3>
+                        <select id="modeloIA" style="padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);">
+                            <option value="groq">🟠 Groq Llama 3.3 70B</option>
+                            <option value="openai">🟢 OpenAI GPT-4o Mini</option>
+                            <option value="claude">🟣 Claude 3 Haiku</option>
+                        </select>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="chat-container">
+                            <div class="chat-header" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                <h4>🤖 Multi-IA Chat</h4>
+                                <div class="chat-status">
+                                    <span class="dot"></span>
+                                    Pronto
+                                </div>
+                            </div>
+                            <div class="chat-messages" id="multiIAChatMsgs"></div>
+                            <div class="chat-input">
+                                <input type="text" id="multiIAChatIn" placeholder="Pergunte algo para a IA..." onkeypress="if(event.key==='Enter')enviarMsgMultiIA()">
+                                <button onclick="enviarMsgMultiIA()" style="background: linear-gradient(135deg, #667eea, #764ba2);">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONHECIMENTOS -->
+            <div id="conhecimentos" class="page">
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header">
+                        <h3>➕ Novo Conhecimento</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Título *</label>
+                                <input type="text" id="conhTitulo" placeholder="Ex: Preços de Pinus Seco">
+                            </div>
+                            <div class="form-group">
+                                <label>Categoria</label>
+                                <select id="conhCat">
+                                    <option value="produtos">🪵 Produtos</option>
+                                    <option value="precos">💰 Preços</option>
+                                    <option value="processos">⚙️ Processos</option>
+                                    <option value="clientes">👥 Clientes</option>
+                                    <option value="fornecedores">🏭 Fornecedores</option>
+                                    <option value="frete">🚛 Frete</option>
+                                    <option value="outro">📌 Outro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Conteúdo *</label>
+                            <textarea id="conhConteudo" rows="4" placeholder="Ex: Pinus Seco custa R$ 1.200/m³..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Tags (separadas por vírgula)</label>
+                            <input type="text" id="conhTags" placeholder="pinus, preço, seco">
+                        </div>
+                        <button class="btn btn-success btn-full" onclick="salvarConhecimento()">💾 Salvar Conhecimento</button>
+                        <div id="alertaConh"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📚 Base de Conhecimentos (<span id="contConh">0</span>)</h3>
+                    </div>
+                    <div class="card-body" id="listaConh">
+                        <div class="alert alert-info">Nenhum conhecimento cadastrado.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WHATSAPP -->
+            <div id="whatsapp" class="page">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📱 WhatsApp Vinculado</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Número WhatsApp de Trabalho *</label>
+                                <input type="text" id="waNumeroVinculado" placeholder="5518996540492" value="5518996540492">
+                            </div>
+                            <div class="form-group">
+                                <label>Nome de Exibição</label>
+                                <input type="text" id="waNomeExibicao" value="Anderson Enside">
+                            </div>
+                            <button class="btn btn-whatsapp btn-full" onclick="salvarWhatsAppVinculado()">📱 Vincular WhatsApp</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>🔗 Evolution API</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>URL da Evolution API</label>
+                                <input type="text" id="evolutionUrl" placeholder="https://seu-evolution.com">
+                            </div>
+                            <div class="form-group">
+                                <label>API Key</label>
+                                <input type="password" id="evolutionKey" placeholder="Sua API Key">
+                            </div>
+                            <div class="form-group">
+                                <label>Nome da Instância</label>
+                                <input type="text" id="evolutionInstance" value="enside-2026">
+                            </div>
+                            <button class="btn btn-success btn-full" onclick="conectarEvolution()">🔗 Conectar Evolution</button>
+                            <div id="alertaEvolution"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid" style="margin-top: 24px;">
+                    <div class="stat-card whatsapp">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-value" id="waConv">0</div>
+                        <div class="stat-label">Conversas</div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">📨</div>
+                        <div class="stat-value" id="waMsgs">0</div>
+                        <div class="stat-label">Mensagens</div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-icon">🧠</div>
+                        <div class="stat-value" id="waAprend">0</div>
+                        <div class="stat-label">Aprendizados</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3>💬 Conversas Recentes</h3>
+                        <button class="btn btn-sm btn-whatsapp" onclick="simularConversa()">➕ Simular</button>
+                    </div>
+                    <div class="card-body" id="waConversas">
+                        <div class="alert alert-info">Nenhuma conversa ainda.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LISTAS -->
+            <div id="listas" class="page">
+                <div class="alert alert-info">
+                    <span class="alert-icon">📋</span>
+                    <div><strong>Listas de Transmissão</strong> - Limite WhatsApp: 256 contatos por lista. O sistema divide automaticamente.</div>
+                </div>
+
+                <div class="inner-tabs">
+                    <button class="inner-tab active" onclick="abrirInnerTab('listas', 'criar', this)">➕ Criar Lista</button>
+                    <button class="inner-tab" onclick="abrirInnerTab('listas', 'gerenciar', this)">📋 Minhas Listas</button>
+                </div>
+
+                <div id="listas-criar" class="inner-content active">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Nome da Lista *</label>
+                                <input type="text" id="listaNome" placeholder="Ex: Clientes SP - Madeireiras">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Filtrar por Tipo</label>
+                                    <select id="listaFiltroTipo" onchange="previewLista()">
+                                        <option value="">Todos</option>
+                                        <option value="clientes">👥 Clientes</option>
+                                        <option value="fornecedores">🏭 Fornecedores</option>
+                                        <option value="motoristas">🚛 Motoristas</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Filtrar por Estado</label>
+                                    <select id="listaFiltroUF" onchange="previewLista()"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Limite de Contatos</label>
+                                    <input type="number" id="listaLimite" value="256" min="1" max="10000000" onchange="previewLista()">
+                                </div>
+                            </div>
+                            <div id="previewListaInfo" class="alert alert-info" style="display: none;"></div>
+                            <button class="btn btn-success btn-full" onclick="criarLista()">✅ Criar Lista de Transmissão</button>
+                            <div id="alertaLista"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="listas-gerenciar" class="inner-content">
+                    <div id="minhasListas">
+                        <div class="alert alert-info">Nenhuma lista criada ainda.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IMPORTAR -->
+            <div id="importar" class="page">
+                <div class="alert alert-success">
+                    <span class="alert-icon">🧠</span>
+                    <div><strong>Importador Inteligente</strong> - Triagem automática: Fretes → Fornecedores → Clientes</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                            <div class="upload-icon">📁</div>
+                            <div class="upload-text">Clique ou arraste arquivos aqui</div>
+                            <div class="upload-hint">CSV, Excel (.xlsx, .xls), JSON, TXT - Suporta milhões de registros</div>
+                        </div>
+                        <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json,.txt" onchange="importarArquivo(event)" multiple style="display: none;">
+
+                        <div id="alertaImport"></div>
+
+                        <div id="triagemPreview" style="display: none; margin-top: 24px;">
+                            <h4 style="margin-bottom: 16px;">🧠 Prévia da Triagem Inteligente:</h4>
+                            <div class="triagem-grid">
+                                <div class="triagem-item motorista">
+                                    <div class="triagem-numero" id="prevMotoristas">0</div>
+                                    <div class="triagem-label">🚛 Fretes/Motoristas</div>
+                                </div>
+                                <div class="triagem-item fornecedor">
+                                    <div class="triagem-numero" id="prevFornecedores">0</div>
+                                    <div class="triagem-label">🏭 Fornecedores</div>
+                                </div>
+                                <div class="triagem-item cliente">
+                                    <div class="triagem-numero" id="prevClientes">0</div>
+                                    <div class="triagem-label">👥 Clientes</div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <button class="btn btn-success btn-full" onclick="confirmarImportacao()">✅ Confirmar Importação</button>
+                                <button class="btn btn-danger btn-full" onclick="cancelarImportacao()">❌ Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTEGRAÇÕES -->
+            <div id="integracoes" class="page">
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📊 Google Sheets</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>ID da Planilha</label>
+                                <input type="text" id="googleSheetsId" value="1NJRMB-pgEFS0MjtKrh2mhqPN6apkDwwJMAPOCejLX8Y">
+                            </div>
+                            <button class="btn btn-primary btn-full" onclick="sincronizarSheets()">🔄 Sincronizar</button>
+                            <div id="alertaSheets"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>🔗 Webhook</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>URL do Webhook</label>
+                                <input type="text" id="webhookUrl" placeholder="https://seu-webhook.com/endpoint">
+                            </div>
+                            <button class="btn btn-primary btn-full" onclick="testarWebhook()">🧪 Testar Webhook</button>
+                            <div id="alertaWebhook"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3>📤 Exportar Dados</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <button class="btn btn-success" onclick="exportCSV('clientes')">📄 Clientes CSV</button>
+                            <button class="btn btn-success" onclick="exportCSV('fornecedores')">📄 Fornecedores CSV</button>
+                            <button class="btn btn-success" onclick="exportCSV('motoristas')">📄 Motoristas CSV</button>
+                            <button class="btn btn-primary" onclick="exportJSON()">📋 Backup JSON</button>
+                            <button class="btn btn-whatsapp" onclick="exportWhatsApp()">📱 Lista WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONFIGURAÇÕES -->
+            <div id="config" class="page">
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header">
+                        <h3>🎨 Tema e Aparência</h3>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-weight: 600; margin-bottom: 12px;">Cor Principal</p>
+                        <div class="theme-selector">
+                            <button class="theme-btn green active" onclick="setColor('green', this)" title="Verde Madeira"></button>
+                            <button class="theme-btn purple" onclick="setColor('purple', this)" title="Roxo"></button>
+                            <button class="theme-btn blue" onclick="setColor('blue', this)" title="Azul"></button>
+                            <button class="theme-btn orange" onclick="setColor('orange', this)" title="Laranja"></button>
+                            <button class="theme-btn red" onclick="setColor('red', this)" title="Vermelho"></button>
+                        </div>
+
+                        <p style="font-weight: 600; margin-bottom: 12px; margin-top: 24px;">Modo</p>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-outline" onclick="setTheme('light')">☀️ Claro</button>
+                            <button class="btn btn-outline" onclick="setTheme('dark')">🌙 Escuro</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header">
+                        <h3>📱 Configurações do WhatsApp</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Número Principal</label>
+                                <input type="text" value="5518996540492" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Modo</label>
+                                <select id="waMode">
+                                    <option value="learning">🧠 Aprendizado (sem respostas)</option>
+                                    <option value="auto">🤖 Automático</option>
+                                    <option value="manual">✋ Manual</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>⚠️ Zona de Perigo</h3>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-danger" onclick="limparTudo()">🗑️ Limpar Todo o Banco de Dados</button>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 12px;">Esta ação é irreversível. Faça um backup antes!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MOBILE MENU BUTTON -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <script>
+        // ============================================
+        // ENSIDE 2026 - SISTEMA DEFINITIVO
+        // Anderson Enside | CEO Grupo Líder Madeiras
+        // ============================================
+
+        // Banco de dados principal
+        let db = {
+            clientes: [],
+            fornecedores: [],
+            motoristas: [],
+            listas: [],
+            tarefas: [],
+            conhecimentos: [],
+            whatsapp: {
+                numeroVinculado: '5518996540492',
+                nomeExibicao: 'Anderson Enside',
+                webhook: '',
+                evolutionUrl: '',
+                evolutionKey: '',
+                evolutionInstance: 'enside-2026',
+                conversas: [],
+                mensagens: 0,
+                chatsAnalisados: 0
+            },
+            agente: {
+                nivel: 1,
+                xp: 0,
+                precisao: 50,
+                interacoes: 0,
+                imports: 0,
+                sugestoesDadas: [],
+                historico: []
+            },
+            apiKeys: {
+                openai: '',
+                claude: '',
+                groq: ''
+            },
+            config: {
+                versao: '2026.1.0',
+                googleSheetsId: '1NJRMB-pgEFS0MjtKrh2mhqPN6apkDwwJMAPOCejLX8Y',
+                tema: 'light',
+                cor: 'green',
+                criado: new Date().toISOString()
+            }
+        };
+
+        let dadosPendentes = null;
+
+        // Carregar banco de dados
+        function carregarDB() {
+            try {
+                const saved = localStorage.getItem('enside_2026');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    // Mesclar dados salvos com estrutura padrão
+                    db = { ...db, ...parsed };
+                    if (parsed.clientes) db.clientes = parsed.clientes;
+                    if (parsed.fornecedores) db.fornecedores = parsed.fornecedores;
+                    if (parsed.motoristas) db.motoristas = parsed.motoristas;
+                    if (parsed.listas) db.listas = parsed.listas;
+                    if (parsed.conhecimentos) db.conhecimentos = parsed.conhecimentos;
+                    if (parsed.whatsapp) db.whatsapp = { ...db.whatsapp, ...parsed.whatsapp };
+                    if (parsed.agente) db.agente = { ...db.agente, ...parsed.agente };
+                    if (parsed.apiKeys) db.apiKeys = { ...db.apiKeys, ...parsed.apiKeys };
+                    if (parsed.config) db.config = { ...db.config, ...parsed.config };
+                }
+                
+                // Aplicar tema salvo
+                if (db.config.tema === 'dark') {
+                    document.body.setAttribute('data-theme', 'dark');
+                }
+                if (db.config.cor && db.config.cor !== 'green') {
+                    document.body.setAttribute('data-color', db.config.cor);
+                }
+                
+                console.log('✅ ENSIDE 2026 carregado:', db.clientes.length + db.fornecedores.length + db.motoristas.length, 'contatos');
+            } catch (e) {
+                console.error('Erro ao carregar:', e);
+            }
+        }
+
+        // Salvar banco de dados
+        function salvarDB() {
+            try {
+                localStorage.setItem('enside_2026', JSON.stringify(db));
+                atualizarTudo();
+            } catch (e) {
+                console.error('Erro ao salvar:', e);
+            }
+        }
+
+        // Atualizar interface
+        function atualizarTudo() {
+            const total = db.clientes.length + db.fornecedores.length + db.motoristas.length;
+            const waTotal = [...db.clientes, ...db.fornecedores, ...db.motoristas].filter(c => c.whatsapp).length;
+
+            // Stats principais
+            document.getElementById('statTotal').textContent = total.toLocaleString();
+            document.getElementById('statFretes').textContent = db.motoristas.length.toLocaleString();
+            document.getElementById('statFornecedores').textContent = db.fornecedores.length.toLocaleString();
+            document.getElementById('statClientes').textContent = db.clientes.length.toLocaleString();
+            document.getElementById('statWhatsApp').textContent = waTotal.toLocaleString();
+            document.getElementById('statNivel').textContent = db.agente.nivel;
+
+            // Badges
+            document.getElementById('badgeContatos').textContent = total;
+            document.getElementById('badgeFretes').textContent = db.motoristas.length;
+
+            // Calcular nível
+            const nivel = Math.floor(db.agente.xp / 100) + 1;
+            db.agente.nivel = nivel;
+
+            // Calcular progresso
+            const aprendizado = Math.min(10 + (db.conhecimentos.length * 5) + (db.agente.interacoes * 2) + (db.agente.imports * 3) + (db.whatsapp.chatsAnalisados * 2), 100);
+            const nivelTexto = aprendizado < 20 ? 'Iniciante' : aprendizado < 40 ? 'Aprendiz' : aprendizado < 60 ? 'Intermediário' : aprendizado < 80 ? 'Avançado' : 'Expert';
+
+            // Dashboard IA
+            document.getElementById('dashNivel').textContent = nivel;
+            document.getElementById('dashXP').textContent = db.agente.xp;
+            document.getElementById('dashPrecisao').textContent = db.agente.precisao + '%';
+            document.getElementById('dashConhecimentos').textContent = db.conhecimentos.length;
+            document.getElementById('dashProgress').style.width = aprendizado + '%';
+            document.getElementById('dashProgressText').textContent = aprendizado + '% - ' + nivelTexto;
+
+            // Agente IA
+            document.getElementById('agNivel').textContent = nivel;
+            document.getElementById('agXP').textContent = db.agente.xp;
+            document.getElementById('agPrecisao').textContent = db.agente.precisao + '%';
+            document.getElementById('agChats').textContent = db.whatsapp.chatsAnalisados;
+            document.getElementById('agProgress').style.width = aprendizado + '%';
+            document.getElementById('agProgressText').textContent = aprendizado + '% - ' + nivelTexto;
+            document.getElementById('agImports').textContent = db.agente.imports;
+            document.getElementById('agInteracoes').textContent = db.agente.interacoes;
+            document.getElementById('agConversas').textContent = db.whatsapp.chatsAnalisados;
+
+            // WhatsApp
+            document.getElementById('waConv').textContent = db.whatsapp.conversas.length;
+            document.getElementById('waMsgs').textContent = db.whatsapp.mensagens;
+            document.getElementById('waAprend').textContent = Math.floor(db.whatsapp.chatsAnalisados * 3);
+
+            // Conhecimentos
+            document.getElementById('contConh').textContent = db.conhecimentos.length;
+
+            // Tabela análise
+            const calcStats = arr => ({
+                wa: arr.filter(r => r.whatsapp).length,
+                comp: arr.filter(r => r.nome && (r.telefone || r.whatsapp)).length
+            });
+            const c = calcStats(db.clientes), f = calcStats(db.fornecedores), m = calcStats(db.motoristas);
+            document.getElementById('tblAnalise').innerHTML = `
+                <tr><td>👥 Clientes</td><td>${db.clientes.length}</td><td>${c.wa}</td><td>${c.comp}</td></tr>
+                <tr><td>🏭 Fornecedores</td><td>${db.fornecedores.length}</td><td>${f.wa}</td><td>${f.comp}</td></tr>
+                <tr><td>🚛 Motoristas</td><td>${db.motoristas.length}</td><td>${m.wa}</td><td>${m.comp}</td></tr>
+                <tr style="font-weight:bold;background:var(--bg-main)"><td>TOTAL</td><td>${total}</td><td>${c.wa + f.wa + m.wa}</td><td>${c.comp + f.comp + m.comp}</td></tr>
+            `;
+
+            // Atualizar filtros
+            popularFiltrosUF();
+            gerarSugestoes();
+            renderConhecimentos();
+            renderMinhasListas();
+            renderConversas();
+
+            // API Status
+            document.getElementById('statusOpenAI').innerHTML = db.apiKeys.openai ? '🟢 Conectado' : '⚪ Não configurado';
+            document.getElementById('statusOpenAI').className = 'api-status ' + (db.apiKeys.openai ? 'connected' : 'disconnected');
+            document.getElementById('statusClaude').innerHTML = db.apiKeys.claude ? '🟢 Conectado' : '⚪ Não configurado';
+            document.getElementById('statusClaude').className = 'api-status ' + (db.apiKeys.claude ? 'connected' : 'disconnected');
+            document.getElementById('statusGroq').innerHTML = db.apiKeys.groq ? '🟢 Conectado' : '⚪ Não configurado';
+            document.getElementById('statusGroq').className = 'api-status ' + (db.apiKeys.groq ? 'connected' : 'disconnected');
+        }
+
+        // Navegação
+        function abrirPagina(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (btn) btn.classList.add('active');
+
+            const titulos = {
+                dashboard: ['📊 Dashboard', 'Visão geral do sistema ENSIDE 2026'],
+                contatos: ['👥 Contatos', 'Gerencie clientes, fornecedores e motoristas'],
+                fretes: ['🚛 Fretes', 'Sistema de fretes com 50 campos detalhados'],
+                agente: ['🧠 Agente IA', 'Chat inteligente com aprendizado contínuo'],
+                multiia: ['🤖 Multi-IA', 'Chat com múltiplos provedores de IA'],
+                conhecimentos: ['📚 Conhecimentos', 'Base de conhecimento do agente'],
+                whatsapp: ['📱 WhatsApp', 'Configuração e monitoramento'],
+                listas: ['📋 Listas', 'Listas de transmissão setorizadas'],
+                importar: ['📤 Importar', 'Importação inteligente de contatos'],
+                integracoes: ['🔗 Integrações', 'Google Sheets, Webhooks e Exportação'],
+                config: ['⚙️ Configurações', 'Personalização do sistema']
+            };
+
+            if (titulos[id]) {
+                document.getElementById('pageTitle').textContent = titulos[id][0];
+                document.getElementById('pageSubtitle').textContent = titulos[id][1];
+            }
+
+            // Atualizar listas quando necessário
+            if (id === 'contatos') filtrarContatos();
+        }
+
+        function abrirInnerTab(pagina, tab, btn) {
+            const parent = document.getElementById(pagina);
+            parent.querySelectorAll('.inner-content').forEach(c => c.classList.remove('active'));
+            parent.querySelectorAll('.inner-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(pagina + '-' + tab).classList.add('active');
+            btn.classList.add('active');
+
+            if (pagina === 'contatos') {
+                if (tab === 'clientes') filtrarClientes();
+                else if (tab === 'fornecedores') filtrarFornecedores();
+                else if (tab === 'motoristas') filtrarMotoristas();
+                else if (tab === 'todos') filtrarContatos();
+            }
+        }
+
+        // Filtros UF
+        function popularFiltrosUF() {
+            const ufs = new Set();
+            [...db.clientes, ...db.fornecedores, ...db.motoristas].forEach(c => {
+                if (c.estado) ufs.add(c.estado.toUpperCase());
+            });
+
+            ['filtroUF', 'listaFiltroUF'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const val = el.value;
+                el.innerHTML = '<option value="">Todos os estados</option>';
+                [...ufs].sort().forEach(uf => el.innerHTML += `<option value="${uf}">${uf}</option>`);
+                el.value = val;
+            });
+        }
+
+        // Sugestões
+        function gerarSugestoes() {
+            const sugestoes = [];
+            const total = db.clientes.length + db.fornecedores.length + db.motoristas.length;
+
+            if (!db.whatsapp.evolutionUrl) {
+                sugestoes.push({ icone: '🔗', titulo: 'Configure a Evolution API', texto: 'Conecte seu WhatsApp para automação completa.' });
+            }
+
+            if (total === 0) {
+                sugestoes.push({ icone: '📤', titulo: 'Importe seus Contatos', texto: 'O sistema aceita CSV, Excel, JSON. A triagem inteligente classifica automaticamente.' });
+            }
+
+            if (total > 10 && db.listas.length === 0) {
+                sugestoes.push({ icone: '📋', titulo: 'Crie Listas de Transmissão', texto: `Você tem ${total} contatos! Crie listas segmentadas para enviar mensagens em massa.` });
+            }
+
+            if (db.conhecimentos.length < 3) {
+                sugestoes.push({ icone: '📚', titulo: 'Ensine o Agente', texto: 'Adicione conhecimentos sobre preços, produtos, processos. Quanto mais você ensinar, mais preciso o agente fica!' });
+            }
+
+            if (!db.apiKeys.groq && !db.apiKeys.openai) {
+                sugestoes.push({ icone: '🤖', titulo: 'Configure uma API de IA', texto: 'Adicione uma API Key (Groq é gratuita!) para usar o chat Multi-IA.' });
+            }
+
+            const el = document.getElementById('sugestoesAgente');
+            if (sugestoes.length === 0) {
+                el.innerHTML = '<div class="alert alert-success"><span class="alert-icon">🎉</span><div><strong>Excelente, Anderson!</strong> Seu sistema está bem configurado!</div></div>';
+            } else {
+                el.innerHTML = sugestoes.slice(0, 3).map(s => `
+                    <div class="alert alert-info" style="display: flex; align-items: flex-start; gap: 12px;">
+                        <span style="font-size: 1.5rem;">${s.icone}</span>
+                        <div>
+                            <strong>${s.titulo}</strong>
+                            <p style="margin-top: 4px; opacity: 0.9;">${s.texto}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Triagem Inteligente
+        function triagemInteligente(r) {
+            const nome = (r.nome || '').toLowerCase();
+            const tipo = (r.tipo || '').toLowerCase();
+            const setor = (r.setor || '').toLowerCase();
+
+            if (tipo.includes('motorista') || tipo.includes('frete') || tipo.includes('driver')) return 'motoristas';
+            if (tipo.includes('fornecedor') || tipo.includes('supplier')) return 'fornecedores';
+            if (tipo.includes('cliente') || tipo.includes('customer')) return 'clientes';
+
+            // PRIORIDADE: Fretes/Motoristas
+            if (/frete|motorista|transportadora|caminhao|caminhão|carreta|truck|transp|logist|entrega|veiculo|veículo|frota|driver|rodoviario|rodoviário/i.test(nome + setor)) {
+                return 'motoristas';
+            }
+
+            // SEGUNDO: Fornecedores
+            if (/madeireira|serraria|marcenaria|carpintaria|movelaria|fábrica|fabrica|industria|indústria|laminadora|compensados|mdf|mdp|eucalipto|pinus|tora|serrada|beneficiamento|fornecedor|supplier/i.test(nome + setor)) {
+                return 'fornecedores';
+            }
+
+            // RESTO: Clientes
+            return 'clientes';
+        }
+
+        // Importação
+        function importarArquivo(e) {
+            const files = e.target.files;
+            if (!files.length) return;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = ev => processarArquivo(ev.target.result, file.name);
+                reader.readAsText(file);
+            });
+        }
+
+        function processarArquivo(conteudo, nomeArquivo) {
+            try {
+                let linhas;
+                const ext = nomeArquivo.toLowerCase().split('.').pop();
+
+                if (ext === 'json') {
+                    const data = JSON.parse(conteudo);
+                    if (Array.isArray(data)) {
+                        linhas = data;
+                    } else if (data.clientes || data.fornecedores || data.motoristas) {
+                        if (confirm('Arquivo de backup detectado. Restaurar todos os dados?')) {
+                            Object.assign(db, data);
+                            salvarDB();
+                            mostrarAlerta('alertaImport', '✅ Backup restaurado com sucesso!', 'success');
+                        }
+                        return;
+                    }
+                } else {
+                    const raw = conteudo.trim().split('\n');
+                    const sep = raw[0].includes(';') ? ';' : raw[0].includes('\t') ? '\t' : ',';
+                    const headers = raw[0].split(sep).map(h => h.trim().toLowerCase().replace(/"/g, '').replace(/\s+/g, '_'));
+
+                    linhas = raw.slice(1).map(linha => {
+                        const vals = linha.split(sep).map(v => v.trim().replace(/^"|"$/g, ''));
+                        const obj = {};
+                        headers.forEach((h, i) => obj[h] = vals[i] || '');
+                        return obj;
+                    });
+                }
+
+                const preview = { clientes: [], fornecedores: [], motoristas: [] };
+
+                linhas.forEach(r => {
+                    const registro = {
+                        nome: r.nome || r.name || r.razao_social || r.empresa || r.cliente || r.fornecedor || r.contato || '',
+                        telefone: r.telefone || r.phone || r.tel || r.fone || r.celular || '',
+                        whatsapp: r.whatsapp || r.wa || r.wpp || r.celular || r.telefone || '',
+                        email: r.email || r.mail || r.e_mail || r['e-mail'] || '',
+                        cidade: r.cidade || r.city || r.municipio || r.localidade || '',
+                        estado: (r.estado || r.uf || r.state || r.sigla || '').toUpperCase(),
+                        setor: r.setor || r.segmento || r.sector || r.ramo || r.area || '',
+                        tipo: r.tipo || r.type || r.categoria || r.category || ''
+                    };
+
+                    if (!registro.nome || registro.nome.length < 2) return;
+
+                    const cat = triagemInteligente(registro);
+
+                    registro.id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                    registro.categoria = cat;
+                    registro.dataImport = new Date().toLocaleDateString('pt-BR');
+                    registro.arquivoOrigem = nomeArquivo;
+
+                    preview[cat].push(registro);
+                });
+
+                dadosPendentes = preview;
+                document.getElementById('prevMotoristas').textContent = preview.motoristas.length;
+                document.getElementById('prevFornecedores').textContent = preview.fornecedores.length;
+                document.getElementById('prevClientes').textContent = preview.clientes.length;
+                document.getElementById('triagemPreview').style.display = 'block';
+
+                const totalPrev = preview.clientes.length + preview.fornecedores.length + preview.motoristas.length;
+                mostrarAlerta('alertaImport', `🧠 ${totalPrev} registros analisados. Confira a triagem e confirme.`, 'info');
+
+            } catch (err) {
+                mostrarAlerta('alertaImport', '❌ Erro: ' + err.message, 'error');
+            }
+        }
+
+        function confirmarImportacao() {
+            if (!dadosPendentes) return;
+
+            let stats = { novos: 0, dup: 0 };
+            let cats = { clientes: 0, fornecedores: 0, motoristas: 0 };
+
+            ['clientes', 'fornecedores', 'motoristas'].forEach(cat => {
+                dadosPendentes[cat].forEach(registro => {
+                    const nomeNorm = registro.nome.toLowerCase().trim();
+                    if (db[cat].some(x => (x.nome || '').toLowerCase().trim() === nomeNorm)) {
+                        stats.dup++;
+                        return;
+                    }
+                    db[cat].push(registro);
+                    stats.novos++;
+                    cats[cat]++;
+                });
+            });
+
+            db.agente.imports++;
+            db.agente.xp += Math.floor(stats.novos / 10) + 10;
+            db.agente.precisao = Math.min(50 + (db.agente.imports * 3), 98);
+
+            salvarDB();
+
+            document.getElementById('triagemPreview').style.display = 'none';
+            mostrarAlerta('alertaImport', `✅ ${stats.novos.toLocaleString()} contatos importados! (🚛 ${cats.motoristas} | 🏭 ${cats.fornecedores} | 👥 ${cats.clientes})` + (stats.dup > 0 ? ` | ⚠️ ${stats.dup} duplicados ignorados` : ''), 'success');
+
+            dadosPendentes = null;
+            document.getElementById('fileInput').value = '';
+            addMsgAgente(`📥 Importei ${stats.novos.toLocaleString()} contatos com triagem inteligente!`);
+        }
+
+        function cancelarImportacao() {
+            dadosPendentes = null;
+            document.getElementById('triagemPreview').style.display = 'none';
+            mostrarAlerta('alertaImport', '❌ Importação cancelada.', 'warning');
+        }
+
+        // Drag and Drop
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.getElementById('dropZone');
+            if (dropZone) {
+                ['dragenter', 'dragover'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('dragover'); }));
+                ['dragleave', 'drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('dragover'); }));
+                dropZone.addEventListener('drop', ev => {
+                    const files = ev.dataTransfer.files;
+                    Array.from(files).forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = e => processarArquivo(e.target.result, file.name);
+                        reader.readAsText(file);
+                    });
+                });
+            }
+        });
+
+        // Cadastro manual
+        function salvarCadastro() {
+            const tipo = document.getElementById('cadTipo').value;
+            const nome = document.getElementById('cadNome').value.trim();
+
+            if (!nome) {
+                mostrarAlerta('alertaCad', '❌ Nome é obrigatório!', 'error');
+                return;
+            }
+
+            if (db[tipo].some(x => (x.nome || '').toLowerCase() === nome.toLowerCase())) {
+                mostrarAlerta('alertaCad', '❌ Já existe um registro com esse nome!', 'error');
+                return;
+            }
+
+            db[tipo].push({
+                id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                nome,
+                telefone: document.getElementById('cadTel').value.trim(),
+                whatsapp: document.getElementById('cadWa').value.trim(),
+                email: document.getElementById('cadEmail').value.trim(),
+                cidade: document.getElementById('cadCidade').value.trim(),
+                estado: document.getElementById('cadUF').value.trim().toUpperCase(),
+                setor: document.getElementById('cadSetor').value,
+                categoria: tipo,
+                dataImport: new Date().toLocaleDateString('pt-BR')
+            });
+
+            db.agente.xp += 5;
+            salvarDB();
+
+            ['cadNome', 'cadTel', 'cadWa', 'cadEmail', 'cadCidade', 'cadUF'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('cadSetor').value = '';
+            mostrarAlerta('alertaCad', '✅ Cadastro salvo com sucesso!', 'success');
+        }
+
+        // Renderizar contatos
+        function renderContatos(arr, elId) {
+            const el = document.getElementById(elId);
+            if (!arr.length) {
+                el.innerHTML = '<div class="alert alert-info">Nenhum registro encontrado</div>';
+                return;
+            }
+
+            const icons = { clientes: '👥', fornecedores: '🏭', motoristas: '🚛' };
+
+            el.innerHTML = arr.slice(0, 100).map(c => `
+                <div class="contact-card">
+                    <div class="contact-header">
+                        <span class="contact-name">${icons[c.categoria] || '📋'} ${c.nome}</span>
+                        <div>
+                            ${c.setor ? `<span class="badge badge-info">${c.setor}</span>` : ''}
+                            ${c.estado ? `<span class="badge badge-primary">${c.estado}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="contact-info">
+                        ${c.telefone ? `<span>📞 ${c.telefone}</span>` : ''}
+                        ${c.whatsapp ? `<span>📱 <a href="https://wa.me/55${c.whatsapp.replace(/\D/g, '')}" target="_blank">${c.whatsapp}</a></span>` : ''}
+                        ${c.cidade ? `<span>📍 ${c.cidade}${c.estado ? ' - ' + c.estado : ''}</span>` : ''}
+                    </div>
+                    <div class="contact-actions">
+                        ${c.whatsapp ? `<button class="btn btn-sm btn-whatsapp" onclick="window.open('https://wa.me/55${c.whatsapp.replace(/\D/g, '')}')">📱 WhatsApp</button>` : ''}
+                        <button class="btn btn-sm btn-danger" onclick="excluir('${c.categoria}', '${c.id}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+
+            if (arr.length > 100) {
+                el.innerHTML += `<div class="alert alert-info">Mostrando 100 de ${arr.length.toLocaleString()} registros</div>`;
+            }
+        }
+
+        function filtrarContatos() {
+            const busca = document.getElementById('buscaContatos').value.toLowerCase();
+            const tipo = document.getElementById('filtroTipo').value;
+            const uf = document.getElementById('filtroUF').value;
+
+            let todos = [...db.clientes, ...db.fornecedores, ...db.motoristas];
+
+            if (tipo) todos = todos.filter(c => c.categoria === tipo);
+            if (busca) todos = todos.filter(c => c.nome.toLowerCase().includes(busca) || (c.telefone || '').includes(busca) || (c.cidade || '').toLowerCase().includes(busca));
+            if (uf) todos = todos.filter(c => c.estado === uf);
+
+            renderContatos(todos, 'listaContatos');
+        }
+
+        function filtrarClientes() {
+            const busca = (document.getElementById('buscaClientes')?.value || '').toLowerCase();
+            const filtered = db.clientes.filter(c => !busca || c.nome.toLowerCase().includes(busca) || (c.telefone || '').includes(busca));
+            renderContatos(filtered, 'listaClientes');
+        }
+
+        function filtrarFornecedores() {
+            const busca = (document.getElementById('buscaFornecedores')?.value || '').toLowerCase();
+            const filtered = db.fornecedores.filter(c => !busca || c.nome.toLowerCase().includes(busca) || (c.telefone || '').includes(busca));
+            renderContatos(filtered, 'listaFornecedores');
+        }
+
+        function filtrarMotoristas() {
+            const busca = (document.getElementById('buscaMotoristas')?.value || '').toLowerCase();
+            const filtered = db.motoristas.filter(c => !busca || c.nome.toLowerCase().includes(busca) || (c.telefone || '').includes(busca));
+            renderContatos(filtered, 'listaMotoristas');
+        }
+
+        function filtrarFretes() {
+            filtrarMotoristas();
+            renderContatos(db.motoristas, 'listaFretes');
+        }
+
+        function excluir(cat, id) {
+            if (!confirm('Excluir este registro?')) return;
+            db[cat] = db[cat].filter(c => c.id !== id);
+            salvarDB();
+            filtrarContatos();
+        }
+
+        // Fretes
+        function salvarFrete() {
+            const nome = document.getElementById('freteNome').value.trim();
+            const wa = document.getElementById('freteWa').value.trim();
+
+            if (!nome) {
+                mostrarAlerta('alertaFrete', '❌ Nome é obrigatório!', 'error');
+                return;
+            }
+
+            db.motoristas.push({
+                id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                nome,
+                cpf: document.getElementById('freteCpf').value.trim(),
+                whatsapp: wa,
+                placa: document.getElementById('fretePlaca').value.trim(),
+                tipoVeiculo: document.getElementById('freteTipoVeiculo').value,
+                capacidade: document.getElementById('freteCapacidade').value,
+                origem: document.getElementById('freteOrigem').value.trim(),
+                destino: document.getElementById('freteDestino').value.trim(),
+                observacoes: document.getElementById('freteObs').value.trim(),
+                categoria: 'motoristas',
+                dataImport: new Date().toLocaleDateString('pt-BR')
+            });
+
+            db.agente.xp += 10;
+            salvarDB();
+
+            ['freteNome', 'freteCpf', 'freteWa', 'fretePlaca', 'freteCapacidade', 'freteOrigem', 'freteDestino', 'freteObs'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('freteTipoVeiculo').value = '';
+            mostrarAlerta('alertaFrete', '✅ Frete/Motorista cadastrado!', 'success');
+        }
+
+        // Conhecimentos
+        function salvarConhecimento() {
+            const titulo = document.getElementById('conhTitulo').value.trim();
+            const conteudo = document.getElementById('conhConteudo').value.trim();
+
+            if (!titulo || !conteudo) {
+                mostrarAlerta('alertaConh', '❌ Título e conteúdo são obrigatórios!', 'error');
+                return;
+            }
+
+            db.conhecimentos.push({
+                id: Date.now(),
+                titulo,
+                categoria: document.getElementById('conhCat').value,
+                conteudo,
+                tags: document.getElementById('conhTags').value.split(',').map(t => t.trim()).filter(t => t),
+                criado: new Date().toLocaleDateString('pt-BR')
+            });
+
+            db.agente.xp += 15;
+            db.agente.precisao = Math.min(db.agente.precisao + 1, 98);
+            salvarDB();
+
+            document.getElementById('conhTitulo').value = '';
+            document.getElementById('conhConteudo').value = '';
+            document.getElementById('conhTags').value = '';
+            mostrarAlerta('alertaConh', '✅ Conhecimento salvo!', 'success');
+            addMsgAgente(`📚 Aprendi sobre "${titulo}"!`);
+        }
+
+        function renderConhecimentos() {
+            const el = document.getElementById('listaConh');
+            if (!db.conhecimentos.length) {
+                el.innerHTML = '<div class="alert alert-info">Nenhum conhecimento cadastrado ainda.</div>';
+                return;
+            }
+
+            el.innerHTML = db.conhecimentos.map(c => `
+                <div class="knowledge-card">
+                    <h4>📖 ${c.titulo}</h4>
+                    <p>${c.conteudo}</p>
+                    ${c.tags && c.tags.length ? `<div class="knowledge-tags">${c.tags.map(t => `<span class="knowledge-tag">${t}</span>`).join('')}</div>` : ''}
+                    <button class="btn btn-sm btn-danger" onclick="delConhecimento(${c.id})" style="margin-top: 12px;">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function delConhecimento(id) {
+            if (!confirm('Excluir este conhecimento?')) return;
+            db.conhecimentos = db.conhecimentos.filter(c => c.id !== id);
+            salvarDB();
+        }
+
+        // Listas
+        function previewLista() {
+            const tipo = document.getElementById('listaFiltroTipo').value;
+            const uf = document.getElementById('listaFiltroUF').value;
+            const limite = parseInt(document.getElementById('listaLimite').value) || 256;
+
+            let contatos = [];
+            if (tipo) contatos = db[tipo].filter(c => c.whatsapp);
+            else contatos = [...db.clientes, ...db.fornecedores, ...db.motoristas].filter(c => c.whatsapp);
+
+            if (uf) contatos = contatos.filter(c => c.estado === uf);
+
+            const numListas = Math.ceil(Math.min(contatos.length, limite) / 256);
+            const el = document.getElementById('previewListaInfo');
+            el.style.display = 'block';
+            el.innerHTML = `📊 <strong>${contatos.length.toLocaleString()}</strong> contatos com WhatsApp | Serão criadas <strong>${numListas}</strong> lista(s) de 256 cada`;
+        }
+
+        function criarLista() {
+            const nome = document.getElementById('listaNome').value.trim();
+            if (!nome) {
+                mostrarAlerta('alertaLista', '❌ Nome da lista é obrigatório!', 'error');
+                return;
+            }
+
+            const tipo = document.getElementById('listaFiltroTipo').value;
+            const uf = document.getElementById('listaFiltroUF').value;
+            const limite = parseInt(document.getElementById('listaLimite').value) || 256;
+
+            let contatos = [];
+            if (tipo) contatos = db[tipo].filter(c => c.whatsapp);
+            else contatos = [...db.clientes, ...db.fornecedores, ...db.motoristas].filter(c => c.whatsapp);
+
+            if (uf) contatos = contatos.filter(c => c.estado === uf);
+            contatos = contatos.slice(0, limite);
+
+            if (!contatos.length) {
+                mostrarAlerta('alertaLista', '❌ Nenhum contato com WhatsApp encontrado!', 'error');
+                return;
+            }
+
+            const chunks = [];
+            for (let i = 0; i < contatos.length; i += 256) chunks.push(contatos.slice(i, i + 256));
+
+            chunks.forEach((chunk, idx) => {
+                db.listas.push({
+                    id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                    nome: chunks.length > 1 ? `${nome} (${idx + 1}/${chunks.length})` : nome,
+                    filtros: { tipo, uf },
+                    contatos: chunk.map(c => ({ id: c.id, nome: c.nome, whatsapp: c.whatsapp })),
+                    total: chunk.length,
+                    criado: new Date().toLocaleDateString('pt-BR')
+                });
+            });
+
+            db.agente.xp += 20;
+            salvarDB();
+
+            document.getElementById('listaNome').value = '';
+            document.getElementById('previewListaInfo').style.display = 'none';
+            mostrarAlerta('alertaLista', `✅ ${chunks.length} lista(s) criada(s) com ${contatos.length} contatos!`, 'success');
+            addMsgAgente(`📋 Criei ${chunks.length} lista(s) com ${contatos.length} contatos!`);
+        }
+
+        function renderMinhasListas() {
+            const el = document.getElementById('minhasListas');
+            if (!db.listas.length) {
+                el.innerHTML = '<div class="alert alert-info">Nenhuma lista criada ainda.</div>';
+                return;
+            }
+
+            el.innerHTML = db.listas.map(l => `
+                <div class="list-item">
+                    <div class="list-info">
+                        <h4>📋 ${l.nome}</h4>
+                        <p>Criada: ${l.criado}</p>
+                    </div>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <span class="list-count">${l.total}</span>
+                        <button class="btn btn-sm btn-whatsapp" onclick="exportarLista('${l.id}')">📤</button>
+                        <button class="btn btn-sm btn-danger" onclick="excluirLista('${l.id}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function exportarLista(id) {
+            const lista = db.listas.find(l => l.id === id);
+            if (!lista) return;
+            let csv = 'Nome,WhatsApp\n';
+            lista.contatos.forEach(c => csv += `"${c.nome}","${c.whatsapp}"\n`);
+            download(csv, `lista_${lista.nome.replace(/[^a-zA-Z0-9]/g, '_')}.csv`);
+        }
+
+        function excluirLista(id) {
+            if (!confirm('Excluir esta lista?')) return;
+            db.listas = db.listas.filter(l => l.id !== id);
+            salvarDB();
+        }
+
+        // WhatsApp
+        function salvarWhatsAppVinculado() {
+            const numero = document.getElementById('waNumeroVinculado').value.replace(/\D/g, '');
+            const nome = document.getElementById('waNomeExibicao').value.trim();
+
+            if (numero && numero.length >= 10) {
+                db.whatsapp.numeroVinculado = numero;
+                db.whatsapp.nomeExibicao = nome || 'Anderson Enside';
+                db.agente.xp += 25;
+                salvarDB();
+                addMsgAgente(`📱 WhatsApp vinculado: ${formatarTelefone(numero)}`);
+            }
+        }
+
+        function conectarEvolution() {
+            const url = document.getElementById('evolutionUrl').value.trim();
+            const key = document.getElementById('evolutionKey').value.trim();
+            const instance = document.getElementById('evolutionInstance').value.trim();
+
+            if (!url || !key) {
+                mostrarAlerta('alertaEvolution', '❌ URL e API Key são obrigatórios!', 'error');
+                return;
+            }
+
+            db.whatsapp.evolutionUrl = url;
+            db.whatsapp.evolutionKey = key;
+            db.whatsapp.evolutionInstance = instance || 'enside-2026';
+            db.agente.xp += 30;
+            salvarDB();
+
+            mostrarAlerta('alertaEvolution', '✅ Evolution API configurada!', 'success');
+            addMsgAgente('🔗 Evolution API conectada! Pronto para automação WhatsApp.');
+        }
+
+        function simularConversa() {
+            const nomes = ['João Madeireira', 'Maria Construções', 'Carlos Frete', 'Pedro Móveis', 'Ana Serraria'];
+            const msgs = ['Tem Pinus seco?', 'Qual o preço do MDF?', 'Preciso de frete urgente', 'Entrega para semana que vem?', 'Vocês trabalham com compensado?'];
+
+            const conv = {
+                id: Date.now(),
+                contato: nomes[Math.floor(Math.random() * nomes.length)],
+                telefone: '55189' + Math.random().toString().slice(2, 10),
+                msg: msgs[Math.floor(Math.random() * msgs.length)],
+                hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                data: new Date().toLocaleDateString('pt-BR')
+            };
+
+            db.whatsapp.conversas.push(conv);
+            db.whatsapp.mensagens++;
+            db.whatsapp.chatsAnalisados++;
+            db.agente.xp += 5;
+            salvarDB();
+
+            addMsgAgente(`📱 Nova mensagem de ${conv.contato}: "${conv.msg}"`);
+        }
+
+        function renderConversas() {
+            const el = document.getElementById('waConversas');
+            if (!db.whatsapp.conversas.length) {
+                el.innerHTML = '<div class="alert alert-info">Nenhuma conversa ainda. Clique em "Simular" para testar.</div>';
+                return;
+            }
+
+            el.innerHTML = db.whatsapp.conversas.slice(-10).reverse().map(c => `
+                <div style="background: var(--bg-main); padding: 16px; border-radius: var(--radius-md); margin-bottom: 12px; border-left: 4px solid var(--whatsapp);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <strong style="color: var(--whatsapp);">👤 ${c.contato}</strong>
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">${c.hora}</span>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 12px; border-radius: 8px;">${c.msg}</div>
+                </div>
+            `).join('');
+        }
+
+        // Chat do Agente
+        function enviarMsg() {
+            const input = document.getElementById('chatIn');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const chatEl = document.getElementById('chatMsgs');
+            chatEl.innerHTML += `<div class="chat-msg user">${msg}<div class="time">${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div></div>`;
+            input.value = '';
+
+            db.agente.interacoes++;
+            db.agente.xp += 2;
+
+            setTimeout(() => {
+                const resposta = gerarRespostaAgente(msg);
+                addMsgAgente(resposta);
+                salvarDB();
+            }, 500);
+        }
+
+        function gerarRespostaAgente(msg) {
+            const msgLower = msg.toLowerCase();
+
+            if (msgLower.includes('resumo') || msgLower.includes('status')) {
+                const total = db.clientes.length + db.fornecedores.length + db.motoristas.length;
+                return `📊 **Resumo do Sistema:**\n\n👥 ${db.clientes.length} clientes\n🏭 ${db.fornecedores.length} fornecedores\n🚛 ${db.motoristas.length} motoristas\n📦 ${total} total\n🧠 Nível ${db.agente.nivel} | ${db.agente.xp} XP`;
+            }
+
+            if (msgLower.includes('ajuda') || msgLower.includes('help')) {
+                return '💡 **Comandos disponíveis:**\n\n• "resumo" - Status do sistema\n• "quantos clientes?" - Contagem\n• "buscar [nome]" - Buscar contato\n• "dica" - Sugestão do agente\n• "preços" - Conhecimentos de preços';
+            }
+
+            if (msgLower.includes('quantos')) {
+                if (msgLower.includes('cliente')) return `👥 Você tem ${db.clientes.length} clientes cadastrados.`;
+                if (msgLower.includes('fornecedor')) return `🏭 Você tem ${db.fornecedores.length} fornecedores cadastrados.`;
+                if (msgLower.includes('motorista') || msgLower.includes('frete')) return `🚛 Você tem ${db.motoristas.length} motoristas/fretes cadastrados.`;
+                return `📦 Total: ${db.clientes.length + db.fornecedores.length + db.motoristas.length} contatos.`;
+            }
+
+            if (msgLower.includes('dica') || msgLower.includes('sugestão')) {
+                const dicas = [
+                    '💡 Importe contatos de planilhas para crescer sua base rapidamente!',
+                    '💡 Crie listas de transmissão segmentadas para marketing mais efetivo.',
+                    '💡 Adicione conhecimentos sobre preços para eu responder melhor.',
+                    '💡 Configure a Evolution API para automação completa do WhatsApp.',
+                    '💡 Use as APIs de IA (Groq é gratuita!) para respostas mais inteligentes.'
+                ];
+                return dicas[Math.floor(Math.random() * dicas.length)];
+            }
+
+            // Buscar nos conhecimentos
+            const conhecimentoRelevante = db.conhecimentos.find(c =>
+                msgLower.includes(c.titulo.toLowerCase()) ||
+                c.tags.some(t => msgLower.includes(t.toLowerCase()))
+            );
+
+            if (conhecimentoRelevante) {
+                return `📚 **${conhecimentoRelevante.titulo}:**\n\n${conhecimentoRelevante.conteudo}`;
+            }
+
+            return 'Entendido! Como posso ajudar mais? Digite "ajuda" para ver comandos.';
+        }
+
+        function addMsgAgente(msg) {
+            const chatEl = document.getElementById('chatMsgs');
+            chatEl.innerHTML += `<div class="chat-msg agent">${msg.replace(/\n/g, '<br>')}<div class="time">${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div></div>`;
+            chatEl.scrollTop = chatEl.scrollHeight;
+        }
+
+        // Multi-IA
+        function salvarAPIKeys() {
+            db.apiKeys.openai = document.getElementById('keyOpenAI').value.trim();
+            db.apiKeys.claude = document.getElementById('keyClaude').value.trim();
+            db.apiKeys.groq = document.getElementById('keyGroq').value.trim();
+            salvarDB();
+            mostrarAlerta('alertaWebhook', '✅ API Keys salvas!', 'success');
+        }
+
+        async function enviarMsgMultiIA() {
+            const input = document.getElementById('multiIAChatIn');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const chatEl = document.getElementById('multiIAChatMsgs');
+            chatEl.innerHTML += `<div class="chat-msg user">${msg}<div class="time">${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div></div>`;
+            input.value = '';
+
+            const modelo = document.getElementById('modeloIA').value;
+
+            // Contexto do negócio
+            const contexto = `Você é um assistente especializado da ENSIDE MADEIRAS / GRUPO LÍDER MADEIRAS.
+Negócio: Distribuição de madeira em todo Brasil e exportação, modelo dropshipping B2B.
+Produtos: Pinus, MDF, Eucalipto, Compensados, Madeira Serrada.
+CEO: Anderson Enside, de Araçatuba-SP.
+Base: ${db.clientes.length} clientes, ${db.fornecedores.length} fornecedores, ${db.motoristas.length} motoristas.
+Conhecimentos: ${db.conhecimentos.map(c => c.titulo).join(', ') || 'Nenhum cadastrado'}`;
+
+            chatEl.innerHTML += `<div class="chat-msg system">⏳ Processando com ${modelo}...</div>`;
+
+            try {
+                let resposta = '';
+
+                if (modelo === 'groq' && db.apiKeys.groq) {
+                    resposta = await callGroq(msg, contexto);
+                } else if (modelo === 'openai' && db.apiKeys.openai) {
+                    resposta = await callOpenAI(msg, contexto);
+                } else {
+                    resposta = '⚠️ API Key não configurada para este modelo. Configure nas opções acima.';
+                }
+
+                // Remover mensagem de loading
+                chatEl.removeChild(chatEl.lastChild);
+
+                chatEl.innerHTML += `<div class="chat-msg agent">${resposta}<div class="time">${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div></div>`;
+                chatEl.scrollTop = chatEl.scrollHeight;
+
+            } catch (err) {
+                chatEl.removeChild(chatEl.lastChild);
+                chatEl.innerHTML += `<div class="chat-msg agent">❌ Erro: ${err.message}</div>`;
+            }
+        }
+
+        async function callGroq(msg, contexto) {
+            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${db.apiKeys.groq}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'llama-3.3-70b-versatile',
+                    messages: [
+                        { role: 'system', content: contexto },
+                        { role: 'user', content: msg }
+                    ],
+                    max_tokens: 1024,
+                    temperature: 0.7
+                })
+            });
+
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+            return data.choices[0].message.content;
+        }
+
+        async function callOpenAI(msg, contexto) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${db.apiKeys.openai}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: 'system', content: contexto },
+                        { role: 'user', content: msg }
+                    ],
+                    max_tokens: 1024,
+                    temperature: 0.7
+                })
+            });
+
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+            return data.choices[0].message.content;
+        }
+
+        // Integrações
+        function sincronizarSheets() {
+            const id = document.getElementById('googleSheetsId').value.trim();
+            if (!id) {
+                mostrarAlerta('alertaSheets', '❌ ID da planilha é obrigatório!', 'error');
+                return;
+            }
+            db.config.googleSheetsId = id;
+            salvarDB();
+            mostrarAlerta('alertaSheets', '✅ ID salvo! Para sincronização completa, configure um Apps Script.', 'success');
+        }
+
+        function testarWebhook() {
+            const url = document.getElementById('webhookUrl').value.trim();
+            if (!url) {
+                mostrarAlerta('alertaWebhook', '❌ URL do webhook é obrigatória!', 'error');
+                return;
+            }
+
+            db.whatsapp.webhook = url;
+            salvarDB();
+            mostrarAlerta('alertaWebhook', '✅ Webhook configurado! Teste enviando uma mensagem para seu endpoint.', 'success');
+        }
+
+        // Exportação
+        function exportCSV(cat) {
+            if (!db[cat].length) {
+                alert('Nenhum registro para exportar!');
+                return;
+            }
+            let csv = 'Nome,Telefone,WhatsApp,Email,Cidade,Estado,Setor\n';
+            db[cat].forEach(c => csv += `"${c.nome || ''}","${c.telefone || ''}","${c.whatsapp || ''}","${c.email || ''}","${c.cidade || ''}","${c.estado || ''}","${c.setor || ''}"\n`);
+            download(csv, `${cat}_enside_2026.csv`);
+        }
+
+        function exportJSON() {
+            download(JSON.stringify(db, null, 2), `enside_2026_backup_${new Date().toISOString().slice(0, 10)}.json`);
+        }
+
+        function exportarBackup() {
+            exportJSON();
+        }
+
+        function exportWhatsApp() {
+            const todos = [...db.clientes, ...db.fornecedores, ...db.motoristas].filter(c => c.whatsapp);
+            if (!todos.length) {
+                alert('Nenhum contato com WhatsApp!');
+                return;
+            }
+            let csv = 'Nome,WhatsApp,Categoria\n';
+            todos.forEach(c => csv += `"${c.nome}","${c.whatsapp}","${c.categoria}"\n`);
+            download(csv, 'whatsapp_todos_enside_2026.csv');
+        }
+
+        function download(content, filename) {
+            const a = document.createElement('a');
+            a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+            a.download = filename;
+            a.click();
+        }
+
+        // Temas
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+            } else {
+                document.body.removeAttribute('data-theme');
+            }
+            db.config.tema = theme;
+            salvarDB();
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            setTheme(isDark ? 'light' : 'dark');
+        }
+
+        function setColor(color, btn) {
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (color === 'green') {
+                document.body.removeAttribute('data-color');
+            } else {
+                document.body.setAttribute('data-color', color);
+            }
+            db.config.cor = color;
+            salvarDB();
+        }
+
+        // Limpar dados
+        function limparTudo() {
+            if (!confirm('⚠️ APAGAR TODOS OS DADOS? Esta ação é irreversível!')) return;
+            if (!confirm('🚨 TEM CERTEZA? Faça um backup antes!')) return;
+            localStorage.removeItem('enside_2026');
+            location.reload();
+        }
+
+        // Mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Utilitários
+        function formatarTelefone(num) {
+            if (!num) return '';
+            const clean = num.replace(/\D/g, '');
+            if (clean.length === 13) return '+' + clean.slice(0, 2) + ' (' + clean.slice(2, 4) + ') ' + clean.slice(4, 9) + '-' + clean.slice(9);
+            if (clean.length === 11) return '(' + clean.slice(0, 2) + ') ' + clean.slice(2, 7) + '-' + clean.slice(7);
+            return num;
+        }
+
+        function mostrarAlerta(elId, msg, tipo) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            const classes = {
+                success: 'alert-success',
+                error: 'alert-danger',
+                warning: 'alert-warning',
+                info: 'alert-info'
+            };
+            el.innerHTML = `<div class="alert ${classes[tipo] || 'alert-info'}"><span class="alert-icon">${tipo === 'success' ? '✅' : tipo === 'error' ? '❌' : tipo === 'warning' ? '⚠️' : 'ℹ️'}</span><div>${msg}</div></div>`;
+        }
+
+        // Inicialização
+        carregarDB();
+        atualizarTudo();
+
+        // Mensagem inicial do agente
+        setTimeout(() => {
+            const total = db.clientes.length + db.fornecedores.length + db.motoristas.length;
+            let msgInicial = `👋 Olá Anderson! Sou o **Enside Agent 2026**.\n\n`;
+            msgInicial += `📱 WhatsApp: ${formatarTelefone(db.whatsapp.numeroVinculado)}\n`;
+            msgInicial += `📦 ${total} contatos | 📋 ${db.listas.length} listas | 📚 ${db.conhecimentos.length} conhecimentos\n\n`;
+            msgInicial += `💬 Digite "ajuda" para ver comandos disponíveis!`;
+            addMsgAgente(msgInicial);
+        }, 500);
+
+        console.log('🌲 ENSIDE 2026 - SISTEMA DEFINITIVO CARREGADO!');
+    </script>
+</body>
+</html>
