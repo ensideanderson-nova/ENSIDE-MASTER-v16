@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Motorista | Anderson Enside Logística</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="../config.js"></script>
+    <script src="../api-integration.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #0a0a0a;
+            font-weight: 700;
+            transform: translateY(0);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #FFD700;
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden">
+        <div class="hero-gradient absolute inset-0 opacity-50"></div>
+        <div class="relative max-w-7xl mx-auto px-4 py-16 md:py-24">
+            <div class="text-center mb-12">
+                <div class="float-animation inline-block text-8xl mb-6">🚛</div>
+                <h1 class="text-5xl md:text-7xl font-black mb-4">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600">
+                        Anderson Enside
+                    </span>
+                    <br>
+                    <span class="text-white">Logística</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-2 font-semibold">
+                    Sistema Inteligente de Captação de Fretes
+                </p>
+                <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+                    Encontre os melhores fretes para suas rotas preferidas com tecnologia de IA e notificações em tempo real
+                </p>
+            </div>
+
+            <!-- CTAs -->
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center mb-16">
+                <a href="fretes_disponiveis.html" class="btn-primary px-10 py-5 rounded-xl transition text-xl w-full md:w-auto text-center">
+                    🚀 Ver Fretes Disponíveis
+                </a>
+                <button onclick="mostrarFormularioCadastro()" class="btn-secondary px-10 py-5 rounded-xl transition text-xl w-full md:w-auto">
+                    📝 Cadastrar-se Agora
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="glass rounded-xl p-6 text-center">
+                    <div class="text-4xl font-black text-yellow-400 mb-2" id="statFretes">12+</div>
+                    <div class="text-sm text-gray-400">Fretes Ativos</div>
+                </div>
+                <div class="glass rounded-xl p-6 text-center">
+                    <div class="text-4xl font-black text-green-400 mb-2">98%</div>
+                    <div class="text-sm text-gray-400">Satisfação</div>
+                </div>
+                <div class="glass rounded-xl p-6 text-center">
+                    <div class="text-4xl font-black text-blue-400 mb-2" id="statMotoristas">50+</div>
+                    <div class="text-sm text-gray-400">Motoristas</div>
+                </div>
+                <div class="glass rounded-xl p-6 text-center">
+                    <div class="text-4xl font-black text-purple-400 mb-2">24/7</div>
+                    <div class="text-sm text-gray-400">Suporte</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="max-w-7xl mx-auto px-4 py-16">
+        <h2 class="text-4xl font-bold text-center mb-4">
+            <span class="text-yellow-400">Por que escolher</span> nosso sistema?
+        </h2>
+        <p class="text-center text-gray-400 mb-12 text-lg">
+            Tecnologia de ponta para otimizar seus fretes
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card glass rounded-2xl p-8">
+                <div class="text-5xl mb-4">🤖</div>
+                <h3 class="text-2xl font-bold mb-3 text-yellow-400">Análise com IA</h3>
+                <p class="text-gray-400">
+                    Sistema inteligente que analisa suas propostas e sugere os melhores valores baseado no mercado
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card glass rounded-2xl p-8">
+                <div class="text-5xl mb-4">📱</div>
+                <h3 class="text-2xl font-bold mb-3 text-yellow-400">Notificações WhatsApp</h3>
+                <p class="text-gray-400">
+                    Receba notificações instantâneas quando surgir um frete na sua rota preferida
+                </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card glass rounded-2xl p-8">
+                <div class="text-5xl mb-4">🗺️</div>
+                <h3 class="text-2xl font-bold mb-3 text-yellow-400">Rotas Personalizadas</h3>
+                <p class="text-gray-400">
+                    Cadastre suas rotas preferidas e receba apenas fretes que interessam para você
+                </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card glass rounded-2xl p-8">
+                <div class="text-5xl mb-4">💰</div>
+                <h3 class="text-2xl font-bold mb-3 text-yellow-400">Valores Competitivos</h3>
+                <p class="text-gray-400">
+                    Faça suas propostas e negocie diretamente com valores justos e transparentes
+                </p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="feature-card glass rounded-2xl p-8">
+                <div class="text-5xl mb-4">⚡</div>
+                <h3 class="text-2xl font-bold mb-3 text-yellow-400">Processo Ágil</h3>
+                <p class="text-gray-400">
+                    Sistema rápido e intuitivo para fazer propostas em poucos cliques
+                </p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="feature-card glass rounded-2xl p-8">
+                <div class="text-5xl mb-4">🔒</div>
+                <h3 class="text-2xl font-bold mb-3 text-yellow-400">Seguro e Confiável</h3>
+                <p class="text-gray-400">
+                    Sistema integrado com Google Sheets para total transparência e segurança
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="max-w-7xl mx-auto px-4 py-16">
+        <h2 class="text-4xl font-bold text-center mb-4">
+            <span class="text-yellow-400">Como funciona?</span>
+        </h2>
+        <p class="text-center text-gray-400 mb-12 text-lg">
+            Simples, rápido e eficiente
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="glass rounded-2xl p-6 text-center">
+                <div class="text-5xl mb-4">1️⃣</div>
+                <h3 class="text-xl font-bold mb-2 text-yellow-400">Cadastre-se</h3>
+                <p class="text-gray-400 text-sm">
+                    Informe seus dados e configure suas rotas preferidas
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-6 text-center">
+                <div class="text-5xl mb-4">2️⃣</div>
+                <h3 class="text-xl font-bold mb-2 text-yellow-400">Receba Notificações</h3>
+                <p class="text-gray-400 text-sm">
+                    Seja avisado via WhatsApp sobre fretes compatíveis
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-6 text-center">
+                <div class="text-5xl mb-4">3️⃣</div>
+                <h3 class="text-xl font-bold mb-2 text-yellow-400">Faça Propostas</h3>
+                <p class="text-gray-400 text-sm">
+                    Envie sua proposta com o valor que considera justo
+                </p>
+            </div>
+
+            <div class="glass rounded-2xl p-6 text-center">
+                <div class="text-5xl mb-4">4️⃣</div>
+                <h3 class="text-xl font-bold mb-2 text-yellow-400">Feche o Negócio</h3>
+                <p class="text-gray-400 text-sm">
+                    Receba aprovação e comece a trabalhar
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="max-w-7xl mx-auto px-4 py-16">
+        <div class="glass rounded-2xl p-8 md:p-12">
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <span class="text-yellow-400">Acesso Rápido</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="fretes_disponiveis.html" class="block glass rounded-xl p-6 hover:bg-white/10 transition text-center">
+                    <div class="text-4xl mb-3">📦</div>
+                    <h3 class="text-xl font-bold mb-2">Fretes Disponíveis</h3>
+                    <p class="text-gray-400 text-sm">Veja todos os fretes abertos</p>
+                </a>
+
+                <a href="minhas_propostas.html" class="block glass rounded-xl p-6 hover:bg-white/10 transition text-center">
+                    <div class="text-4xl mb-3">📋</div>
+                    <h3 class="text-xl font-bold mb-2">Minhas Propostas</h3>
+                    <p class="text-gray-400 text-sm">Acompanhe suas propostas</p>
+                </a>
+
+                <a href="minhas_rotas_preferidas.html" class="block glass rounded-xl p-6 hover:bg-white/10 transition text-center">
+                    <div class="text-4xl mb-3">🗺️</div>
+                    <h3 class="text-xl font-bold mb-2">Rotas Preferidas</h3>
+                    <p class="text-gray-400 text-sm">Gerencie suas rotas</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="max-w-7xl mx-auto px-4 py-16 mb-16">
+        <div class="hero-gradient glass rounded-3xl p-12 text-center">
+            <h2 class="text-4xl md:text-5xl font-black mb-4">
+                Pronto para começar?
+            </h2>
+            <p class="text-xl text-gray-300 mb-8">
+                Junte-se a dezenas de motoristas que já estão aproveitando os melhores fretes
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="fretes_disponiveis.html" class="btn-primary px-12 py-5 rounded-xl transition text-xl">
+                    🚀 Ver Fretes Agora
+                </a>
+                <button onclick="mostrarFormularioCadastro()" class="btn-secondary px-12 py-5 rounded-xl transition text-xl">
+                    📝 Cadastrar-se
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de Cadastro -->
+    <div id="modalCadastro" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass rounded-2xl p-8 max-w-md w-full">
+            <h3 class="text-2xl font-bold mb-6 text-yellow-400">Cadastro de Motorista</h3>
+            
+            <form id="formCadastro" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Nome Completo *</label>
+                    <input type="text" id="nomeCadastro" required 
+                           class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:border-yellow-400 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">WhatsApp (com DDD) *</label>
+                    <input type="tel" id="whatsappCadastro" required 
+                           placeholder="11999999999"
+                           class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:border-yellow-400 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Tipo de Veículo</label>
+                    <select id="veiculoCadastro" 
+                            class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:border-yellow-400 focus:outline-none">
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="fecharModal()" 
+                            class="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 btn-primary px-6 py-3 rounded-lg transition">
+                        Cadastrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black/30 py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-400">
+            <p class="mb-2">© 2026 Anderson Enside Logística - Todos os direitos reservados</p>
+            <p class="text-sm">📱 WhatsApp: (18) 99654-0492</p>
+        </div>
+    </footer>
+
+    <script>
+        const config = window.CAPTACAO_FRETES_CONFIG;
+        const api = window.CAPTACAO_API;
+
+        // Preencher veículos
+        function preencherVeiculos() {
+            const select = document.getElementById('veiculoCadastro');
+            config.tiposVeiculo.forEach(tipo => {
+                const option = document.createElement('option');
+                option.value = tipo;
+                option.textContent = tipo;
+                select.appendChild(option);
+            });
+        }
+
+        // Mostrar modal de cadastro
+        function mostrarFormularioCadastro() {
+            const modal = document.getElementById('modalCadastro');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Fechar modal
+        function fecharModal() {
+            const modal = document.getElementById('modalCadastro');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Submit do formulário
+        document.getElementById('formCadastro')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nomeCadastro').value;
+            const whatsapp = document.getElementById('whatsappCadastro').value;
+            const veiculo = document.getElementById('veiculoCadastro').value;
+
+            // Salvar no localStorage
+            localStorage.setItem('motorista_logado', JSON.stringify({
+                nome,
+                whatsapp,
+                veiculo,
+                dataCadastro: config.utils.formatarData()
+            }));
+
+            alert(`✅ Cadastro realizado com sucesso!\n\nBem-vindo, ${nome}!`);
+            fecharModal();
+            
+            // Redirecionar para rotas preferidas
+            window.location.href = 'minhas_rotas_preferidas.html';
+        });
+
+        // Atualizar stats com dados reais
+        function atualizarStats() {
+            const fretes = api.carregarFretes();
+            document.getElementById('statFretes').textContent = `${fretes.length}+`;
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            preencherVeiculos();
+            atualizarStats();
+            console.log('✅ Landing page carregada');
+        });
+    </script>
+</body>
+</html>

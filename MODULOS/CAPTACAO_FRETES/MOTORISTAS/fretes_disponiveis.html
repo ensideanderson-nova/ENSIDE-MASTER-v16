@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fretes Disponíveis | Anderson Enside Logística</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="../config.js"></script>
+    <script src="../api-integration.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .card-frete {
+            transition: all 0.3s ease;
+        }
+        .card-frete:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="text-white p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+                    Fretes Disponíveis
+                </span>
+            </h1>
+            <p class="text-gray-400 text-sm md:text-base mb-4">
+                Encontre os melhores fretes e faça suas propostas
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="landing_captacao.html" class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition text-sm">
+                    🏠 Início
+                </a>
+                <a href="minhas_propostas.html" class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition text-sm">
+                    📋 Minhas Propostas
+                </a>
+                <a href="minhas_rotas_preferidas.html" class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition text-sm">
+                    🗺️ Minhas Rotas
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="glass rounded-2xl p-6 mb-8">
+            <h3 class="text-lg font-semibold mb-4 text-yellow-400">🔍 Filtrar Fretes</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Origem (UF)</label>
+                    <select id="filtroOrigemUF" onchange="aplicarFiltros()" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Destino (UF)</label>
+                    <select id="filtroDestinoUF" onchange="aplicarFiltros()" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Tipo de Veículo</label>
+                    <select id="filtroVeiculo" onchange="aplicarFiltros()" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Fretes -->
+        <div id="listaFretes" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Fretes serão carregados aqui -->
+        </div>
+
+        <div id="semFretes" class="text-center py-12 glass rounded-2xl">
+            <p class="text-6xl mb-4">📦</p>
+            <p class="text-xl text-gray-400">Nenhum frete disponível no momento</p>
+            <p class="text-sm text-gray-500 mt-2">Configure suas rotas preferidas para receber notificações</p>
+            <a href="minhas_rotas_preferidas.html" class="inline-block mt-4 px-6 py-3 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 rounded-lg transition">
+                🗺️ Configurar Rotas
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal de Proposta -->
+    <div id="modalProposta" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass rounded-2xl p-8 max-w-md w-full">
+            <h3 class="text-2xl font-bold mb-6 text-yellow-400">Fazer Proposta</h3>
+            
+            <div id="detalhesFreteModal" class="mb-6 space-y-2 text-sm">
+                <!-- Detalhes do frete -->
+            </div>
+
+            <form id="formProposta" class="space-y-4">
+                <input type="hidden" id="idFreteModal">
+                
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Seu Nome *</label>
+                    <input type="text" id="nomeMotorista" required class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:border-yellow-400 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">WhatsApp (com DDD) *</label>
+                    <input type="tel" id="whatsappMotorista" required placeholder="11999999999" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:border-yellow-400 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Valor da Proposta (R$) *</label>
+                    <input type="number" id="valorProposta" required step="0.01" min="0" placeholder="1800.00" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:border-yellow-400 focus:outline-none">
+                    <p class="text-xs text-gray-500 mt-1">Valor sugerido: <span id="valorSugeridoRef" class="text-yellow-400 font-bold"></span></p>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Observações (opcional)</label>
+                    <textarea id="observacoesProposta" rows="3" placeholder="Informações adicionais sobre sua proposta..." class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:border-yellow-400 focus:outline-none"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" onclick="fecharModalProposta()" class="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold rounded-lg transition hover:shadow-lg">
+                        Enviar Proposta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const config = window.CAPTACAO_FRETES_CONFIG;
+        const api = window.CAPTACAO_API;
+
+        // Preencher filtros
+        function preencherFiltros() {
+            const filtroOrigemUF = document.getElementById('filtroOrigemUF');
+            const filtroDestinoUF = document.getElementById('filtroDestinoUF');
+            const filtroVeiculo = document.getElementById('filtroVeiculo');
+            
+            config.estados.forEach(estado => {
+                const opt1 = document.createElement('option');
+                opt1.value = estado.uf;
+                opt1.textContent = estado.uf;
+                filtroOrigemUF.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = estado.uf;
+                opt2.textContent = estado.uf;
+                filtroDestinoUF.appendChild(opt2);
+            });
+
+            config.tiposVeiculo.forEach(tipo => {
+                const opt = document.createElement('option');
+                opt.value = tipo;
+                opt.textContent = tipo;
+                filtroVeiculo.appendChild(opt);
+            });
+        }
+
+        // Carregar e filtrar fretes
+        function aplicarFiltros() {
+            const fretes = api.carregarFretes().filter(f => f.status === 'DISPONIVEL');
+            const listaFretes = document.getElementById('listaFretes');
+            const semFretes = document.getElementById('semFretes');
+            
+            const filtroOrigemUF = document.getElementById('filtroOrigemUF').value;
+            const filtroDestinoUF = document.getElementById('filtroDestinoUF').value;
+            const filtroVeiculo = document.getElementById('filtroVeiculo').value;
+
+            let fretesFiltrados = fretes.filter(f => {
+                const matchOrigem = !filtroOrigemUF || f.origemUF === filtroOrigemUF;
+                const matchDestino = !filtroDestinoUF || f.destinoUF === filtroDestinoUF;
+                const matchVeiculo = !filtroVeiculo || f.tipoVeiculo === filtroVeiculo;
+                return matchOrigem && matchDestino && matchVeiculo;
+            });
+
+            if (fretesFiltrados.length === 0) {
+                listaFretes.style.display = 'none';
+                semFretes.style.display = 'block';
+                return;
+            }
+
+            semFretes.style.display = 'none';
+            listaFretes.style.display = 'grid';
+            listaFretes.innerHTML = '';
+
+            fretesFiltrados.forEach(frete => {
+                const card = criarCardFrete(frete);
+                listaFretes.appendChild(card);
+            });
+        }
+
+        // Criar card de frete
+        function criarCardFrete(frete) {
+            const card = document.createElement('div');
+            card.className = 'card-frete glass rounded-xl p-6';
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-xs font-mono text-gray-400">${frete.id}</span>
+                    <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs font-semibold">
+                        ${frete.status}
+                    </span>
+                </div>
+                
+                <div class="space-y-3 mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">📍</span>
+                        <div>
+                            <p class="text-xs text-gray-400">Origem</p>
+                            <p class="font-semibold">${frete.origemCidade}/${frete.origemUF}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🎯</span>
+                        <div>
+                            <p class="text-xs text-gray-400">Destino</p>
+                            <p class="font-semibold">${frete.destinoCidade}/${frete.destinoUF}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🚛</span>
+                        <div>
+                            <p class="text-xs text-gray-400">Veículo e Distância</p>
+                            <p class="font-semibold">${frete.tipoVeiculo} - ${frete.km} km</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">💰</span>
+                        <div>
+                            <p class="text-xs text-gray-400">Valor Sugerido</p>
+                            <p class="font-bold text-yellow-400 text-2xl">${config.utils.formatarMoeda(frete.valorSugerido)}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="abrirModalProposta('${frete.id}')" 
+                        class="w-full px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold rounded-lg transition">
+                    💼 Fazer Proposta
+                </button>
+            `;
+            return card;
+        }
+
+        // Abrir modal de proposta
+        function abrirModalProposta(idFrete) {
+            const fretes = api.carregarFretes();
+            const frete = fretes.find(f => f.id === idFrete);
+            
+            if (!frete) return;
+
+            document.getElementById('idFreteModal').value = idFrete;
+            document.getElementById('valorSugeridoRef').textContent = config.utils.formatarMoeda(frete.valorSugerido);
+            
+            document.getElementById('detalhesFreteModal').innerHTML = `
+                <p class="text-gray-400"><strong>Frete:</strong> ${frete.id}</p>
+                <p class="text-gray-400"><strong>Rota:</strong> ${frete.origemCidade}/${frete.origemUF} → ${frete.destinoCidade}/${frete.destinoUF}</p>
+                <p class="text-gray-400"><strong>Distância:</strong> ${frete.km} km</p>
+                <p class="text-gray-400"><strong>Veículo:</strong> ${frete.tipoVeiculo}</p>
+            `;
+
+            // Preencher dados do motorista se já estiver logado
+            const motoristaLogado = JSON.parse(localStorage.getItem('motorista_logado') || '{}');
+            if (motoristaLogado.nome) {
+                document.getElementById('nomeMotorista').value = motoristaLogado.nome;
+                document.getElementById('whatsappMotorista').value = motoristaLogado.whatsapp;
+            }
+
+            document.getElementById('modalProposta').classList.remove('hidden');
+            document.getElementById('modalProposta').classList.add('flex');
+        }
+
+        // Fechar modal
+        function fecharModalProposta() {
+            document.getElementById('modalProposta').classList.add('hidden');
+            document.getElementById('modalProposta').classList.remove('flex');
+            document.getElementById('formProposta').reset();
+        }
+
+        // Submit da proposta
+        document.getElementById('formProposta')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const idFrete = document.getElementById('idFreteModal').value;
+            const fretes = api.carregarFretes();
+            const frete = fretes.find(f => f.id === idFrete);
+
+            const proposta = {
+                idProposta: config.utils.gerarIdProposta(),
+                idFrete: idFrete,
+                nomeMotorista: document.getElementById('nomeMotorista').value,
+                whatsapp: document.getElementById('whatsappMotorista').value,
+                valorProposto: parseFloat(document.getElementById('valorProposta').value),
+                dataProposta: config.utils.formatarData(),
+                status: 'PENDENTE',
+                observacoes: document.getElementById('observacoesProposta').value
+            };
+
+            // Análise de IA
+            const analise = await api.analisarPropostaIA(proposta, frete);
+            proposta.analiseIA = analise.analise;
+            proposta.scoreIA = analise.score;
+            proposta.recomendacao = analise.recomendacao;
+
+            // Salvar proposta
+            api.salvarProposta(proposta);
+
+            // Notificar admin
+            await api.notificarAdminNovaProposta(proposta);
+
+            alert(`✅ Proposta enviada com sucesso!\n\n` +
+                  `ID: ${proposta.idProposta}\n` +
+                  `Valor: ${config.utils.formatarMoeda(proposta.valorProposto)}\n\n` +
+                  `Você receberá uma resposta em breve via WhatsApp.`);
+
+            fecharModalProposta();
+            aplicarFiltros();
+        });
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            preencherFiltros();
+            aplicarFiltros();
+            console.log('✅ Sistema de fretes disponíveis carregado');
+        });
+    </script>
+</body>
+</html>

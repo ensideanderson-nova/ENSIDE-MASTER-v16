@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Propostas | Anderson Enside Logística</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="../config.js"></script>
+    <script src="../api-integration.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="text-white p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+                    Minhas Propostas
+                </span>
+            </h1>
+            <p class="text-gray-400 text-sm md:text-base mb-4">
+                Acompanhe o status das suas propostas enviadas
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="landing_captacao.html" class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition text-sm">
+                    🏠 Início
+                </a>
+                <a href="fretes_disponiveis.html" class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition text-sm">
+                    📦 Ver Fretes
+                </a>
+                <a href="minhas_rotas_preferidas.html" class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition text-sm">
+                    🗺️ Minhas Rotas
+                </a>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-3xl mb-2">📨</div>
+                <div class="text-2xl font-bold text-yellow-400" id="totalPropostas">0</div>
+                <div class="text-sm text-gray-400">Total</div>
+            </div>
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-3xl mb-2">⏳</div>
+                <div class="text-2xl font-bold text-blue-400" id="propostasPendentes">0</div>
+                <div class="text-sm text-gray-400">Pendentes</div>
+            </div>
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-3xl mb-2">✅</div>
+                <div class="text-2xl font-bold text-green-400" id="propostasAprovadas">0</div>
+                <div class="text-sm text-gray-400">Aprovadas</div>
+            </div>
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-3xl mb-2">❌</div>
+                <div class="text-2xl font-bold text-red-400" id="propostasRecusadas">0</div>
+                <div class="text-sm text-gray-400">Recusadas</div>
+            </div>
+        </div>
+
+        <!-- Lista de Propostas -->
+        <div id="listaPropostas" class="space-y-4">
+            <!-- Propostas serão carregadas aqui -->
+        </div>
+
+        <div id="semPropostas" class="text-center py-12 glass rounded-2xl">
+            <p class="text-6xl mb-4">📭</p>
+            <p class="text-xl text-gray-400">Você ainda não fez nenhuma proposta</p>
+            <p class="text-sm text-gray-500 mt-2">Veja os fretes disponíveis e faça suas propostas</p>
+            <a href="fretes_disponiveis.html" class="inline-block mt-4 px-6 py-3 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 rounded-lg transition">
+                📦 Ver Fretes Disponíveis
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const config = window.CAPTACAO_FRETES_CONFIG;
+        const api = window.CAPTACAO_API;
+
+        function carregarPropostas() {
+            // Pegar WhatsApp do motorista logado
+            const motoristaLogado = JSON.parse(localStorage.getItem('motorista_logado') || '{}');
+            const todasPropostas = api.carregarPropostas();
+            
+            // Filtrar propostas do motorista
+            const minhasPropostas = motoristaLogado.whatsapp 
+                ? todasPropostas.filter(p => p.whatsapp === motoristaLogado.whatsapp)
+                : todasPropostas;
+
+            const listaPropostas = document.getElementById('listaPropostas');
+            const semPropostas = document.getElementById('semPropostas');
+            
+            if (minhasPropostas.length === 0) {
+                listaPropostas.style.display = 'none';
+                semPropostas.style.display = 'block';
+                atualizarEstatisticas(minhasPropostas);
+                return;
+            }
+
+            semPropostas.style.display = 'none';
+            listaPropostas.style.display = 'block';
+            listaPropostas.innerHTML = '';
+            atualizarEstatisticas(minhasPropostas);
+
+            minhasPropostas.reverse().forEach(proposta => {
+                const statusColors = {
+                    'PENDENTE': 'bg-yellow-500/20 text-yellow-400',
+                    'APROVADA': 'bg-green-500/20 text-green-400',
+                    'RECUSADA': 'bg-red-500/20 text-red-400',
+                    'NEGOCIANDO': 'bg-blue-500/20 text-blue-400'
+                };
+
+                const card = document.createElement('div');
+                card.className = 'glass rounded-xl p-6';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-1">Proposta #${proposta.idProposta.slice(-6)}</h3>
+                            <p class="text-sm text-gray-400">Frete: ${proposta.idFrete}</p>
+                        </div>
+                        <span class="px-3 py-1 ${statusColors[proposta.status]} rounded-lg text-sm font-semibold">
+                            ${proposta.status}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1">Valor Proposto</p>
+                            <p class="text-2xl font-bold text-yellow-400">${config.utils.formatarMoeda(proposta.valorProposto)}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1">Data da Proposta</p>
+                            <p class="text-sm">${proposta.dataProposta}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1">Score IA</p>
+                            <p class="text-2xl font-bold ${proposta.scoreIA >= 60 ? 'text-green-400' : 'text-yellow-400'}">${proposta.scoreIA}/100</p>
+                        </div>
+                    </div>
+
+                    ${proposta.observacoes ? `
+                    <div class="mb-4">
+                        <p class="text-xs text-gray-400 mb-1">Suas Observações</p>
+                        <p class="text-sm bg-white/5 p-3 rounded-lg">${proposta.observacoes}</p>
+                    </div>
+                    ` : ''}
+
+                    ${proposta.analiseIA ? `
+                    <div class="pt-4 border-t border-gray-700">
+                        <p class="text-xs text-gray-400 mb-1">Análise de IA</p>
+                        <p class="text-sm">${proposta.analiseIA}</p>
+                    </div>
+                    ` : ''}
+                `;
+                listaPropostas.appendChild(card);
+            });
+        }
+
+        function atualizarEstatisticas(propostas) {
+            document.getElementById('totalPropostas').textContent = propostas.length;
+            document.getElementById('propostasPendentes').textContent = propostas.filter(p => p.status === 'PENDENTE').length;
+            document.getElementById('propostasAprovadas').textContent = propostas.filter(p => p.status === 'APROVADA').length;
+            document.getElementById('propostasRecusadas').textContent = propostas.filter(p => p.status === 'RECUSADA').length;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarPropostas();
+            setInterval(carregarPropostas, 30000); // Atualizar a cada 30s
+            console.log('✅ Minhas propostas carregadas');
+        });
+    </script>
+</body>
+</html>

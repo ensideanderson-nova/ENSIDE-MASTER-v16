@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Rotas Preferidas | Anderson Enside Logística</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="../config.js"></script>
+    <script src="../api-integration.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="text-white p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+                    Minhas Rotas Preferidas
+                </span>
+            </h1>
+            <p class="text-gray-400 text-sm md:text-base mb-4">
+                Configure suas rotas e receba notificações de fretes compatíveis
+            </p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="landing_captacao.html" class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition text-sm">
+                    🏠 Início
+                </a>
+                <a href="fretes_disponiveis.html" class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition text-sm">
+                    📦 Ver Fretes
+                </a>
+                <a href="minhas_propostas.html" class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition text-sm">
+                    📋 Minhas Propostas
+                </a>
+            </div>
+        </div>
+
+        <!-- Formulário de Nova Rota -->
+        <div class="glass rounded-2xl p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-yellow-400">➕ Cadastrar Nova Rota</h2>
+            
+            <form id="formRota" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-3 text-yellow-400">📍 Origem</h3>
+                    <div class="space-y-3">
+                        <select id="origemUF" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white" required>
+                            <option value="">Selecione o estado...</option>
+                        </select>
+                        <input type="text" id="origemCidade" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white" 
+                               placeholder="Cidade" required>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold mb-3 text-yellow-400">🎯 Destino</h3>
+                    <div class="space-y-3">
+                        <select id="destinoUF" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white" required>
+                            <option value="">Selecione o estado...</option>
+                        </select>
+                        <input type="text" id="destinoCidade" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white" 
+                               placeholder="Cidade" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Frequência</label>
+                    <select id="frequencia" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white" required>
+                        <option value="Diária">Diária</option>
+                        <option value="Semanal">Semanal</option>
+                        <option value="Quinzenal">Quinzenal</option>
+                        <option value="Mensal">Mensal</option>
+                    </select>
+                </div>
+
+                <div class="flex items-end">
+                    <button type="submit" class="w-full px-8 py-3 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold rounded-lg transition hover:shadow-lg">
+                        ✅ Adicionar Rota
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de Rotas -->
+        <div class="mb-4 flex justify-between items-center">
+            <h2 class="text-2xl font-bold text-yellow-400">🗺️ Suas Rotas</h2>
+            <span class="px-4 py-2 bg-yellow-500/20 text-yellow-400 rounded-lg font-bold" id="totalRotas">
+                0 rotas
+            </span>
+        </div>
+
+        <div id="listaRotas" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Rotas serão carregadas aqui -->
+        </div>
+
+        <div id="semRotas" class="text-center py-12 glass rounded-2xl">
+            <p class="text-6xl mb-4">🗺️</p>
+            <p class="text-xl text-gray-400">Você ainda não tem rotas cadastradas</p>
+            <p class="text-sm text-gray-500 mt-2">Cadastre suas rotas preferidas para receber notificações automáticas</p>
+        </div>
+    </div>
+
+    <script>
+        const config = window.CAPTACAO_FRETES_CONFIG;
+        const api = window.CAPTACAO_API;
+
+        function preencherEstados() {
+            const origemUF = document.getElementById('origemUF');
+            const destinoUF = document.getElementById('destinoUF');
+            
+            config.estados.forEach(estado => {
+                const opt1 = document.createElement('option');
+                opt1.value = estado.uf;
+                opt1.textContent = `${estado.uf} - ${estado.nome}`;
+                origemUF.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = estado.uf;
+                opt2.textContent = `${estado.uf} - ${estado.nome}`;
+                destinoUF.appendChild(opt2);
+            });
+        }
+
+        document.getElementById('formRota')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const motoristaLogado = JSON.parse(localStorage.getItem('motorista_logado') || '{}');
+            
+            if (!motoristaLogado.nome || !motoristaLogado.whatsapp) {
+                alert('❌ Por favor, faça seu cadastro primeiro na página inicial.');
+                window.location.href = 'landing_captacao.html';
+                return;
+            }
+
+            const rota = {
+                idRota: config.utils.gerarIdRota(),
+                nomeMotorista: motoristaLogado.nome,
+                whatsapp: motoristaLogado.whatsapp,
+                origemUF: document.getElementById('origemUF').value,
+                origemCidade: document.getElementById('origemCidade').value,
+                destinoUF: document.getElementById('destinoUF').value,
+                destinoCidade: document.getElementById('destinoCidade').value,
+                frequencia: document.getElementById('frequencia').value,
+                dataCadastro: config.utils.formatarData(),
+                ativo: 'SIM'
+            };
+
+            api.salvarRotaPreferida(rota);
+            alert('✅ Rota cadastrada com sucesso!\n\nVocê receberá notificações quando surgir um frete compatível.');
+            
+            document.getElementById('formRota').reset();
+            carregarRotas();
+        });
+
+        function carregarRotas() {
+            const motoristaLogado = JSON.parse(localStorage.getItem('motorista_logado') || '{}');
+            const todasRotas = api.carregarRotasPreferidas();
+            
+            const minhasRotas = motoristaLogado.whatsapp 
+                ? todasRotas.filter(r => r.whatsapp === motoristaLogado.whatsapp)
+                : todasRotas;
+
+            const listaRotas = document.getElementById('listaRotas');
+            const semRotas = document.getElementById('semRotas');
+            
+            if (minhasRotas.length === 0) {
+                listaRotas.style.display = 'none';
+                semRotas.style.display = 'block';
+                document.getElementById('totalRotas').textContent = '0 rotas';
+                return;
+            }
+
+            semRotas.style.display = 'none';
+            listaRotas.style.display = 'grid';
+            listaRotas.innerHTML = '';
+            document.getElementById('totalRotas').textContent = `${minhasRotas.length} ${minhasRotas.length === 1 ? 'rota' : 'rotas'}`;
+
+            minhasRotas.reverse().forEach(rota => {
+                const card = document.createElement('div');
+                card.className = 'glass rounded-xl p-5';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-xs font-mono text-gray-400">${rota.idRota.slice(-6)}</span>
+                        <span class="px-2 py-1 ${rota.ativo === 'SIM' ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'} rounded text-xs font-semibold">
+                            ${rota.ativo === 'SIM' ? '✅ Ativa' : '⏸️ Inativa'}
+                        </span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">📍</span>
+                            <div>
+                                <p class="text-xs text-gray-400">Origem</p>
+                                <p class="font-semibold">${rota.origemCidade}/${rota.origemUF}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-center">
+                            <span class="text-2xl">⬇️</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🎯</span>
+                            <div>
+                                <p class="text-xs text-gray-400">Destino</p>
+                                <p class="font-semibold">${rota.destinoCidade}/${rota.destinoUF}</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 mt-3 border-t border-gray-700">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-gray-400">Frequência</span>
+                                <span class="font-semibold text-yellow-400">${rota.frequencia}</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-gray-400">Cadastrado em</span>
+                                <span class="text-gray-300">${rota.dataCadastro}</span>
+                            </div>
+                        </div>
+
+                        <button onclick="toggleRota('${rota.idRota}')" 
+                                class="w-full px-4 py-2 ${rota.ativo === 'SIM' ? 'bg-gray-500/20 hover:bg-gray-500/30 text-gray-400' : 'bg-green-500/20 hover:bg-green-500/30 text-green-400'} rounded-lg transition text-sm font-semibold">
+                            ${rota.ativo === 'SIM' ? '⏸️ Desativar' : '▶️ Ativar'}
+                        </button>
+                    </div>
+                `;
+                listaRotas.appendChild(card);
+            });
+        }
+
+        function toggleRota(idRota) {
+            const rotas = api.carregarRotasPreferidas();
+            const index = rotas.findIndex(r => r.idRota === idRota);
+            
+            if (index !== -1) {
+                rotas[index].ativo = rotas[index].ativo === 'SIM' ? 'NAO' : 'SIM';
+                api.salvarLocal('rotas_preferidas', rotas);
+                carregarRotas();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            preencherEstados();
+            carregarRotas();
+            console.log('✅ Minhas rotas carregadas');
+        });
+    </script>
+</body>
+</html>
