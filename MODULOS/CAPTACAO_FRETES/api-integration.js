@@ -446,12 +446,14 @@ class CaptacaoAPI {
     // ==================== MATCHING AUTOMÁTICO ====================
     
     /**
-     * Verificar fretes compatíveis com rota cadastrada
+     * Verificar fretes compatíveis com rota cadastrada ou motoristas compatíveis com frete
      */
-    async verificarFretesCompativeis(rota, isRota = false) {
+    async verificarFretesCompativeis(dados, isRota = false) {
         try {
             if (isRota) {
+                // dados = rota preferida do motorista
                 // Buscar fretes compatíveis com a rota
+                const rota = dados;
                 const fretes = await this.buscarFretesDisponiveis();
                 
                 const fretesCompativeis = fretes.filter(frete => {
@@ -495,7 +497,9 @@ class CaptacaoAPI {
                 return fretesCompativeis;
                 
             } else {
+                // dados = frete cadastrado
                 // Buscar motoristas com rotas compatíveis para o frete
+                const frete = dados;
                 const rotas = await this.buscarTodasRotas({ status: 'ATIVA' });
                 
                 const motoristasCompativeis = rotas.filter(rota => {
