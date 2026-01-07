@@ -59,7 +59,8 @@ const CAPTACAO_CONFIG = {
     
     // ==================== GOOGLE APPS SCRIPT ====================
     googleAppsScript: {
-        // URL será atualizada após deploy do Apps Script
+        // ⚠️ IMPORTANT: Update this URL after deploying Code.gs as a Web App in Google Apps Script
+        // Instructions in README.md
         url: 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec',
         timeout: 30000, // 30 segundos
         retries: 3

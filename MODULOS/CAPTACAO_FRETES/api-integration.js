@@ -500,17 +500,17 @@ class CaptacaoAPI {
                 
                 const motoristasCompativeis = rotas.filter(rota => {
                     // Verificar origem
-                    if (rota.ORIGEM_UF !== rota.ORIGEM_UF && rota.ORIGEM_FLEXIVEL !== 'SIM') {
+                    if (rota.ORIGEM_UF !== frete.ORIGEM_UF && rota.ORIGEM_FLEXIVEL !== 'SIM') {
                         return false;
                     }
                     
                     // Verificar destino
-                    if (rota.DESTINO_UF !== rota.DESTINO_UF && rota.DESTINO_FLEXIVEL !== 'SIM') {
+                    if (rota.DESTINO_UF !== frete.DESTINO_UF && rota.DESTINO_FLEXIVEL !== 'SIM') {
                         return false;
                     }
                     
                     // Verificar tipo de veículo
-                    if (!rota.TIPO_VEICULO.includes(rota.TIPO_VEICULO)) {
+                    if (!rota.TIPO_VEICULO.includes(frete.TIPO_VEICULO)) {
                         return false;
                     }
                     
@@ -525,8 +525,8 @@ class CaptacaoAPI {
                                 numero: motorista.MOTORISTA_WHATSAPP,
                                 mensagem: this.config.mensagensWhatsApp.freteCompativel(
                                     motorista.MOTORISTA_NOME,
-                                    `${rota.ORIGEM_CIDADE}-${rota.ORIGEM_UF} → ${rota.DESTINO_CIDADE}-${rota.DESTINO_UF}`,
-                                    this.config.utils.formatarMoeda(rota.VALOR_SUGERIDO)
+                                    `${frete.ORIGEM_CIDADE}-${frete.ORIGEM_UF} → ${frete.DESTINO_CIDADE}-${frete.DESTINO_UF}`,
+                                    this.config.utils.formatarMoeda(frete.VALOR_SUGERIDO)
                                 )
                             });
                         }
