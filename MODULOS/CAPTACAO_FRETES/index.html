@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Captação de Fretes - Anderson Enside</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .logo {
+            width: 300px;
+            max-width: 90%;
+            height: auto;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+        }
+        h1 {
+            font-size: 3em;
+            color: #FFD700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            margin-bottom: 20px;
+        }
+        .subtitle {
+            font-size: 1.3em;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        .section {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+            border: 3px solid #FFD700;
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+        .section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+            border-color: #FFA500;
+        }
+        .section-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 2em;
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+        .section-desc {
+            color: #94a3b8;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .btn {
+            display: block;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0.05) 100%);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+            transform: translateX(5px);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: #10b981;
+            color: white;
+            font-size: 1.2em;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+        }
+        .info-box {
+            background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.05) 100%);
+            border: 2px solid #10b981;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+        .info-box h3 {
+            color: #10b981;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+        .info-box li {
+            padding: 10px 0;
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(16,185,129,0.1);
+        }
+        .info-box li:last-child { border-bottom: none; }
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .sections { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="ASSETS/logo.svg" alt="Anderson Enside Logística" class="logo">
+            <h1>🚚 Sistema de Captação de Fretes</h1>
+            <p class="subtitle">Gestão Completa de Fretes e Motoristas</p>
+        </div>
+
+        <div class="sections">
+            <!-- Motoristas -->
+            <div class="section">
+                <div class="section-icon">🚛</div>
+                <h2 class="section-title">Para Motoristas</h2>
+                <p class="section-desc">
+                    Cadastre-se, visualize fretes disponíveis, faça propostas e gerencie suas rotas preferidas.
+                </p>
+                <div class="links">
+                    <a href="MOTORISTAS/landing_captacao.html" class="btn btn-primary">
+                        📝 Começar Agora
+                    </a>
+                    <a href="MOTORISTAS/fretes_disponiveis.html" class="btn">
+                        📦 Ver Fretes Disponíveis
+                    </a>
+                    <a href="MOTORISTAS/minhas_propostas.html" class="btn">
+                        📋 Minhas Propostas
+                    </a>
+                    <a href="MOTORISTAS/minhas_rotas_preferidas.html" class="btn">
+                        🗺️ Rotas Preferidas
+                    </a>
+                </div>
+            </div>
+
+            <!-- Administração -->
+            <div class="section">
+                <div class="section-icon">⚙️</div>
+                <h2 class="section-title">Painel Administrativo</h2>
+                <p class="section-desc">
+                    Cadastre fretes, gerencie propostas recebidas e encontre motoristas por rotas.
+                </p>
+                <div class="links">
+                    <a href="ADMIN/admin_cadastro_fretes.html" class="btn btn-primary">
+                        ➕ Cadastrar Frete
+                    </a>
+                    <a href="ADMIN/admin_propostas_recebidas.html" class="btn">
+                        📨 Ver Propostas
+                    </a>
+                    <a href="ADMIN/admin_rotas_preferidas.html" class="btn">
+                        🔍 Buscar Motoristas
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>📚 Documentação e Recursos</h3>
+            <ul>
+                <li>✅ <strong>README.md</strong> - Documentação completa do sistema</li>
+                <li>✅ <strong>Code.gs</strong> - Google Apps Script para integração com Sheets</li>
+                <li>✅ <strong>config.js</strong> - Configurações centralizadas</li>
+                <li>✅ <strong>api-integration.js</strong> - Funções de API e integração</li>
+                <li>✅ <strong>Planilha Google Sheets</strong> - ID: 1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE</li>
+                <li>✅ <strong>Evolution API</strong> - Notificações WhatsApp integradas</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="margin-top: 30px; border-color: #FFD700; background: rgba(255,215,0,0.05);">
+            <h3 style="color: #FFD700;">🔧 Configuração Rápida</h3>
+            <ul>
+                <li><strong>1.</strong> Deploy do Google Apps Script (Code.gs)</li>
+                <li><strong>2.</strong> Atualizar URL do Apps Script em config.js</li>
+                <li><strong>3.</strong> Criar abas novas no Google Sheets (executar criarAbasNovas())</li>
+                <li><strong>4.</strong> Verificar credenciais Evolution API em config.js</li>
+                <li><strong>5.</strong> Abrir landing page e começar a usar!</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; color: #94a3b8;">
+            <p>© 2026 Anderson Enside Logística - Sistema Completo de Captação de Fretes</p>
+            <p style="margin-top: 10px;">WhatsApp: (18) 99654-0492</p>
+        </div>
+    </div>
+</body>
+</html>
