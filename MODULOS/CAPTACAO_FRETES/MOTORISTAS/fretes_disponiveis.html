@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fretes Disponíveis - Anderson Enside Logística</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 46, 0.8) 100%);
+            padding: 20px;
+            border-bottom: 3px solid #FFD700;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .header-info h1 {
+            font-size: 1.5em;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .header-info p { color: #94a3b8; font-size: 0.9em; }
+        
+        .header-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+            border: 2px solid #FFD700;
+            border-radius: 8px;
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .nav-btn:hover {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+            transform: translateY(-2px);
+        }
+        
+        /* Filters */
+        .filters {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .filters-title {
+            font-size: 1.3em;
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .filter-group label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95em;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+        
+        .filter-select option { background: #1a1a2e; }
+        
+        /* Counter */
+        .counter {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 2px solid #10b981;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .counter-number {
+            font-size: 2.5em;
+            font-weight: 900;
+            color: #10b981;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+        
+        .counter-text { color: #94a3b8; margin-top: 5px; }
+        
+        .info-text {
+            text-align: center;
+            color: #94a3b8;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+        
+        /* Freight Cards */
+        .freights-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .freight-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .freight-card:hover {
+            border-color: #FFD700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .freight-card.urgent {
+            border-color: #dc2626;
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+        }
+        
+        .urgent-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 0.8em;
+            animation: pulse 2s infinite;
+        }
+        
+        .freight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .freight-route {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #FFD700;
+        }
+        
+        .freight-value {
+            font-size: 1.8em;
+            font-weight: 900;
+            color: #10b981;
+            text-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+        }
+        
+        .freight-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .freight-detail {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid #FFD700;
+        }
+        
+        .freight-detail-label {
+            color: #94a3b8;
+            font-size: 0.8em;
+            margin-bottom: 3px;
+        }
+        
+        .freight-detail-value {
+            color: white;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .freight-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn-proposta {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 900;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-proposta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%);
+            border: 3px solid #FFD700;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 40px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2em;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .modal-close:hover { color: #FFD700; }
+        
+        .modal-title {
+            font-size: 2em;
+            font-weight: 900;
+            color: #FFD700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #FFD700;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+            font-family: inherit;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-select option { background: #1a1a2e; }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+        
+        .empty-state-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .freight-header {
+                flex-direction: column;
+            }
+            
+            .freight-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 25px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-info">
+            <h1>Olá, <span id="headerNome">Motorista</span>! Escolha seu frete</h1>
+            <p>WhatsApp: <span id="headerWhatsApp"></span></p>
+        </div>
+        <div class="header-nav">
+            <a href="minhas_propostas.html" class="nav-btn">📋 Minhas Propostas</a>
+            <a href="minhas_rotas_preferidas.html" class="nav-btn">🗺️ Rotas Preferidas</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filters-title">🔍 Filtrar Fretes</div>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Estado Origem</label>
+                    <select id="filtroOrigemUF" class="filter-select">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Estado Destino</label>
+                    <select id="filtroDestinoUF" class="filter-select">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tipo de Veículo</label>
+                    <select id="filtroTipoVeiculo" class="filter-select">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Valor Mínimo</label>
+                    <select id="filtroValorMinimo" class="filter-select">
+                        <option value="">Todos</option>
+                        <option value="1000">R$ 1.000+</option>
+                        <option value="2000">R$ 2.000+</option>
+                        <option value="3000">R$ 3.000+</option>
+                        <option value="5000">R$ 5.000+</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Counter -->
+        <div class="counter">
+            <div class="counter-number" id="counterFretes">0</div>
+            <div class="counter-text">Mostrando <span id="counterText">0</span> fretes disponíveis</div>
+        </div>
+
+        <div class="info-text">
+            💡 Aqui motoristas olham fretes disponíveis e fazem propostas
+        </div>
+
+        <!-- Freights Grid -->
+        <div class="freights-grid" id="fretesGrid">
+            <!-- Cards serão inseridos aqui -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">📦</div>
+            <h3>Nenhum frete disponível no momento</h3>
+            <p>Tente ajustar os filtros ou volte mais tarde</p>
+        </div>
+    </div>
+
+    <!-- Modal Proposta -->
+    <div class="modal" id="modalProposta">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModal()">&times;</span>
+            <h2 class="modal-title">🚚 Fazer Proposta</h2>
+            
+            <form id="formProposta">
+                <input type="hidden" id="freteId">
+                
+                <div class="form-group">
+                    <label class="form-label">Seu Nome</label>
+                    <input type="text" id="propNome" class="form-input" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">WhatsApp</label>
+                    <input type="text" id="propWhatsApp" class="form-input" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Sua Proposta (R$) *</label>
+                    <input type="number" id="propValor" class="form-input" placeholder="Ex: 3500" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tipo do seu Veículo *</label>
+                    <select id="propTipoVeiculo" class="form-select" required>
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Placa do Veículo *</label>
+                    <input type="text" id="propPlaca" class="form-input" placeholder="ABC-1234" maxlength="8" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Disponibilidade *</label>
+                    <select id="propDisponibilidade" class="form-select" required>
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Observações</label>
+                    <textarea id="propObservacoes" class="form-textarea" placeholder="Informações adicionais..."></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-submit" id="btnEnviarProposta">Enviar Proposta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="../api-integration.js"></script>
+    <script>
+        let motoristaAtual = null;
+        let fretesDisponiveis = [];
+        let freteAtualProposta = null;
+
+        // Recuperar dados do motorista
+        function recuperarMotorista() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const nome = urlParams.get('nome');
+            const whatsapp = urlParams.get('whatsapp');
+            
+            if (nome && whatsapp) {
+                motoristaAtual = { nome, whatsapp };
+            } else {
+                motoristaAtual = window.captacaoAPI.recuperarMotoristaLocal();
+            }
+            
+            if (motoristaAtual) {
+                document.getElementById('headerNome').textContent = motoristaAtual.NOME_COMPLETO || motoristaAtual.nome;
+                document.getElementById('headerWhatsApp').textContent = motoristaAtual.WHATSAPP || motoristaAtual.whatsapp;
+            }
+        }
+
+        // Preencher filtros
+        function preencherFiltros() {
+            const config = window.CAPTACAO_CONFIG;
+            
+            // Estados
+            const origemSelect = document.getElementById('filtroOrigemUF');
+            const destinoSelect = document.getElementById('filtroDestinoUF');
+            
+            for (const [uf, nome] of Object.entries(config.estados)) {
+                origemSelect.innerHTML += `<option value="${uf}">${uf} - ${nome}</option>`;
+                destinoSelect.innerHTML += `<option value="${uf}">${uf} - ${nome}</option>`;
+            }
+            
+            // Veículos
+            const veiculoSelect = document.getElementById('filtroTipoVeiculo');
+            const propVeiculoSelect = document.getElementById('propTipoVeiculo');
+            
+            config.tiposVeiculo.forEach(tipo => {
+                veiculoSelect.innerHTML += `<option value="${tipo}">${tipo}</option>`;
+                propVeiculoSelect.innerHTML += `<option value="${tipo}">${tipo}</option>`;
+            });
+            
+            // Disponibilidades
+            const dispSelect = document.getElementById('propDisponibilidade');
+            config.disponibilidades.forEach(disp => {
+                dispSelect.innerHTML += `<option value="${disp}">${disp}</option>`;
+            });
+        }
+
+        // Carregar fretes
+        async function carregarFretes() {
+            try {
+                const filtros = {
+                    origemUF: document.getElementById('filtroOrigemUF').value,
+                    destinoUF: document.getElementById('filtroDestinoUF').value,
+                    tipoVeiculo: document.getElementById('filtroTipoVeiculo').value,
+                    valorMinimo: document.getElementById('filtroValorMinimo').value
+                };
+                
+                fretesDisponiveis = await window.captacaoAPI.buscarFretesDisponiveis(filtros);
+                
+                renderizarFretes();
+                
+            } catch (erro) {
+                console.error('Erro ao carregar fretes:', erro);
+            }
+        }
+
+        // Renderizar fretes
+        function renderizarFretes() {
+            const grid = document.getElementById('fretesGrid');
+            const counter = document.getElementById('counterFretes');
+            const counterText = document.getElementById('counterText');
+            const emptyState = document.getElementById('emptyState');
+            
+            counter.textContent = fretesDisponiveis.length;
+            counterText.textContent = fretesDisponiveis.length;
+            
+            if (fretesDisponiveis.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            
+            grid.innerHTML = fretesDisponiveis.map(frete => `
+                <div class="freight-card ${frete.URGENTE === 'SIM' ? 'urgent' : ''}">
+                    ${frete.URGENTE === 'SIM' ? '<div class="urgent-badge">🔥 URGENTE</div>' : ''}
+                    
+                    <div class="freight-header">
+                        <div class="freight-route">
+                            ${frete.ORIGEM_CIDADE}-${frete.ORIGEM_UF} → ${frete.DESTINO_CIDADE}-${frete.DESTINO_UF}
+                        </div>
+                        <div class="freight-value">
+                            ${window.CAPTACAO_CONFIG.utils.formatarMoeda(frete.VALOR_SUGERIDO)}
+                        </div>
+                    </div>
+                    
+                    <div class="freight-details">
+                        <div class="freight-detail">
+                            <div class="freight-detail-label">Distância</div>
+                            <div class="freight-detail-value">${frete.DISTANCIA_KM} km</div>
+                        </div>
+                        <div class="freight-detail">
+                            <div class="freight-detail-label">Tipo Veículo</div>
+                            <div class="freight-detail-value">${frete.TIPO_VEICULO}</div>
+                        </div>
+                        <div class="freight-detail">
+                            <div class="freight-detail-label">Tipo Carga</div>
+                            <div class="freight-detail-value">${frete.TIPO_CARGA}</div>
+                        </div>
+                        <div class="freight-detail">
+                            <div class="freight-detail-label">Peso</div>
+                            <div class="freight-detail-value">${frete.PESO_TON} ton</div>
+                        </div>
+                        <div class="freight-detail">
+                            <div class="freight-detail-label">Data Embarque</div>
+                            <div class="freight-detail-value">${frete.DATA_EMBARQUE}</div>
+                        </div>
+                        ${frete.OBSERVACOES ? `
+                        <div class="freight-detail" style="grid-column: 1 / -1;">
+                            <div class="freight-detail-label">Observações</div>
+                            <div class="freight-detail-value">${frete.OBSERVACOES}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="freight-actions">
+                        <button class="btn-proposta" onclick='abrirModalProposta(${JSON.stringify(frete).replace(/'/g, "&#39;")})'>
+                            🚚 FAZER PROPOSTA
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Abrir modal
+        function abrirModalProposta(frete) {
+            if (!motoristaAtual) {
+                alert('Por favor, faça login primeiro');
+                window.location.href = 'landing_captacao.html';
+                return;
+            }
+            
+            freteAtualProposta = frete;
+            
+            document.getElementById('freteId').value = frete.ID;
+            document.getElementById('propNome').value = motoristaAtual.NOME_COMPLETO || motoristaAtual.nome;
+            document.getElementById('propWhatsApp').value = motoristaAtual.WHATSAPP || motoristaAtual.whatsapp;
+            document.getElementById('propValor').placeholder = `Valor sugerido: ${window.CAPTACAO_CONFIG.utils.formatarMoeda(frete.VALOR_SUGERIDO)}`;
+            
+            document.getElementById('modalProposta').style.display = 'block';
+        }
+
+        // Fechar modal
+        function fecharModal() {
+            document.getElementById('modalProposta').style.display = 'none';
+            document.getElementById('formProposta').reset();
+            freteAtualProposta = null;
+        }
+
+        // Enviar proposta
+        document.getElementById('formProposta').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnEnviarProposta');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Enviando...';
+            
+            try {
+                const proposta = {
+                    freteId: document.getElementById('freteId').value,
+                    motoristaNome: document.getElementById('propNome').value,
+                    motoristaWhatsApp: document.getElementById('propWhatsApp').value,
+                    origem: `${freteAtualProposta.ORIGEM_CIDADE}-${freteAtualProposta.ORIGEM_UF}`,
+                    destino: `${freteAtualProposta.DESTINO_CIDADE}-${freteAtualProposta.DESTINO_UF}`,
+                    valorSugerido: freteAtualProposta.VALOR_SUGERIDO,
+                    valorProposta: document.getElementById('propValor').value,
+                    veiculoTipo: document.getElementById('propTipoVeiculo').value,
+                    veiculoPlaca: document.getElementById('propPlaca').value.toUpperCase(),
+                    disponibilidade: document.getElementById('propDisponibilidade').value,
+                    observacoes: document.getElementById('propObservacoes').value
+                };
+                
+                await window.captacaoAPI.salvarProposta(proposta);
+                
+                alert('✅ Proposta enviada com sucesso!');
+                fecharModal();
+                
+                // Redirecionar para minhas propostas
+                setTimeout(() => {
+                    window.location.href = 'minhas_propostas.html';
+                }, 1000);
+                
+            } catch (erro) {
+                console.error('Erro ao enviar proposta:', erro);
+                alert('Erro ao enviar proposta. Tente novamente.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+
+        // Event listeners para filtros
+        document.getElementById('filtroOrigemUF').addEventListener('change', carregarFretes);
+        document.getElementById('filtroDestinoUF').addEventListener('change', carregarFretes);
+        document.getElementById('filtroTipoVeiculo').addEventListener('change', carregarFretes);
+        document.getElementById('filtroValorMinimo').addEventListener('change', carregarFretes);
+
+        // Inicializar
+        window.addEventListener('load', () => {
+            recuperarMotorista();
+            preencherFiltros();
+            carregarFretes();
+        });
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalProposta');
+            if (event.target === modal) {
+                fecharModal();
+            }
+        }
+    </script>
+</body>
+</html>

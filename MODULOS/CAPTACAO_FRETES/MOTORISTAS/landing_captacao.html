@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Motoristas - Anderson Enside Logística</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 46, 0.8) 100%);
+            border-bottom: 3px solid #FFD700;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 250px;
+            max-width: 80%;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .banner h1 {
+            font-size: 2em;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        /* Statistics */
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(255, 215, 0, 0.1) 100%);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 900;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7em;
+            margin-top: 5px;
+        }
+
+        /* City Cards */
+        .cities-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 900;
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .city-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .city-card:hover {
+            border-color: #FFD700;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .city-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .city-info {
+            display: flex;
+            justify-content: space-between;
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+
+        /* Insurance Section */
+        .insurance-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 2px solid #10b981;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .insurance-title {
+            font-size: 1.8em;
+            font-weight: 900;
+            color: #10b981;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .insurance-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .insurance-feature {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .insurance-feature-icon {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .insurance-price {
+            text-align: center;
+            font-size: 2em;
+            font-weight: 900;
+            color: #10b981;
+            margin: 20px 0;
+        }
+
+        .insurance-note {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 2em;
+            font-weight: 900;
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: #FFD700;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.3em;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 5px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(220, 38, 38, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .banner h1 {
+                font-size: 1.5em;
+            }
+
+            .section-title,
+            .form-title {
+                font-size: 1.5em;
+            }
+
+            .cities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="../ASSETS/logo.svg" alt="Anderson Enside Logística" class="logo">
+    </div>
+
+    <div class="container">
+        <!-- Banner -->
+        <div class="banner">
+            <h1>🔥 PARE DE RODAR VAZIO - CARGAS DISPONÍVEIS AGORA! 🔥</h1>
+        </div>
+
+        <!-- Statistics -->
+        <div class="statistics">
+            <div class="stat-card">
+                <div class="stat-number" id="statFretes">247</div>
+                <div class="stat-label">Fretes Disponíveis</div>
+                <span class="stat-badge">Dados reais</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">R$ 8.500</div>
+                <div class="stat-label">Média Mensal</div>
+                <span class="stat-badge">Dados reais</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statMotoristas">1.834</div>
+                <div class="stat-label">Motoristas Ativos</div>
+                <span class="stat-badge">Dados reais</span>
+            </div>
+        </div>
+
+        <!-- Cities Section -->
+        <div class="cities-section">
+            <h2 class="section-title">🗺️ Cidades com Mais Fretes</h2>
+            <div class="cities-grid">
+                <div class="city-card">
+                    <div class="city-name">CURITIBA - PR</div>
+                    <div class="city-info">
+                        <span>47 fretes</span>
+                        <span>R$ 1.800 - 4.200</span>
+                    </div>
+                </div>
+                <div class="city-card">
+                    <div class="city-name">TUBARÃO - SC</div>
+                    <div class="city-info">
+                        <span>38 fretes</span>
+                        <span>R$ 2.100 - 5.800</span>
+                    </div>
+                </div>
+                <div class="city-card">
+                    <div class="city-name">SÃO PAULO - SP</div>
+                    <div class="city-info">
+                        <span>62 fretes</span>
+                        <span>R$ 1.500 - 6.500</span>
+                    </div>
+                </div>
+                <div class="city-card">
+                    <div class="city-name">RIO DE JANEIRO - RJ</div>
+                    <div class="city-info">
+                        <span>41 fretes</span>
+                        <span>R$ 2.200 - 5.200</span>
+                    </div>
+                </div>
+                <div class="city-card">
+                    <div class="city-name">BELO HORIZONTE - MG</div>
+                    <div class="city-info">
+                        <span>35 fretes</span>
+                        <span>R$ 1.900 - 4.800</span>
+                    </div>
+                </div>
+                <div class="city-card">
+                    <div class="city-name">PORTO ALEGRE - RS</div>
+                    <div class="city-info">
+                        <span>24 fretes</span>
+                        <span>R$ 2.400 - 5.100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insurance Section -->
+        <div class="insurance-section">
+            <h2 class="insurance-title">🛡️ PROTEJA SUAS CARGAS</h2>
+            <div class="insurance-features">
+                <div class="insurance-feature">
+                    <div class="insurance-feature-icon">✅</div>
+                    <div>Cobertura Total</div>
+                </div>
+                <div class="insurance-feature">
+                    <div class="insurance-feature-icon">🕐</div>
+                    <div>Assistência 24h</div>
+                </div>
+                <div class="insurance-feature">
+                    <div class="insurance-feature-icon">💰</div>
+                    <div>Indenização Rápida</div>
+                </div>
+                <div class="insurance-feature">
+                    <div class="insurance-feature-icon">🚫</div>
+                    <div>Sem Franquia</div>
+                </div>
+            </div>
+            <div class="insurance-price">R$ 17,99/dia</div>
+            <p class="insurance-note">
+                * Vender o seguro da carga como divulgação mais na vdd é CTE
+            </p>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-section">
+            <h2 class="form-title">📝 Cadastre-se Agora!</h2>
+            <p class="form-subtitle">
+                Todos fretes com preços sugeridos onde o caminhoneiro tem oportunidade de fazer sua proposta!!!<br>
+                Também poderá cadastrar suas rotas preferidas
+            </p>
+
+            <div class="success-message" id="successMessage">
+                ✅ Cadastro realizado com sucesso! Redirecionando...
+            </div>
+
+            <form id="captacaoForm">
+                <div class="form-group">
+                    <label class="form-label">Nome Completo *</label>
+                    <input type="text" id="nome" class="form-input" placeholder="Seu nome completo" required>
+                    <div class="error-message" id="nomeError">Por favor, informe seu nome completo</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">WhatsApp *</label>
+                    <input type="tel" id="whatsapp" class="form-input" placeholder="(00) 00000-0000" required>
+                    <div class="error-message" id="whatsappError">Por favor, informe um WhatsApp válido</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Interesse em Seguro da Carga</label>
+                    <select id="interesseSeguro" class="form-select">
+                        <option value="Sim, tenho interesse">Sim, tenho interesse</option>
+                        <option value="Não">Não</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    👉 Clique aqui
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../config.js"></script>
+    <script src="../api-integration.js"></script>
+    <script>
+        // Máscaras
+        function mascaraWhatsApp(valor) {
+            valor = valor.replace(/\D/g, '');
+            if (valor.length <= 10) {
+                valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+                valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+            } else {
+                valor = valor.replace(/(\d{2})(\d)/, '($1) $2');
+                valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+            }
+            return valor;
+        }
+
+        document.getElementById('whatsapp').addEventListener('input', function(e) {
+            e.target.value = mascaraWhatsApp(e.target.value);
+        });
+
+        // Validações
+        function validarNome(nome) {
+            return nome.trim().length >= 3;
+        }
+
+        function validarWhatsApp(whatsapp) {
+            const limpo = whatsapp.replace(/\D/g, '');
+            return limpo.length === 10 || limpo.length === 11;
+        }
+
+        // Submit Form
+        document.getElementById('captacaoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('nome').value.trim();
+            const whatsapp = document.getElementById('whatsapp').value;
+            const interesseSeguro = document.getElementById('interesseSeguro').value;
+
+            // Limpar erros
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+            // Validar
+            let valid = true;
+
+            if (!validarNome(nome)) {
+                document.getElementById('nomeError').style.display = 'block';
+                valid = false;
+            }
+
+            if (!validarWhatsApp(whatsapp)) {
+                document.getElementById('whatsappError').style.display = 'block';
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            // Loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> Cadastrando...';
+
+            try {
+                // Salvar dados
+                await window.captacaoAPI.salvarCaptacao({
+                    nome: nome,
+                    whatsapp: whatsapp,
+                    interesseSeguro: interesseSeguro,
+                    origem: 'Landing Page'
+                });
+
+                // Mostrar sucesso
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('captacaoForm').style.display = 'none';
+
+                // Redirecionar
+                setTimeout(() => {
+                    const whatsappLimpo = whatsapp.replace(/\D/g, '');
+                    window.location.href = `fretes_disponiveis.html?nome=${encodeURIComponent(nome)}&whatsapp=${whatsappLimpo}`;
+                }, 2000);
+
+            } catch (erro) {
+                console.error('Erro ao cadastrar:', erro);
+                alert('Erro ao realizar cadastro. Por favor, tente novamente.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        // Carregar estatísticas reais (se possível)
+        async function carregarEstatisticas() {
+            try {
+                const fretes = await window.captacaoAPI.buscarFretesDisponiveis();
+                if (fretes && fretes.length > 0) {
+                    document.getElementById('statFretes').textContent = fretes.length;
+                }
+
+                const motoristas = await window.captacaoAPI.buscarDoSheets('CAPTACAO_FRETES');
+                if (motoristas && motoristas.length > 0) {
+                    document.getElementById('statMotoristas').textContent = motoristas.length.toLocaleString('pt-BR');
+                }
+            } catch (erro) {
+                console.log('Usando dados estáticos');
+            }
+        }
+
+        // Carregar ao iniciar
+        window.addEventListener('load', () => {
+            carregarEstatisticas();
+        });
+    </script>
+</body>
+</html>
