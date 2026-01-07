@@ -32,6 +32,9 @@ async function enviarCaptacao(dados) {
         console.log('📤 Enviando captação:', dadosEnvio);
         
         // Enviar para Google Sheets
+        // Nota: mode 'no-cors' é necessário para Google Apps Script, mas impede
+        // a leitura da resposta. O Google Apps Script não permite CORS direto.
+        // Assumimos sucesso se não houver erro de rede.
         const response = await fetch(CAPTACAO_CONFIG.googleScript.url, {
             method: 'POST',
             mode: 'no-cors',
@@ -87,6 +90,9 @@ async function enviarProposta(dados) {
         console.log('📤 Enviando proposta:', dadosEnvio);
         
         // Enviar para Google Sheets
+        // Nota: mode 'no-cors' é necessário para Google Apps Script, mas impede
+        // a leitura da resposta. O Google Apps Script não permite CORS direto.
+        // Assumimos sucesso se não houver erro de rede.
         const response = await fetch(CAPTACAO_CONFIG.googleScript.url, {
             method: 'POST',
             mode: 'no-cors',
@@ -194,9 +200,9 @@ function recuperarLocal(chave) {
 function formatarWhatsApp(numero) {
     const limpo = numero.replace(/\D/g, '');
     if (limpo.length === 11) {
-        return `(${limpo.substr(0, 2)}) ${limpo.substr(2, 5)}-${limpo.substr(7)}`;
+        return `(${limpo.substring(0, 2)}) ${limpo.substring(2, 7)}-${limpo.substring(7)}`;
     } else if (limpo.length === 10) {
-        return `(${limpo.substr(0, 2)}) ${limpo.substr(2, 4)}-${limpo.substr(6)}`;
+        return `(${limpo.substring(0, 2)}) ${limpo.substring(2, 6)}-${limpo.substring(6)}`;
     }
     return numero;
 }

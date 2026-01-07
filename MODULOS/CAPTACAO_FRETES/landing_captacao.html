@@ -545,7 +545,7 @@
 
         <!-- Link para Sistema Principal -->
         <div class="link-sistema">
-            <p>Já é cadastrado? <a href="../ENSIDE_MASTER_v19.0_INTEGRADO.html">Acesse o Sistema Principal</a></p>
+            <p>Já é cadastrado? <a href="#" id="linkSistemaPrincipal">Acesse o Sistema Principal</a></p>
         </div>
     </div>
 
@@ -567,7 +567,7 @@
         function animateCounter() {
             const counter = document.getElementById('totalFretes');
             let current = 0;
-            const target = 27;
+            const target = CAPTACAO_CONFIG.fretesDisponiveis.length;
             const duration = 2000;
             const increment = target / (duration / 16);
 
@@ -708,6 +708,12 @@
         // Inicializar animação ao carregar
         window.addEventListener('load', () => {
             animateCounter();
+            
+            // Configurar link do sistema principal
+            const linkSistema = document.getElementById('linkSistemaPrincipal');
+            if (linkSistema) {
+                linkSistema.href = CAPTACAO_CONFIG.urls.sistemaPrincipal;
+            }
         });
     </script>
 </body>
