@@ -1,0 +1,112 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║   🚀 SISTEMA DE CAPTAÇÃO DE FRETES                                       ║
+║   Anderson Enside Logística                                              ║
+║   100% COMPLETO E FUNCIONAL                                              ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+📥 PARA USAR NO SEU MAC:
+
+1. Clone este repositório:
+   git clone https://github.com/ensideanderson-nova/ENSIDE-MASTER-v16.git
+   cd ENSIDE-MASTER-v16
+
+2. Duplo clique em:
+   ABRIR_SISTEMA_FRETES.command
+
+3. PRONTO! Sistema abre automaticamente no navegador.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📂 ESTRUTURA:
+
+MODULOS/CAPTACAO_FRETES/
+├── ADMIN/                              (3 páginas administrativas)
+│   ├── admin_cadastro_fretes.html     ✅ Cadastrar fretes
+│   ├── admin_propostas_recebidas.html ✅ Ver propostas + IA
+│   └── admin_rotas_preferidas.html    ✅ Ver rotas motoristas
+│
+├── MOTORISTAS/                         (4 páginas motoristas)
+│   ├── landing_captacao.html          ✅ Página inicial
+│   ├── fretes_disponiveis.html        ✅ Ver fretes
+│   ├── minhas_propostas.html          ✅ Acompanhar propostas
+│   └── minhas_rotas_preferidas.html   ✅ Gerenciar rotas
+│
+├── config.js                           ✅ Configurações
+├── api-integration.js                  ✅ APIs integradas
+├── redis-backup.js                     ✅ Backup automático
+├── README.md                           ✅ Documentação técnica
+├── INSTALACAO.md                       ✅ Guia completo
+└── VIEW.md                             ✅ Visualização sistema
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔑 CREDENCIAIS JÁ CONFIGURADAS:
+
+✅ Google Sheets
+   ID: 1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE
+
+✅ Evolution API (WhatsApp)
+   URL: https://evolution-api-latest-poc1.onrender.com
+   WhatsApp: 5518996540492
+
+✅ Redis Backup
+   Automático a cada 30 minutos
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📱 PÁGINAS DO SISTEMA:
+
+Servidor: http://localhost:8000
+
+ADMIN:
+• http://localhost:8000/ADMIN/admin_cadastro_fretes.html
+• http://localhost:8000/ADMIN/admin_propostas_recebidas.html
+• http://localhost:8000/ADMIN/admin_rotas_preferidas.html
+
+MOTORISTAS:
+• http://localhost:8000/MOTORISTAS/landing_captacao.html
+• http://localhost:8000/MOTORISTAS/fretes_disponiveis.html
+• http://localhost:8000/MOTORISTAS/minhas_propostas.html
+• http://localhost:8000/MOTORISTAS/minhas_rotas_preferidas.html
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚡ FUNCIONALIDADES:
+
+✅ Admin cadastra fretes com valores sugeridos
+✅ Motoristas fazem propostas
+✅ Análise de IA automática (score 0-100)
+✅ Matching automático de rotas
+✅ Notificações WhatsApp automáticas
+✅ Cadastro de rotas preferidas
+✅ Filtros avançados
+✅ Backup automático Redis
+✅ Sincronização Google Sheets
+✅ Status em tempo real
+✅ Design dark theme responsivo
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 DOCUMENTAÇÃO:
+
+Leia os arquivos na ordem:
+1. COMO_CLONAR_NO_MAC.md    ← Comece aqui!
+2. INSTALACAO.md            ← Guia detalhado
+3. VIEW.md                  ← Visualização completa
+4. README.md                ← Documentação técnica
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📞 SUPORTE:
+
+WhatsApp: (18) 99654-0492
+Sistema: Anderson Enside Logística
+GitHub: https://github.com/ensideanderson-nova/ENSIDE-MASTER-v16
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ✨ SISTEMA 100% FUNCIONAL E PRONTO PARA USO! ✨
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
