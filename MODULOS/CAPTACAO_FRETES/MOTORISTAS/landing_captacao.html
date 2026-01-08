@@ -63,7 +63,12 @@
         <div class="hero-gradient absolute inset-0 opacity-50"></div>
         <div class="relative max-w-7xl mx-auto px-4 py-16 md:py-24">
             <div class="text-center mb-12">
-                <div class="float-animation inline-block text-8xl mb-6">🚛</div>
+                <!-- Logo da Empresa -->
+                <div class="flex justify-center mb-6">
+                    <img src="../assets/logo.png" alt="Anderson Enside Logística" class="h-32 md:h-40 w-auto object-contain" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';">
+                    <div id="logoFallback" style="display: none;" class="float-animation inline-block text-8xl">🚛</div>
+                </div>
+                
                 <h1 class="text-5xl md:text-7xl font-black mb-4">
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600">
                         Anderson Enside
@@ -71,9 +76,6 @@
                     <br>
                     <span class="text-white">Logística</span>
                 </h1>
-                <div class="inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-black text-sm px-4 py-1 rounded-full mb-4">
-                    ANDERSON ENSIDE LOGÍSTICA
-                </div>
                 <p class="text-xl md:text-2xl text-gray-300 mb-2 font-semibold">
                     Portal Inteligente de Fretes
                 </p>
