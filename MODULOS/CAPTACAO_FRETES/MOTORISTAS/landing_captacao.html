@@ -63,19 +63,19 @@
         <div class="hero-gradient absolute inset-0 opacity-50"></div>
         <div class="relative max-w-7xl mx-auto px-4 py-16 md:py-24">
             <div class="text-center mb-12">
-                <!-- Logo da Empresa -->
-                <div class="flex justify-center mb-6">
-                    <img src="../assets/logo.png" alt="Anderson Enside Logística" class="h-32 md:h-40 w-auto object-contain" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';">
-                    <div id="logoFallback" style="display: none;" class="float-animation inline-block text-8xl">🚛</div>
+                <!-- Logo da Empresa - DESTAQUE MAIOR -->
+                <div class="flex justify-center mb-8">
+                    <img src="../assets/logo.png" alt="Anderson Enside Logística" class="h-48 md:h-56 lg:h-64 w-auto object-contain drop-shadow-2xl" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';">
+                    <div id="logoFallback" style="display: none;" class="float-animation">
+                        <h1 class="text-6xl md:text-8xl font-black">
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600">
+                                Anderson Enside
+                            </span>
+                            <br>
+                            <span class="text-white">Logística</span>
+                        </h1>
+                    </div>
                 </div>
-                
-                <h1 class="text-5xl md:text-7xl font-black mb-4">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600">
-                        Anderson Enside
-                    </span>
-                    <br>
-                    <span class="text-white">Logística</span>
-                </h1>
                 <p class="text-xl md:text-2xl text-gray-300 mb-2 font-semibold">
                     Portal Inteligente de Fretes
                 </p>
@@ -146,7 +146,7 @@
                 <div class="text-5xl mb-4">🗺️</div>
                 <h3 class="text-2xl font-bold mb-3 text-yellow-400">Rotas Personalizadas</h3>
                 <p class="text-gray-400">
-                    Cadastre suas rotas preferidas e receba apenas fretes que interessam para você
+                    Configure suas rotas preferidas e receba apenas fretes que interessam para você
                 </p>
             </div>
 
@@ -191,7 +191,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="glass rounded-2xl p-6 text-center">
                 <div class="text-5xl mb-4">1️⃣</div>
-                <h3 class="text-xl font-bold mb-2 text-yellow-400">Cadastre-se</h3>
+                <h3 class="text-xl font-bold mb-2 text-yellow-400">Crie sua Conta</h3>
                 <p class="text-gray-400 text-sm">
                     Informe seus dados e configure suas rotas preferidas
                 </p>
@@ -264,14 +264,14 @@
                 <a href="fretes_disponiveis.html" class="btn-primary px-12 py-5 rounded-xl transition text-xl">
                     🚀 Ver Fretes Agora
                 </a>
-                <button onclick="mostrarFormularioCadastro()" class="btn-secondary px-12 py-5 rounded-xl transition text-xl">
-                    📝 Cadastrar-se
+                <button onclick="mostrarFormularioAcesso()" class="btn-secondary px-12 py-5 rounded-xl transition text-xl">
+                    ✨ Criar Minha Conta
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Modal de Cadastro -->
+    <!-- Modal de Acesso -->
     <div id="modalCadastro" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="glass rounded-2xl p-8 max-w-md w-full">
             <h3 class="text-2xl font-bold mb-6 text-yellow-400">Acesso Rápido</h3>
@@ -317,8 +317,8 @@
         const config = window.CAPTACAO_FRETES_CONFIG;
         const api = window.CAPTACAO_API;
 
-        // Mostrar modal de cadastro
-        function mostrarFormularioCadastro() {
+        // Mostrar modal de acesso
+        function mostrarFormularioAcesso() {
             const modal = document.getElementById('modalCadastro');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -342,7 +342,7 @@
             localStorage.setItem('motorista_logado', JSON.stringify({
                 nome,
                 whatsapp,
-                dataCadastro: new Date().toISOString()
+                dataRegistro: new Date().toISOString()
             }));
 
             alert(`✅ Bem-vindo, ${nome}!`);
@@ -361,7 +361,7 @@
                 window.location.href = 'fretes_disponiveis.html';
             } else {
                 // Não está logado, abre modal
-                mostrarFormularioCadastro();
+                mostrarFormularioAcesso();
             }
         }
 

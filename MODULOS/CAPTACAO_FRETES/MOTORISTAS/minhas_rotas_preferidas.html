@@ -52,7 +52,7 @@
 
         <!-- Formulário de Nova Rota -->
         <div class="glass rounded-2xl p-6 md:p-8 mb-8">
-            <h2 class="text-2xl font-bold mb-6 text-yellow-400">➕ Cadastrar Nova Rota</h2>
+            <h2 class="text-2xl font-bold mb-6 text-yellow-400">➕ Adicionar Nova Rota</h2>
             
             <form id="formRota" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -109,8 +109,8 @@
 
         <div id="semRotas" class="text-center py-12 glass rounded-2xl">
             <p class="text-6xl mb-4">🗺️</p>
-            <p class="text-xl text-gray-400">Você ainda não tem rotas cadastradas</p>
-            <p class="text-sm text-gray-500 mt-2">Cadastre suas rotas preferidas para receber notificações automáticas</p>
+            <p class="text-xl text-gray-400">Você ainda não tem rotas registradas</p>
+            <p class="text-sm text-gray-500 mt-2">Configure suas rotas preferidas para receber notificações automáticas</p>
         </div>
     </div>
 
@@ -141,7 +141,7 @@
             const motoristaLogado = JSON.parse(localStorage.getItem('motorista_logado') || '{}');
             
             if (!motoristaLogado.nome || !motoristaLogado.whatsapp) {
-                alert('❌ Por favor, faça seu cadastro primeiro na página inicial.');
+                alert('❌ Por favor, crie sua conta primeiro na página inicial.');
                 window.location.href = 'landing_captacao.html';
                 return;
             }
@@ -155,12 +155,12 @@
                 destinoUF: document.getElementById('destinoUF').value,
                 destinoCidade: document.getElementById('destinoCidade').value,
                 frequencia: document.getElementById('frequencia').value,
-                dataCadastro: config.utils.formatarData(),
+                dataRegistro: config.utils.formatarData(),
                 ativo: 'SIM'
             };
 
             api.salvarRotaPreferida(rota);
-            alert('✅ Rota cadastrada com sucesso!\n\nVocê receberá notificações quando surgir um frete compatível.');
+            alert('✅ Rota adicionada com sucesso!\n\nVocê receberá notificações quando surgir um frete compatível.');
             
             document.getElementById('formRota').reset();
             carregarRotas();
@@ -227,8 +227,8 @@
                                 <span class="font-semibold text-yellow-400">${rota.frequencia}</span>
                             </div>
                             <div class="flex justify-between text-xs">
-                                <span class="text-gray-400">Cadastrado em</span>
-                                <span class="text-gray-300">${rota.dataCadastro}</span>
+                                <span class="text-gray-400">Adicionado em</span>
+                                <span class="text-gray-300">${rota.dataRegistro || rota.dataCadastro}</span>
                             </div>
                         </div>
 
