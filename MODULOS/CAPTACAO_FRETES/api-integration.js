@@ -28,7 +28,7 @@ class CaptacaoAPI {
                 timestamp: new Date().toISOString()
             };
             
-            const response = await fetch(this.config.googleAppsScript.url, {
+            await fetch(this.config.googleAppsScript.url, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
