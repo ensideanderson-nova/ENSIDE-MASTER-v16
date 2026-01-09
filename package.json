@@ -1,5 +1,11 @@
 {
+  "name": "enside-master",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "redis": "^5.10.0"
+    "express": "^4.19.2"
   }
 }
