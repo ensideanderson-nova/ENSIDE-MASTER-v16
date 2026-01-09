@@ -446,7 +446,27 @@ class CaptacaoAPI {
     // ==================== MATCHING AUTOMÁTICO ====================
     
     /**
-     * Verificar fretes compatíveis com rota cadastrada ou motoristas compatíveis com frete
+     * Verificar fretes compatíveis com uma rota cadastrada.
+     * Wrapper mais específico para verificarFretesCompativeis(dados, isRota = true).
+     */
+    async verificarFretesCompativeisComRota(rota) {
+        return this.verificarFretesCompativeis(rota, true);
+    }
+    
+    /**
+     * Verificar motoristas compatíveis com um frete.
+     * Wrapper mais específico para verificarFretesCompativeis(dados, isRota = false).
+     */
+    async verificarMotoristasCompativeisComFrete(frete) {
+        return this.verificarFretesCompativeis(frete, false);
+    }
+    
+    /**
+     * Verificar fretes compatíveis com rota cadastrada ou motoristas compatíveis com frete.
+     * 
+     * @param {Object} dados - Quando isRota = true, representa uma rota preferida do motorista;
+     *                         quando isRota = false, representa um frete.
+     * @param {boolean} [isRota=false] - Indica se o parâmetro dados é uma rota (true) ou um frete (false).
      */
     async verificarFretesCompativeis(dados, isRota = false) {
         try {
