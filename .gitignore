@@ -1,2 +1,5 @@
-.vercel
-.env*.local
+node
+npm
+node_modules
+.env
+.DS_Store
