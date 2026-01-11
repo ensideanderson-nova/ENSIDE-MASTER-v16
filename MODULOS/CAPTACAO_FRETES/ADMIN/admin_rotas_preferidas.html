@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Rotas Preferidas | Anderson Enside Logística</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="../config.js"></script>
+    <script src="../api-integration.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .card-rota {
+            transition: all 0.3s ease;
+        }
+        .card-rota:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+        }
+    </style>
+</head>
+<body class="text-white p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <!-- Logo -->
+            <div class="flex justify-center mb-4">
+                <img src="../assets/logo.png" alt="Anderson Enside Logística" class="h-20 md:h-24 w-auto object-contain" onerror="this.style.display='none';">
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+                    Anderson Enside Logística
+                </span>
+            </h1>
+            <p class="text-2xl md:text-3xl font-semibold text-white mb-2">
+                🗺️ Rotas Preferidas dos Motoristas
+            </p>
+            <p class="text-gray-400 text-sm md:text-base">
+                Painel Administrativo - Visualize as rotas preferidas cadastradas pelos motoristas
+            </p>
+            <div class="mt-4 flex flex-wrap justify-center gap-3">
+                <a href="admin_cadastro_fretes.html" class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition text-sm">
+                    ➕ Cadastrar Frete
+                </a>
+                <a href="admin_propostas_recebidas.html" class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition text-sm">
+                    📋 Ver Propostas
+                </a>
+                <span class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm" id="statusSync">
+                    🔄 Conectado ao Sheets
+                </span>
+            </div>
+        </div>
+
+        <!-- Filtros de Busca -->
+        <div class="glass rounded-2xl p-6 mb-8">
+            <h3 class="text-lg font-semibold mb-4 text-yellow-400">🔍 Buscar Rotas</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Origem (UF)</label>
+                    <select id="filtroOrigemUF" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white" onchange="aplicarFiltros()">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Destino (UF)</label>
+                    <select id="filtroDestinoUF" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white" onchange="aplicarFiltros()">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-400 mb-2">Status</label>
+                    <select id="filtroStatus" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white" onchange="aplicarFiltros()">
+                        <option value="">Todas</option>
+                        <option value="SIM">Ativas</option>
+                        <option value="NAO">Inativas</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4">
+                <input type="text" id="filtroBusca" class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white" 
+                       placeholder="Buscar por nome ou WhatsApp do motorista..." onkeyup="aplicarFiltros()">
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-3xl mb-2">🗺️</div>
+                <div class="text-2xl font-bold text-yellow-400" id="totalRotas">0</div>
+                <div class="text-sm text-gray-400">Total de Rotas</div>
+            </div>
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-3xl mb-2">✅</div>
+                <div class="text-2xl font-bold text-green-400" id="rotasAtivas">0</div>
+                <div class="text-sm text-gray-400">Ativas</div>
+            </div>
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-3xl mb-2">👤</div>
+                <div class="text-2xl font-bold text-blue-400" id="totalMotoristas">0</div>
+                <div class="text-sm text-gray-400">Motoristas</div>
+            </div>
+            <div class="glass rounded-xl p-4 text-center">
+                <div class="text-3xl mb-2">🔥</div>
+                <div class="text-2xl font-bold text-orange-400" id="rotasPopulares">0</div>
+                <div class="text-sm text-gray-400">Mais Populares</div>
+            </div>
+        </div>
+
+        <!-- Botão de teste com dados mock -->
+        <div class="glass rounded-xl p-4 mb-8 text-center">
+            <button onclick="gerarDadosTeste()" class="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg transition font-semibold">
+                🎲 Gerar Dados de Teste (Mock)
+            </button>
+            <p class="text-sm text-gray-400 mt-2">Clique para adicionar rotas de exemplo para visualização</p>
+        </div>
+
+        <!-- Lista de Rotas -->
+        <div id="listaRotas" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Rotas serão carregadas aqui -->
+        </div>
+
+        <div id="semRotas" class="text-center py-12 glass rounded-2xl">
+            <p class="text-6xl mb-4">🗺️</p>
+            <p class="text-xl text-gray-400">Nenhuma rota preferida cadastrada ainda</p>
+            <p class="text-sm text-gray-500 mt-2">Motoristas podem cadastrar suas rotas preferidas no portal</p>
+        </div>
+    </div>
+
+    <script>
+        const config = window.CAPTACAO_FRETES_CONFIG;
+        const api = window.CAPTACAO_API;
+
+        // Preencher filtros de estados
+        function preencherFiltrosEstados() {
+            const filtroOrigemUF = document.getElementById('filtroOrigemUF');
+            const filtroDestinoUF = document.getElementById('filtroDestinoUF');
+            
+            config.estados.forEach(estado => {
+                const optionOrigem = document.createElement('option');
+                optionOrigem.value = estado.uf;
+                optionOrigem.textContent = estado.uf;
+                filtroOrigemUF.appendChild(optionOrigem);
+
+                const optionDestino = document.createElement('option');
+                optionDestino.value = estado.uf;
+                optionDestino.textContent = estado.uf;
+                filtroDestinoUF.appendChild(optionDestino);
+            });
+        }
+
+        // Gerar dados de teste
+        function gerarDadosTeste() {
+            const rotasTeste = [
+                {
+                    idRota: config.utils.gerarIdRota(),
+                    nomeMotorista: 'João Silva',
+                    whatsapp: '5511999999999',
+                    origemUF: 'PR',
+                    origemCidade: 'Curitiba',
+                    destinoUF: 'SP',
+                    destinoCidade: 'São Paulo',
+                    frequencia: 'Semanal',
+                    dataCadastro: config.utils.formatarData(),
+                    ativo: 'SIM'
+                },
+                {
+                    idRota: config.utils.gerarIdRota(),
+                    nomeMotorista: 'Maria Santos',
+                    whatsapp: '5511988888888',
+                    origemUF: 'SP',
+                    origemCidade: 'Santos',
+                    destinoUF: 'RJ',
+                    destinoCidade: 'Rio de Janeiro',
+                    frequencia: 'Mensal',
+                    dataCadastro: config.utils.formatarData(),
+                    ativo: 'SIM'
+                },
+                {
+                    idRota: config.utils.gerarIdRota(),
+                    nomeMotorista: 'Carlos Oliveira',
+                    whatsapp: '5511977777777',
+                    origemUF: 'SC',
+                    origemCidade: 'Florianópolis',
+                    destinoUF: 'RS',
+                    destinoCidade: 'Porto Alegre',
+                    frequencia: 'Quinzenal',
+                    dataCadastro: config.utils.formatarData(),
+                    ativo: 'SIM'
+                },
+                {
+                    idRota: config.utils.gerarIdRota(),
+                    nomeMotorista: 'Ana Paula',
+                    whatsapp: '5511966666666',
+                    origemUF: 'MG',
+                    origemCidade: 'Belo Horizonte',
+                    destinoUF: 'SP',
+                    destinoCidade: 'Campinas',
+                    frequencia: 'Semanal',
+                    dataCadastro: config.utils.formatarData(),
+                    ativo: 'SIM'
+                },
+                {
+                    idRota: config.utils.gerarIdRota(),
+                    nomeMotorista: 'Pedro Fernandes',
+                    whatsapp: '5511955555555',
+                    origemUF: 'GO',
+                    origemCidade: 'Goiânia',
+                    destinoUF: 'DF',
+                    destinoCidade: 'Brasília',
+                    frequencia: 'Diária',
+                    dataCadastro: config.utils.formatarData(),
+                    ativo: 'NAO'
+                }
+            ];
+
+            rotasTeste.forEach(rota => api.salvarRotaPreferida(rota));
+            alert('✅ 5 rotas de teste adicionadas!');
+            carregarRotas();
+        }
+
+        // Carregar rotas
+        function carregarRotas() {
+            const rotas = api.carregarRotasPreferidas();
+            aplicarFiltros();
+            atualizarEstatisticas(rotas);
+        }
+
+        // Aplicar filtros
+        function aplicarFiltros() {
+            const rotas = api.carregarRotasPreferidas();
+            const listaRotas = document.getElementById('listaRotas');
+            const semRotas = document.getElementById('semRotas');
+            
+            if (rotas.length === 0) {
+                listaRotas.style.display = 'none';
+                semRotas.style.display = 'block';
+                return;
+            }
+
+            const filtroOrigemUF = document.getElementById('filtroOrigemUF').value;
+            const filtroDestinoUF = document.getElementById('filtroDestinoUF').value;
+            const filtroStatus = document.getElementById('filtroStatus').value;
+            const filtroBusca = document.getElementById('filtroBusca').value.toLowerCase();
+
+            let rotasFiltradas = rotas.filter(rota => {
+                const matchOrigem = !filtroOrigemUF || rota.origemUF === filtroOrigemUF;
+                const matchDestino = !filtroDestinoUF || rota.destinoUF === filtroDestinoUF;
+                const matchStatus = !filtroStatus || rota.ativo === filtroStatus;
+                const matchBusca = !filtroBusca || 
+                                  rota.nomeMotorista.toLowerCase().includes(filtroBusca) ||
+                                  rota.whatsapp.includes(filtroBusca);
+                
+                return matchOrigem && matchDestino && matchStatus && matchBusca;
+            });
+
+            if (rotasFiltradas.length === 0) {
+                listaRotas.innerHTML = `
+                    <div class="md:col-span-2 lg:col-span-3 text-center py-12 glass rounded-2xl">
+                        <p class="text-6xl mb-4">🔍</p>
+                        <p class="text-xl text-gray-400">Nenhuma rota encontrada</p>
+                        <p class="text-sm text-gray-500 mt-2">Tente ajustar os filtros de busca</p>
+                    </div>
+                `;
+                semRotas.style.display = 'none';
+                listaRotas.style.display = 'grid';
+                return;
+            }
+
+            semRotas.style.display = 'none';
+            listaRotas.style.display = 'grid';
+            listaRotas.innerHTML = '';
+
+            rotasFiltradas.reverse().forEach(rota => {
+                const card = criarCardRota(rota);
+                listaRotas.appendChild(card);
+            });
+        }
+
+        // Criar card de rota
+        function criarCardRota(rota) {
+            const card = document.createElement('div');
+            card.className = 'card-rota glass rounded-xl p-5';
+            
+            const statusColor = rota.ativo === 'SIM' ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400';
+            const statusIcon = rota.ativo === 'SIM' ? '✅' : '⏸️';
+
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-1">${rota.nomeMotorista}</h3>
+                        <p class="text-sm text-gray-400">📱 ${rota.whatsapp}</p>
+                    </div>
+                    <span class="px-2 py-1 ${statusColor} rounded text-xs font-semibold">
+                        ${statusIcon} ${rota.ativo === 'SIM' ? 'Ativa' : 'Inativa'}
+                    </span>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">📍</span>
+                        <div>
+                            <p class="text-xs text-gray-400">Origem</p>
+                            <p class="font-semibold text-sm">${rota.origemCidade}/${rota.origemUF}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center">
+                        <span class="text-2xl">⬇️</span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🎯</span>
+                        <div>
+                            <p class="text-xs text-gray-400">Destino</p>
+                            <p class="font-semibold text-sm">${rota.destinoCidade}/${rota.destinoUF}</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 mt-3 border-t border-gray-700">
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400">Frequência</span>
+                            <span class="font-semibold text-yellow-400">${rota.frequencia}</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-400">Cadastrado em</span>
+                            <span class="text-gray-300">${rota.dataCadastro}</span>
+                        </div>
+                    </div>
+
+                    <button onclick="notificarMotorista('${rota.whatsapp}', '${rota.nomeMotorista}')" 
+                            class="w-full px-4 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg transition text-sm font-semibold mt-3">
+                        📱 Notificar Motorista
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        // Atualizar estatísticas
+        function atualizarEstatisticas(rotas) {
+            const rotasAtivas = rotas.filter(r => r.ativo === 'SIM').length;
+            const motoristasUnicos = new Set(rotas.map(r => r.whatsapp)).size;
+            
+            // Contar rotas mais populares (mesma origem/destino)
+            const rotasMap = {};
+            rotas.forEach(r => {
+                const key = `${r.origemUF}-${r.destinoUF}`;
+                rotasMap[key] = (rotasMap[key] || 0) + 1;
+            });
+            const rotasPopulares = Math.max(...Object.values(rotasMap), 0);
+
+            document.getElementById('totalRotas').textContent = rotas.length;
+            document.getElementById('rotasAtivas').textContent = rotasAtivas;
+            document.getElementById('totalMotoristas').textContent = motoristasUnicos;
+            document.getElementById('rotasPopulares').textContent = rotasPopulares;
+        }
+
+        // Notificar motorista
+        async function notificarMotorista(whatsapp, nome) {
+            const mensagem = `Olá ${nome}! 👋\n\nTemos uma atualização sobre suas rotas preferidas.\n\n_Anderson Enside Logística_`;
+            
+            const resultado = await api.enviarWhatsApp(whatsapp, mensagem);
+            
+            if (resultado.sucesso) {
+                alert(`✅ Notificação enviada para ${nome}!`);
+            } else {
+                alert(`❌ Erro ao enviar notificação: ${resultado.erro}`);
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            preencherFiltrosEstados();
+            carregarRotas();
+            console.log('✅ Sistema de rotas preferidas carregado');
+        });
+    </script>
+</body>
+</html>
