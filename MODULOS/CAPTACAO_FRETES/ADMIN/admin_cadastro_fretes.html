@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Gestão de Fretes | Anderson Enside Logística</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="../config.js"></script>
+    <script src="../api-integration.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #0a0a0a;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .input-field {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #FFD700;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        .card-frete {
+            transition: all 0.3s ease;
+        }
+        .card-frete:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="text-white p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <!-- Logo -->
+            <div class="flex justify-center mb-4">
+                <img src="../assets/logo.png" alt="Anderson Enside Logística" class="h-20 md:h-24 w-auto object-contain" onerror="this.style.display='none';">
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+                    Anderson Enside Logística
+                </span>
+            </h1>
+            <p class="text-2xl md:text-3xl font-semibold text-white mb-2">
+                📦 Gestão de Fretes
+            </p>
+            <p class="text-gray-400 text-sm md:text-base">
+                Painel Administrativo - Registre novos fretes e gerencie disponibilidades
+            </p>
+            <div class="mt-4 flex flex-wrap justify-center gap-3">
+                <a href="admin_propostas_recebidas.html" class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition text-sm">
+                    📋 Ver Propostas
+                </a>
+                <a href="admin_rotas_preferidas.html" class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition text-sm">
+                    🗺️ Rotas Preferidas
+                </a>
+                <span class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm" id="statusSync">
+                    🔄 Conectado ao Sheets
+                </span>
+            </div>
+        </div>
+
+        <!-- Formulário de Registro -->
+        <div class="glass rounded-2xl p-6 md:p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-yellow-400">➕ Registrar Novo Frete</h2>
+            
+            <form id="formFrete" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Origem -->
+                <div class="md:col-span-2">
+                    <h3 class="text-lg font-semibold mb-3 text-yellow-400">📍 Origem</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Estado (UF)</label>
+                            <select id="origemUF" class="input-field w-full rounded-lg p-3 text-white" required>
+                                <option value="">Selecione o estado...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Cidade</label>
+                            <input type="text" id="origemCidade" class="input-field w-full rounded-lg p-3 text-white" 
+                                   placeholder="Ex: Curitiba" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destino -->
+                <div class="md:col-span-2">
+                    <h3 class="text-lg font-semibold mb-3 text-yellow-400">📍 Destino</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Estado (UF)</label>
+                            <select id="destinoUF" class="input-field w-full rounded-lg p-3 text-white" required>
+                                <option value="">Selecione o estado...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Cidade</label>
+                            <input type="text" id="destinoCidade" class="input-field w-full rounded-lg p-3 text-white" 
+                                   placeholder="Ex: São Paulo" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalhes do Frete -->
+                <div class="md:col-span-2">
+                    <h3 class="text-lg font-semibold mb-3 text-yellow-400">🚛 Detalhes do Frete</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Distância (KM)</label>
+                            <input type="number" id="km" class="input-field w-full rounded-lg p-3 text-white" 
+                                   placeholder="Ex: 450" min="1" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Tipo de Veículo</label>
+                            <select id="tipoVeiculo" class="input-field w-full rounded-lg p-3 text-white" required>
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Capacidade</label>
+                            <input type="text" id="capacidade" class="input-field w-full rounded-lg p-3 text-white" 
+                                   placeholder="Ex: 27 toneladas">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Valores -->
+                <div class="md:col-span-2">
+                    <h3 class="text-lg font-semibold mb-3 text-yellow-400">💰 Valores</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Valor Sugerido (R$)</label>
+                            <input type="number" id="valorSugerido" class="input-field w-full rounded-lg p-3 text-white" 
+                                   placeholder="Ex: 1800.00" step="0.01" min="0" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Valor Total Calculado</label>
+                            <div class="input-field w-full rounded-lg p-3 text-2xl font-bold text-yellow-400" id="valorTotal">
+                                R$ 0,00
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Responsável -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm text-gray-400 mb-2">Administrador Responsável</label>
+                    <input type="text" id="adminResponsavel" class="input-field w-full rounded-lg p-3 text-white" 
+                           placeholder="Seu nome" required>
+                </div>
+
+                <!-- Botões -->
+                <div class="md:col-span-2 flex gap-4 justify-end">
+                    <button type="button" onclick="limparFormulario()" 
+                            class="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg transition font-semibold">
+                        🔄 Limpar
+                    </button>
+                    <button type="submit" 
+                            class="btn-primary px-8 py-3 rounded-lg transition font-semibold shadow-lg">
+                        ✅ Registrar Frete
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de Fretes Registrados -->
+        <div class="glass rounded-2xl p-6 md:p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-yellow-400">📋 Fretes Registrados Hoje</h2>
+                <span class="px-4 py-2 bg-yellow-500/20 text-yellow-400 rounded-lg font-bold" id="totalFretes">
+                    0 fretes
+                </span>
+            </div>
+            
+            <div id="listaFretes" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Fretes serão carregados aqui -->
+            </div>
+
+            <div id="semFretes" class="text-center py-12 text-gray-400">
+                <p class="text-6xl mb-4">📦</p>
+                <p class="text-xl">Nenhum frete registrado ainda</p>
+                <p class="text-sm mt-2">Registre o primeiro frete usando o formulário acima</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Carregar configurações
+        const config = window.CAPTACAO_FRETES_CONFIG;
+        const api = window.CAPTACAO_API;
+
+        // Preencher selects de estados
+        function preencherEstados() {
+            const origemUF = document.getElementById('origemUF');
+            const destinoUF = document.getElementById('destinoUF');
+            
+            config.estados.forEach(estado => {
+                const optionOrigem = document.createElement('option');
+                optionOrigem.value = estado.uf;
+                optionOrigem.textContent = `${estado.uf} - ${estado.nome}`;
+                origemUF.appendChild(optionOrigem);
+
+                const optionDestino = document.createElement('option');
+                optionDestino.value = estado.uf;
+                optionDestino.textContent = `${estado.uf} - ${estado.nome}`;
+                destinoUF.appendChild(optionDestino);
+            });
+        }
+
+        // Preencher select de veículos
+        function preencherVeiculos() {
+            const tipoVeiculo = document.getElementById('tipoVeiculo');
+            config.tiposVeiculo.forEach(tipo => {
+                const option = document.createElement('option');
+                option.value = tipo;
+                option.textContent = tipo;
+                tipoVeiculo.appendChild(option);
+            });
+        }
+
+        // Calcular valor total em tempo real
+        document.getElementById('valorSugerido')?.addEventListener('input', function() {
+            const valor = parseFloat(this.value) || 0;
+            document.getElementById('valorTotal').textContent = config.utils.formatarMoeda(valor);
+        });
+
+        // Submit do formulário
+        document.getElementById('formFrete')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            const textoOriginal = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '⏳ Registrando...';
+            btnSubmit.disabled = true;
+
+            try {
+                const frete = {
+                    id: config.utils.gerarIdFrete(),
+                    origemUF: document.getElementById('origemUF').value,
+                    origemCidade: document.getElementById('origemCidade').value,
+                    destinoUF: document.getElementById('destinoUF').value,
+                    destinoCidade: document.getElementById('destinoCidade').value,
+                    km: parseInt(document.getElementById('km').value),
+                    tipoVeiculo: document.getElementById('tipoVeiculo').value,
+                    capacidade: document.getElementById('capacidade').value,
+                    valorSugerido: parseFloat(document.getElementById('valorSugerido').value),
+                    dataRegistro: config.utils.formatarData(),
+                    status: 'DISPONIVEL',
+                    adminResponsavel: document.getElementById('adminResponsavel').value
+                };
+
+                // Salvar localmente
+                api.salvarFrete(frete);
+
+                // Notificar motoristas compatíveis
+                await api.notificarMotoristasCompativeis(frete);
+
+                // Mostrar mensagem de sucesso
+                alert('✅ Frete registrado com sucesso!\n\n' +
+                      `ID: ${frete.id}\n` +
+                      `Rota: ${frete.origemCidade}/${frete.origemUF} → ${frete.destinoCidade}/${frete.destinoUF}\n` +
+                      `Valor: ${config.utils.formatarMoeda(frete.valorSugerido)}\n\n` +
+                      'Motoristas compatíveis foram notificados via WhatsApp!');
+
+                // Limpar formulário e recarregar lista
+                limparFormulario();
+                carregarFretes();
+
+            } catch (error) {
+                console.error('Erro ao registrar frete:', error);
+                alert('❌ Erro ao registrar frete. Tente novamente.');
+            } finally {
+                btnSubmit.innerHTML = textoOriginal;
+                btnSubmit.disabled = false;
+            }
+        });
+
+        // Limpar formulário
+        function limparFormulario() {
+            document.getElementById('formFrete').reset();
+            document.getElementById('valorTotal').textContent = 'R$ 0,00';
+        }
+
+        // Carregar fretes registrados
+        function carregarFretes() {
+            const fretes = api.carregarFretes();
+            const listaFretes = document.getElementById('listaFretes');
+            const semFretes = document.getElementById('semFretes');
+            
+            if (fretes.length === 0) {
+                listaFretes.style.display = 'none';
+                semFretes.style.display = 'block';
+                document.getElementById('totalFretes').textContent = '0 fretes';
+                return;
+            }
+
+            semFretes.style.display = 'none';
+            listaFretes.style.display = 'grid';
+            listaFretes.innerHTML = '';
+            
+            document.getElementById('totalFretes').textContent = `${fretes.length} ${fretes.length === 1 ? 'frete' : 'fretes'}`;
+
+            fretes.reverse().forEach(frete => {
+                const card = document.createElement('div');
+                card.className = 'card-frete glass rounded-xl p-5';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-mono text-gray-400">${frete.id}</span>
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs font-semibold">
+                            ${frete.status}
+                        </span>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">📍</span>
+                            <div>
+                                <p class="text-sm text-gray-400">Origem</p>
+                                <p class="font-semibold">${frete.origemCidade}/${frete.origemUF}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🎯</span>
+                            <div>
+                                <p class="text-sm text-gray-400">Destino</p>
+                                <p class="font-semibold">${frete.destinoCidade}/${frete.destinoUF}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🚛</span>
+                            <div>
+                                <p class="text-sm text-gray-400">Veículo</p>
+                                <p class="font-semibold">${frete.tipoVeiculo} - ${frete.km} km</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">💰</span>
+                            <div>
+                                <p class="text-sm text-gray-400">Valor Sugerido</p>
+                                <p class="font-bold text-yellow-400 text-xl">${config.utils.formatarMoeda(frete.valorSugerido)}</p>
+                            </div>
+                        </div>
+                        <div class="pt-3 mt-3 border-t border-gray-700 flex justify-between text-xs text-gray-400">
+                            <span>👤 ${frete.adminResponsavel}</span>
+                            <span>📅 ${frete.dataRegistro || frete.dataCadastro}</span>
+                        </div>
+                    </div>
+                `;
+                listaFretes.appendChild(card);
+            });
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            preencherEstados();
+            preencherVeiculos();
+            carregarFretes();
+            console.log('✅ Sistema de gestão de fretes carregado');
+        });
+    </script>
+</body>
+</html>
