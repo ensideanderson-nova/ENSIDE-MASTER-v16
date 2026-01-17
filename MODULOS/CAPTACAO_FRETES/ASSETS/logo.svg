@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Truck Icon -->
+  <g transform="translate(10, 25)">
+    <path d="M5,40 L35,40 L35,15 L45,15 L55,25 L55,40 L60,40 M35,25 L45,25 L45,35 L35,35 Z" 
+          stroke="url(#goldGradient)" stroke-width="3" fill="none" filter="url(#glow)"/>
+    <!-- Wheels -->
+    <circle cx="15" cy="42" r="5" fill="url(#goldGradient)" filter="url(#glow)"/>
+    <circle cx="50" cy="42" r="5" fill="url(#goldGradient)" filter="url(#glow)"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="80" y="45" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+        fill="url(#goldGradient)" filter="url(#glow)">
+    ANDERSON ENSIDE
+  </text>
+  <text x="80" y="70" font-family="Arial, sans-serif" font-size="16" 
+        fill="url(#goldGradient)" filter="url(#glow)">
+    LOGÍSTICA
+  </text>
+</svg>
