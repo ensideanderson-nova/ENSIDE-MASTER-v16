@@ -28,6 +28,13 @@
       "dest": "/api/webhook.js"
     },
     {
+      "src": "/_vercel/insights/(.*)",
+      "status": 200,
+      "headers": {
+        "cache-control": "public, max-age=3600"
+      }
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }
