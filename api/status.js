@@ -1,24 +1,32 @@
-// API Evolution - Status da Instância
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, apikey');
+  res.setHeader('Content-Type', 'application/json');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  try {
-    const status = {
-      instance: process.env.EVOLUTION_INSTANCE || 'enside',
-      state: 'open',
-      status: 'connected',
-      qrcode: null,
-      timestamp: new Date().toISOString()
-    };
+  const url = 'https://evolution-api-latest-poc1.onrender.com';
+  const key = '23D116F5-A4D3-404F-8D38-66EBF544A44A';
+  const instance = 'enside';
 
-    res.status(200).json(status);
+  try {
+    const response = await fetch(`${url}/instance/connectionState/${instance}`, {
+      headers: { 'apikey': key }
+    });
+
+    const data = await response.json();
+    
+    return res.status(200).json({
+      success: true,
+      connected: data.state === 'open',
+      state: data.state,
+      instance: instance
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(200).json({
+      success: false,
+      error: error.message
+    });
   }
 }
