@@ -4,9 +4,9 @@
 const EVOLUTION_CONFIG = {
   // Render (Online - Produção)
   render: {
-    url: 'https://evolution-api-latest-poc1.onrender.com',
+    url: 'https://evolution-api-enside.onrender.com',
     apiKey: '23D116F5-A4D3-404F-8D38-66EBF544A44A',
-    instance: 'enside-master'
+    instance: 'ENSIDE'
   },
   // Docker (Local - Desenvolvimento)
   local: {
