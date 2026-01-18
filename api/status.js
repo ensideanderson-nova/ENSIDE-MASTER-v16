@@ -9,16 +9,28 @@ export default async function handler(req, res) {
   }
 
   try {
-    const status = {
-      instance: process.env.EVOLUTION_INSTANCE || 'enside',
-      state: 'open',
-      status: 'connected',
-      qrcode: null,
-      timestamp: new Date().toISOString()
-    };
+    const evolutionUrl = process.env.EVOLUTION_API_URL || 'https://evolution-api-latest-poc1.onrender.com';
+    const apiKey = process.env.EVOLUTION_API_KEY || 'B6D711FCDE4D4FD5936544120E713976';
+    const instance = process.env.EVOLUTION_INSTANCE || 'enside';
 
-    res.status(200).json(status);
+    const response = await fetch(`${evolutionUrl}/instance/connectionState/${instance}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': apiKey
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Evolution API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: error.message,
+      details: 'Erro ao conectar com Evolution API'
+    });
   }
 }
