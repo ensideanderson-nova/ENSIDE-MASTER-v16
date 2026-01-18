@@ -1275,7 +1275,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label>URL da API</label>
-                        <input type="text" id="evolutionUrl" placeholder="https://evolution-api-enside.onrender.com" value="https://evolution-api-enside.onrender.com">
+                        <input type="text" id="evolutionUrl" placeholder="https://evolution-api-latest-poc1.onrender.com" value="https://evolution-api-latest-poc1.onrender.com">
                     </div>
                     <div class="form-group">
                         <label>API Key</label>
@@ -3874,7 +3874,7 @@ XML: Estrutura hierárquica de elementos
 
         // ==================== EVOLUTION API ====================
         let evolutionConfig = {
-            url: localStorage.getItem('evolutionUrl') || 'https://evolution-api-enside.onrender.com',
+            url: localStorage.getItem('evolutionUrl') || 'https://evolution-api-latest-poc1.onrender.com',
             apiKey: localStorage.getItem('evolutionApiKey') || '23D116F5-A4D3-404F-8D38-66EBF544A44A',
             instance: localStorage.getItem('evolutionInstance') || 'ENSIDE'
         };
@@ -4161,7 +4161,7 @@ XML: Estrutura hierárquica de elementos
             // Configuração Evolution API
             const config = {
                 url: localStorage.getItem('evolution-url') || 'http://localhost:8080',
-                apiKey: localStorage.getItem('evolution-apikey') || '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
+                apiKey: localStorage.getItem('evolution-apikey') || '23D116F5-A4D3-404F-8D38-66EBF544A44A',
                 instance: localStorage.getItem('evolution-instance') || 'enside'
             };
             
@@ -5369,7 +5369,7 @@ ${filtros.join('\n') || 'Nenhum filtro'}
             // 4. Testar Evolution API
             console.log('4. Testando Evolution API...');
             try {
-                const evolutionUrl = localStorage.getItem('evolutionUrl') || 'https://evolution-api-enside.onrender.com';
+                const evolutionUrl = localStorage.getItem('evolutionUrl') || 'https://evolution-api-latest-poc1.onrender.com';
                 const evolutionKey = localStorage.getItem('evolutionApiKey') || '23D116F5-A4D3-404F-8D38-66EBF544A44A';
                 const response = await fetch(`${evolutionUrl}/instance/fetchInstances`, {
                     headers: { 'apikey': evolutionKey }
@@ -5631,7 +5631,7 @@ ${filtros.join('\n') || 'Nenhum filtro'}
             if (!mensagem) return;
             
             // Usar URL do Render como padrão (configuração correta)
-            const url = document.getElementById('evolutionUrl')?.value || 'https://evolution-api-enside.onrender.com';
+            const url = document.getElementById('evolutionUrl')?.value || 'https://evolution-api-latest-poc1.onrender.com';
             const apiKey = document.getElementById('evolutionApiKey')?.value || '23D116F5-A4D3-404F-8D38-66EBF544A44A';
             const instance = document.getElementById('evolutionInstance')?.value || 'ENSIDE';
             
