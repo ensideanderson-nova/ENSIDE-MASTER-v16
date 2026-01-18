@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
   try {
     const evolutionUrl = process.env.EVOLUTION_API_URL || 'https://evolution-api-latest-poc1.onrender.com';
-    const apiKey = process.env.EVOLUTION_API_KEY || 'B6D711FCDE4D4FD5936544120E713976';
+    const apiKey = process.env.EVOLUTION_API_KEY || '23D116F5-A4D3-404F-8D38-66EBF544A44A';
     const instance = process.env.EVOLUTION_INSTANCE || 'enside';
 
     const response = await fetch(`${evolutionUrl}/instance/connectionState/${instance}`, {
