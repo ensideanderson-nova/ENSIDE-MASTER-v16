@@ -3,11 +3,8 @@ import express from "express";
 const app = express();
 const PORT = process.env.PORT || 3333;
 
-// Serve static files from the current directory
-app.use(express.static('.'));
-
 app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: "." });
+  res.send("🚀 ENSIDE MASTER ONLINE");
 });
 
 app.listen(PORT, () => {
