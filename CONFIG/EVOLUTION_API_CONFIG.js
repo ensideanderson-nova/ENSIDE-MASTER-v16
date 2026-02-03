@@ -8,10 +8,10 @@ const EVOLUTION_CONFIG = {
     
     // ==================== AMBIENTE 1: RENDER (PRODUÇÃO) ====================
     render: {
-        apiUrl: 'https://evolution-api-latest-poc1.onrender.com',
+        apiUrl: 'https://evolution-api-enside.onrender.com',
         apiKey: 'evolution-api-enside-2024-secret',
         instanceName: 'ENSIDE',
-        managerUrl: 'https://evolution-api-latest-poc1.onrender.com/manager'
+        managerUrl: 'https://evolution-api-enside.onrender.com/manager'
     },
     
     // ==================== AMBIENTE 2: LOCAL (DOCKER) ====================
