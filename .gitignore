@@ -4,3 +4,27 @@ node_modules
 .env
 .DS_Store
 .vercel
+
+# Logs do sistema
+logs/
+*.log
+
+# Relatórios
+relatorios/
+
+# Dados temporários
+dados/contatos_sincronizados_*.csv
+dados/contatos_sincronizados_*.json
+
+# QR Codes temporários
+qrcode_*.txt
+qrcode_*.png
+
+# Arquivos temporários
+/tmp/
+*.tmp
+.system_initialized
+
+# Backups
+*.backup
+*.bak
