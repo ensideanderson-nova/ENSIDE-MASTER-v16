@@ -10,8 +10,8 @@ export default async function handler(req, res) {
 
   try {
     const evolutionUrl = process.env.EVOLUTION_API_URL || 'https://evolution-api-latest-poc1.onrender.com';
-    const apiKey = process.env.EVOLUTION_API_KEY || '23D116F5-A4D3-404F-8D38-66EBF544A44A';
-    const instance = process.env.EVOLUTION_INSTANCE || 'enside';
+    const apiKey = process.env.EVOLUTION_API_KEY || 'evolution-api-enside-2024-secret';
+    const instance = process.env.EVOLUTION_INSTANCE || 'ENSIDE';
 
     const response = await fetch(`${evolutionUrl}/instance/connectionState/${instance}`, {
       method: 'GET',
@@ -26,9 +26,17 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    res.status(200).json(data);
+    res.status(200).json({
+      success: true,
+      data,
+      config: {
+        url: evolutionUrl,
+        instance
+      }
+    });
   } catch (error) {
     res.status(500).json({ 
+      success: false,
       error: error.message,
       details: 'Erro ao conectar com Evolution API'
     });

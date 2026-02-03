@@ -20,8 +20,8 @@ export default async function handler(req, res) {
     }
 
     const evolutionUrl = process.env.EVOLUTION_API_URL || 'https://evolution-api-latest-poc1.onrender.com';
-    const apiKey = process.env.EVOLUTION_API_KEY || '23D116F5-A4D3-404F-8D38-66EBF544A44A';
-    const instance = process.env.EVOLUTION_INSTANCE || 'enside';
+    const apiKey = process.env.EVOLUTION_API_KEY || 'evolution-api-enside-2024-secret';
+    const instance = process.env.EVOLUTION_INSTANCE || 'ENSIDE';
 
     const response = await fetch(`${evolutionUrl}/message/sendText/${instance}`, {
       method: 'POST',
@@ -31,18 +31,23 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         number: number,
-        text: message
+        textMessage: { text: message }
       })
     });
 
     if (!response.ok) {
-      throw new Error(`Evolution API error: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`Evolution API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    res.status(200).json(data);
+    res.status(200).json({
+      success: true,
+      data
+    });
   } catch (error) {
     res.status(500).json({ 
+      success: false,
       error: error.message,
       details: 'Erro ao enviar mensagem via Evolution API'
     });
