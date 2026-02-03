@@ -555,13 +555,13 @@ send_bulk_messages() {
     
     local start_time=$(date +%s)
     
-    # Processar CSV (pular cabeçalho)
-    tail -n +2 "$csv_file" | head -n "$limite" | while IFS=',' read -r nome telefone categoria vip email obs; do
+    # Processar CSV (pular cabeçalho) - usando process substitution para evitar subshell
+    while IFS=',' read -r nome telefone categoria vip email obs; do
         enviados=$((enviados + 1))
         
-        # Limpar nome e telefone
-        nome=$(echo "$nome" | tr -d '"' | xargs)
-        telefone=$(echo "$telefone" | tr -d '"' | tr -d ' ()-')
+        # Limpar nome e telefone (remover apenas aspas duplas, não vírgulas internas)
+        nome=$(echo "$nome" | sed 's/^"//;s/"$//' | xargs)
+        telefone=$(echo "$telefone" | sed 's/^"//;s/"$//' | tr -d ' ()-')
         
         # Adicionar código do país se não tiver
         if [[ ! "$telefone" =~ ^55 ]]; then
@@ -602,7 +602,7 @@ send_bulk_messages() {
         fi
         
         echo ""
-    done
+    done < <(tail -n +2 "$csv_file" | head -n "$limite")
     
     local end_time=$(date +%s)
     local duration=$((end_time - start_time))
@@ -744,10 +744,13 @@ sync_contacts() {
     while IFS=',' read -r nome telefone categoria vip email obs; do
         count=$((count + 1))
         
-        # Limpar dados
-        nome=$(echo "$nome" | tr -d '"' | sed 's/,//g')
-        telefone=$(echo "$telefone" | tr -d '"' | tr -d ' ()-')
-        categoria=$(echo "$categoria" | tr -d '"')
+        # Limpar dados - remover apenas aspas duplas, preservar vírgulas em nomes
+        nome=$(echo "$nome" | sed 's/^"//;s/"$//')
+        telefone=$(echo "$telefone" | sed 's/^"//;s/"$//' | tr -d ' ()-')
+        categoria=$(echo "$categoria" | sed 's/^"//;s/"$//')
+        
+        # Escapar aspas duplas e barras invertidas no nome para JSON
+        nome=$(echo "$nome" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
         
         # Adicionar código do país
         if [[ ! "$telefone" =~ ^55 ]]; then
