@@ -4,15 +4,15 @@
 const EVOLUTION_CONFIG = {
   // Render (Online - Produção)
   render: {
-    url: 'https://evolution-api-enside.onrender.com',
-    apiKey: '23D116F5-A4D3-404F-8D38-66EBF544A44A',
-    instance: 'ENSIDE'
+    url: process.env.EVOLUTION_API_URL || 'https://evolution-api-latest-poc1.onrender.com',
+    apiKey: process.env.EVOLUTION_API_KEY || 'evolution-api-enside-2024-secret',
+    instance: process.env.EVOLUTION_INSTANCE || 'enside'
   },
   // Docker (Local - Desenvolvimento)
   local: {
-    url: 'http://localhost:8080',
-    apiKey: 'ENSIDE_MADEIRAS_2024_KEY',
-    instance: 'enside'
+    url: process.env.EVOLUTION_API_URL_LOCAL || 'http://localhost:8080',
+    apiKey: process.env.EVOLUTION_API_KEY_LOCAL || '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
+    instance: process.env.EVOLUTION_INSTANCE_LOCAL || 'enside'
   }
 };
 
@@ -121,7 +121,7 @@ async function checkInstanceStatus() {
   }
 }
 
-module.exports = {
+export {
   sendWhatsAppMessage,
   sendBulkMessages,
   getContactsFromSheets,

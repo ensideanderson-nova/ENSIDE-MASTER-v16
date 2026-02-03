@@ -1,12 +1,18 @@
 {
   "name": "enside-master",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
+  "description": "Sistema ENSIDE integrado com Evolution API e Vercel",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node testar-integracao.js"
   },
   "dependencies": {
     "@vercel/speed-insights": "^1.3.1",
     "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

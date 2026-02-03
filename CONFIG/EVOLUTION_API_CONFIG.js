@@ -10,7 +10,7 @@ const EVOLUTION_CONFIG = {
     render: {
         apiUrl: 'https://evolution-api-latest-poc1.onrender.com',
         apiKey: 'evolution-api-enside-2024-secret',
-        instanceName: 'ENSIDE',
+        instanceName: 'enside',
         managerUrl: 'https://evolution-api-latest-poc1.onrender.com/manager'
     },
     

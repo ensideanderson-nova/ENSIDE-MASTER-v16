@@ -1,6 +1,6 @@
 // 🧪 TESTE DE INTEGRAÇÃO - Evolution API + Vercel
 
-const { checkInstanceStatus, CONFIG } = require('./evolution-integration.js');
+import { checkInstanceStatus, CONFIG } from './evolution-integration.js';
 
 console.log('🚀 TESTANDO INTEGRAÇÃO EVOLUTION API\n');
 console.log('⚙️  Configuração Atual:');
