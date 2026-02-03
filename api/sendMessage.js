@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     }
 
     const evolutionUrl = process.env.EVOLUTION_API_URL || 'https://evolution-api-latest-poc1.onrender.com';
-    const apiKey = process.env.EVOLUTION_API_KEY || '23D116F5-A4D3-404F-8D38-66EBF544A44A';
+    const apiKey = process.env.EVOLUTION_API_KEY || 'evolution-api-enside-2024-secret';
     const instance = process.env.EVOLUTION_INSTANCE || 'enside';
 
     const response = await fetch(`${evolutionUrl}/message/sendText/${instance}`, {
