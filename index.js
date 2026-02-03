@@ -1,5 +1,6 @@
-const express = require('express');
-const axios = require('axios');
+import express from 'express';
+import axios from 'axios';
+
 const app = express();
 
 app.use(express.json());
@@ -32,7 +33,4 @@ app.post('/webhook', (req, res) => {
   res.json({success: true});
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Servidor rodando'));
-
-module.exports = app;
+export default app;

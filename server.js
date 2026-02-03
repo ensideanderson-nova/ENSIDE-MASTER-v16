@@ -1,12 +1,6 @@
-import express from "express";
+import app from './index.js';
 
-const app = express();
-const PORT = process.env.PORT || 3333;
-
-app.get("/", (req, res) => {
-  res.send("🚀 ENSIDE MASTER ONLINE");
-});
-
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log('🚀 Servidor ENSIDE rodando na porta ' + PORT);
 });
