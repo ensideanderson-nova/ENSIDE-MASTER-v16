@@ -7,9 +7,6 @@
     "GOOGLE_SHEETS_ID": "1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE",
     "NODE_ENV": "production"
   },
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" }
-  ],
   "headers": [
     {
       "source": "/api/(.*)",

@@ -174,7 +174,9 @@ Recebe notificações do Evolution API quando mensagens são recebidas no WhatsA
 
 ### 1. Configure as Environment Variables
 
-No painel do Vercel, adicione:
+No painel do Vercel, adicione as seguintes variáveis de ambiente:
+
+**Opção A: Usando valores diretos (mais simples)**
 
 | Variável | Valor |
 |----------|-------|
@@ -183,6 +185,19 @@ No painel do Vercel, adicione:
 | `EVOLUTION_INSTANCE` | `enside` |
 | `GOOGLE_SHEETS_ID` | `1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE` |
 | `NODE_ENV` | `production` |
+
+**Opção B: Usando Vercel Secrets (mais seguro)**
+
+1. Crie um secret no Vercel:
+   ```bash
+   vercel secrets add evolution-api-key "evolution-api-enside-2024-secret"
+   ```
+
+2. O `vercel.json` já está configurado para usar `@evolution-api-key` que referencia este secret
+
+3. Configure as outras variáveis normalmente no painel
+
+**⚠️ Nota:** O `vercel.json` usa `@evolution-api-key` que é uma referência a um Vercel Secret. Se você optar por não usar secrets, pode configurar `EVOLUTION_API_KEY` diretamente no painel do Vercel.
 
 ### 2. Deploy
 
