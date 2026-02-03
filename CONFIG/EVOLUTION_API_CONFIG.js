@@ -1,7 +1,7 @@
 /**
  * CONFIGURAÇÃO EVOLUTION API - ENSIDE SISTEMA
  * 3 Ambientes disponíveis
- * Atualizado: 03/01/2026
+ * Atualizado: 03/02/2026
  */
 
 const EVOLUTION_CONFIG = {
@@ -19,7 +19,7 @@ const EVOLUTION_CONFIG = {
         apiUrl: 'http://localhost:8080',
         apiKey: '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
         instanceName: 'enside',
-        managerUrl: 'http://localhost:8080/manager/enside'
+        managerUrl: 'http://localhost:8080/manager'
     },
     
     // ==================== AMBIENTE 3: VERCEL (FRONTEND) ====================
@@ -29,7 +29,7 @@ const EVOLUTION_CONFIG = {
     },
     
     // ==================== CONFIGURAÇÃO ATIVA ====================
-    ambienteAtivo: 'local',
+    ambienteAtivo: process.env.NODE_ENV === 'production' ? 'render' : 'local',
     
     // WhatsApp conectado
     whatsappNumber: '5518996540492',
@@ -81,27 +81,6 @@ const EVOLUTION_CONFIG = {
         }
     },
     
-    // Função para gerar QR Code
-    async gerarQRCode(ambiente = null) {
-        const config = ambiente ? this[ambiente] : this.getConfig();
-        try {
-            const response = await fetch(`${config.apiUrl}/instance/connect/${config.instanceName}`, {
-                headers: {
-                    'apikey': config.apiKey
-                }
-            });
-            const data = await response.json();
-            if (data.qrcode) {
-                console.log('✅ QR Code gerado');
-                return { sucesso: true, qrcode: data.qrcode.base64 };
-            }
-            return { sucesso: false, erro: 'QR Code não disponível' };
-        } catch (error) {
-            console.error('❌ Erro ao gerar QR Code:', error);
-            return { sucesso: false, erro: error.message };
-        }
-    },
-    
     // Testar todos os ambientes
     async testarTodos() {
         console.log('🔍 Testando todos os ambientes...');
@@ -119,7 +98,7 @@ if (typeof window !== 'undefined') {
     window.EVOLUTION_CONFIG = EVOLUTION_CONFIG;
 }
 
-if (typeof module !== 'undefined') {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = EVOLUTION_CONFIG;
 }
 

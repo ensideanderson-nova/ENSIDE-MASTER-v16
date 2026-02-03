@@ -4,15 +4,15 @@
 const EVOLUTION_CONFIG = {
   // Render (Online - Produção)
   render: {
-    url: 'https://evolution-api-enside.onrender.com',
-    apiKey: '23D116F5-A4D3-404F-8D38-66EBF544A44A',
-    instance: 'ENSIDE'
+    url: process.env.EVOLUTION_API_URL || 'https://evolution-api-latest-poc1.onrender.com',
+    apiKey: process.env.EVOLUTION_API_KEY || 'evolution-api-enside-2024-secret',
+    instance: process.env.EVOLUTION_INSTANCE || 'ENSIDE'
   },
   // Docker (Local - Desenvolvimento)
   local: {
-    url: 'http://localhost:8080',
-    apiKey: 'ENSIDE_MADEIRAS_2024_KEY',
-    instance: 'enside'
+    url: process.env.EVOLUTION_API_URL_LOCAL || 'http://localhost:8080',
+    apiKey: process.env.EVOLUTION_API_KEY_LOCAL || '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
+    instance: process.env.EVOLUTION_INSTANCE_LOCAL || 'enside'
   }
 };
 
@@ -26,7 +26,7 @@ const CONFIG = EVOLUTION_CONFIG[ENV];
  * @param {string} message - Mensagem a ser enviada
  * @returns {Promise<Object>} Resposta da API
  */
-async function sendWhatsAppMessage(number, message) {
+export async function sendWhatsAppMessage(number, message) {
   try {
     const response = await fetch(
       `${CONFIG.url}/message/sendText/${CONFIG.instance}`,
@@ -58,7 +58,7 @@ async function sendWhatsAppMessage(number, message) {
  * @param {number} delay - Delay entre mensagens em ms (padrão: 20000)
  * @returns {Promise<Object>} Estatísticas de envio
  */
-async function sendBulkMessages(contacts, messageTemplate, delay = 20000) {
+export async function sendBulkMessages(contacts, messageTemplate, delay = 20000) {
   const stats = { sent: 0, failed: 0, total: contacts.length };
   
   for (let i = 0; i < contacts.length; i++) {
@@ -89,7 +89,7 @@ async function sendBulkMessages(contacts, messageTemplate, delay = 20000) {
  * @param {string} category - Categoria (fornecedores, clientes, transportadores)
  * @returns {Promise<Array>} Lista de contatos
  */
-async function getContactsFromSheets(category = 'todos') {
+export async function getContactsFromSheets(category = 'todos') {
   const SHEETS_ID = process.env.GOOGLE_SHEETS_ID || '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE';
   
   // TODO: Implementar integração com Google Sheets API
@@ -104,7 +104,7 @@ async function getContactsFromSheets(category = 'todos') {
  * Verifica status da instância Evolution API
  * @returns {Promise<Object>} Status da instância
  */
-async function checkInstanceStatus() {
+export async function checkInstanceStatus() {
   try {
     const response = await fetch(
       `${CONFIG.url}/instance/connectionState/${CONFIG.instance}`,
@@ -121,11 +121,5 @@ async function checkInstanceStatus() {
   }
 }
 
-module.exports = {
-  sendWhatsAppMessage,
-  sendBulkMessages,
-  getContactsFromSheets,
-  checkInstanceStatus,
-  EVOLUTION_CONFIG,
-  CONFIG
-};
+export { EVOLUTION_CONFIG, CONFIG };
+export default { sendWhatsAppMessage, sendBulkMessages, getContactsFromSheets, checkInstanceStatus, EVOLUTION_CONFIG, CONFIG };
