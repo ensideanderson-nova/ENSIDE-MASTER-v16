@@ -33,8 +33,9 @@ app.get('/qrcode', async (req, res) => {
       `${EVOLUTION_API_URL}/instance/create`,
       {
         instanceName: EVOLUTION_INSTANCE,
-        token: EVOLUTION_API_KEY,
-        qrcode: true
+        qrcode: true,
+        number: "",
+        integration: "WHATSAPP-BAILEYS"
       },
       {
         headers: {
@@ -44,10 +45,13 @@ app.get('/qrcode', async (req, res) => {
       }
     );
     
+    const qrCodeData = response.data.qrcode?.base64 || response.data.base64 || response.data.qrcode?.code;
+    
     res.send(`
       <h1>📱 QR Code WhatsApp</h1>
       <p>Escaneie com o WhatsApp:</p>
-      <img src="${response.data.qrcode?.base64 || response.data.base64}" style="width:400px"/>
+      ${qrCodeData ? `<img src="${qrCodeData.includes('data:image') ? qrCodeData : 'data:image/png;base64,' + qrCodeData}" style="width:400px"/>` : '<p>QR Code gerado! Verifique os logs.</p>'}
+      <pre>${JSON.stringify(response.data, null, 2)}</pre>
       <p><a href="/">← Voltar</a></p>
     `);
   } catch (error) {
