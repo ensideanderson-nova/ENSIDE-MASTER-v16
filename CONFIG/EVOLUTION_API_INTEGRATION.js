@@ -6,6 +6,9 @@ const EVOLUTION_CONFIG_KEYS = {
   INSTANCE: "evolution_instance"
 };
 
+// WhatsApp/Evolution API message length limit
+const MAX_MESSAGE_LENGTH = 4096;
+
 let evolutionConfig = {
   url: localStorage.getItem(EVOLUTION_CONFIG_KEYS.URL) || "",
   apiKey: localStorage.getItem(EVOLUTION_CONFIG_KEYS.API_KEY) || "",
@@ -24,7 +27,7 @@ function validarURL(url) {
 }
 
 function validarAPIKey(key) {
-  // Evolution API keys are typically 32+ alphanumeric characters (case-insensitive)
+  // Evolution API keys are typically 32+ characters, accepts both uppercase and lowercase alphanumeric
   return key && key.length >= 32 && /^[A-Za-z0-9]+$/.test(key);
 }
 
@@ -245,8 +248,8 @@ async function enviarMensagemEvolution() {
   }
   
   // WhatsApp message length limit enforced by Evolution API
-  if (mensagem.length > 4096) {
-    mostrarMensagem("Mensagem muito longa (máx. 4096 caracteres)", 'error');
+  if (mensagem.length > MAX_MESSAGE_LENGTH) {
+    mostrarMensagem(`Mensagem muito longa (máx. ${MAX_MESSAGE_LENGTH} caracteres)`, 'error');
     return;
   }
   
