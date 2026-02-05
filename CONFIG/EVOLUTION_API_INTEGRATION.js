@@ -86,6 +86,7 @@ async function fazerRequisicao(endpoint, options = {}) {
     throw new Error("Configuração incompleta");
   }
   
+  // Remove duplicate slashes from URL while preserving protocol (https://)
   const fullUrl = `${url}${endpoint}`.replace(/([^:]\/)\/+/g, "$1");
   
   const config = {
@@ -307,5 +308,6 @@ window.evolutionAPI = {
   salvarConfig: salvarConfigEvolution,
   gerarQRCode,
   verificarConexao,
-  enviarMensagem: enviarMensagemEvolution
+  enviarMensagem: enviarMensagemEvolution,
+  sanitizarTexto
 };
