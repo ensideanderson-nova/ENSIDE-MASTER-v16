@@ -1,33 +1,99 @@
-// ⚠️ SECURITY WARNING ⚠️
-// Never hardcode API keys or URLs in source code
-// localStorage is NOT secure - anyone can access it via browser console
-// Recommendation: Use backend proxy or environment variables for production
-// See EVOLUTION_API_INTEGRATION.example.js for configuration template
+// ═══════════════════════════════════════════════════════════════════════════
+// EVOLUTION API INTEGRATION - EXAMPLE CONFIGURATION
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// ⚠️ IMPORTANT SECURITY INSTRUCTIONS ⚠️
+//
+// 1. DO NOT commit this file with real credentials to version control
+// 2. Copy this file to EVOLUTION_API_INTEGRATION.js (without .example)
+// 3. Replace the empty strings below with your actual credentials
+// 4. Add EVOLUTION_API_INTEGRATION.js to .gitignore if using real credentials
+//
+// ═══════════════════════════════════════════════════════════════════════════
+// SETUP INSTRUCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Step 1: Get your Evolution API credentials
+// - Deploy Evolution API server (e.g., on Render, Railway, or local Docker)
+// - Access the Evolution API Manager interface
+// - Create an API Key in the settings
+// - Create or note your instance name
+//
+// Step 2: Configure this file
+// - Replace "" with your actual URL (e.g., "https://your-server.com")
+// - Replace "" with your actual API Key
+// - Replace "" with your instance name (e.g., "MYCOMPANY")
+//
+// Step 3: Test the connection
+// - Open your HTML page with Evolution API integration
+// - Fill in the configuration form
+// - Click "Test Connection" to verify settings
+// - Save the configuration
+//
+// ═══════════════════════════════════════════════════════════════════════════
+// SECURITY BEST PRACTICES
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// ⚠️ localStorage is NOT secure for production environments
+//    - Anyone with browser access can read localStorage
+//    - Credentials are stored in plain text
+//    - Use only for development/testing
+//
+// ✅ For production, consider:
+//    - Backend proxy: Route API calls through your server
+//    - Environment variables: Store credentials server-side
+//    - Secure authentication: Use OAuth or similar
+//    - API Gateway: Add rate limiting and security
+//
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * Evolution API Configuration
+ * Replace empty strings with your actual values
  * @type {Object}
  */
 let evolutionConfig = {
+  // Your Evolution API server URL
+  // Example: "https://evolution-api.yourserver.com"
+  // Example: "https://your-app.onrender.com"
+  // DO NOT include trailing slash
   url: localStorage.getItem("evolution_url") || "",
+  
+  // Your Evolution API Key
+  // Example: "YOUR-SECURE-API-KEY-HERE-32-CHARS"
+  // Find this in your Evolution API Manager settings
   apiKey: localStorage.getItem("evolution_apikey") || "",
+  
+  // Your Evolution API Instance name
+  // Example: "MYCOMPANY" or "PRODUCTION"
+  // Create this in your Evolution API Manager
   instance: localStorage.getItem("evolution_instance") || ""
 };
 
-// API Endpoint Constants
+// ═══════════════════════════════════════════════════════════════════════════
+// API ENDPOINT CONSTANTS
+// ═══════════════════════════════════════════════════════════════════════════
+
 const API_ENDPOINTS = {
   CONNECTION_STATE: "/instance/connectionState/",
   CONNECT: "/instance/connect/",
   SEND_TEXT: "/message/sendText/"
 };
 
-// Request timeout in milliseconds
+// Request timeout in milliseconds (10 seconds)
 const REQUEST_TIMEOUT = 10000;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VALIDATION FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * Validates phone number format (must include country code)
  * @param {string} numero - Phone number to validate
  * @returns {boolean} True if valid, false otherwise
+ * @example
+ * validarNumeroTelefone("+5511999999999") // returns true
+ * validarNumeroTelefone("11999999999") // returns false (missing country code)
  */
 function validarNumeroTelefone(numero) {
   if (!numero || typeof numero !== "string") {
@@ -93,6 +159,10 @@ async function fetchWithTimeout(url, options = {}, timeout = REQUEST_TIMEOUT) {
     throw error;
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MAIN FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * Tests connection to Evolution API
@@ -179,6 +249,7 @@ async function testarConexaoEvolution() {
     }
   }
 }
+
 /**
  * Saves Evolution API configuration to localStorage
  * ⚠️ WARNING: localStorage is not secure for production
@@ -232,6 +303,7 @@ function salvarConfigEvolution() {
     alert("❌ Erro ao salvar: " + error.message);
   }
 }
+
 /**
  * Generates QR Code for WhatsApp connection
  * @returns {Promise<void>}
@@ -295,6 +367,7 @@ async function gerarQRCode() {
     alert("❌ Erro ao gerar QR Code: " + error.message + "\n\nVerifique:\n- Configuração está correta\n- Instância está criada no servidor\n- WhatsApp não está já conectado");
   }
 }
+
 /**
  * Verifies connection status (wrapper for testarConexaoEvolution)
  * @returns {Promise<void>}
@@ -388,6 +461,7 @@ async function enviarMensagemEvolution() {
     alert("❌ Erro ao enviar mensagem: " + error.message + "\n\nVerifique:\n- WhatsApp está conectado\n- Número está correto (formato internacional)\n- Configuração está válida");
   }
 }
+
 /**
  * Initializes form fields on page load
  */
@@ -437,3 +511,46 @@ window.addEventListener("DOMContentLoaded", function() {
     console.error("Erro ao inicializar Evolution API Integration:", error);
   }
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TROUBLESHOOTING GUIDE
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Common Issues and Solutions:
+//
+// 1. "Erro ao conectar" or timeout errors
+//    - Check if Evolution API server is running
+//    - Verify URL is correct (no typos, no trailing slash)
+//    - Check firewall/network settings
+//    - Try accessing URL directly in browser
+//
+// 2. "API Key inválida" or 401 Unauthorized
+//    - Verify API Key is correct
+//    - Check if API Key hasn't expired
+//    - Ensure no extra spaces in API Key
+//
+// 3. "Instância não existe"
+//    - Create instance in Evolution API Manager
+//    - Verify instance name matches exactly
+//    - Check instance status in Manager
+//
+// 4. "WhatsApp desconectado"
+//    - Generate new QR Code
+//    - Scan QR Code with WhatsApp
+//    - Check if phone has internet connection
+//    - Wait a few seconds after scanning
+//
+// 5. "Número inválido"
+//    - Use international format: +[country][area][number]
+//    - Example Brazil: +5511999999999
+//    - Example USA: +15551234567
+//    - Include + and country code
+//
+// 6. Phone number format examples by country:
+//    - Brazil: +5511999999999 (55 = country, 11 = area)
+//    - USA/Canada: +15551234567 (1 = country)
+//    - UK: +447911123456 (44 = country)
+//    - Argentina: +5491123456789 (54 = country)
+//    - Portugal: +351911234567 (351 = country)
+//
+// ═══════════════════════════════════════════════════════════════════════════
