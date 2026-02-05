@@ -24,7 +24,8 @@ function validarURL(url) {
 }
 
 function validarAPIKey(key) {
-  return key && key.length >= 32 && /^[A-Z0-9]+$/.test(key);
+  // Evolution API keys are typically 32+ alphanumeric characters (case-insensitive)
+  return key && key.length >= 32 && /^[A-Za-z0-9]+$/.test(key);
 }
 
 function validarInstance(instance) {
@@ -131,7 +132,7 @@ async function testarConexaoEvolution() {
   }
   
   try {
-    const configBackup = { ...evolutionConfig };
+    // Temporarily update config for testing
     evolutionConfig = { url, apiKey, instance };
     
     const data = await fazerRequisicao(`/instance/connectionState/${instance}`);
@@ -149,7 +150,6 @@ async function testarConexaoEvolution() {
     console.error("Erro ao testar conexão:", error);
     mostrarMensagem(`Erro ao conectar: ${error.message}`, 'error');
     atualizarStatus('close');
-    evolutionConfig = configBackup;
     return false;
   }
 }
@@ -188,7 +188,10 @@ async function gerarQRCode() {
   if (!qrContainer) return;
   
   try {
-    qrContainer.innerHTML = '<p>Gerando QR Code...</p>';
+    // Display loading message
+    const loadingMsg = document.createElement('p');
+    loadingMsg.textContent = 'Gerando QR Code...';
+    qrContainer.replaceChildren(loadingMsg);
     
     const data = await fazerRequisicao(`/instance/connect/${evolutionConfig.instance}`);
     
@@ -202,8 +205,7 @@ async function gerarQRCode() {
       img.style.border = "2px solid #ccc";
       img.style.padding = "10px";
       
-      qrContainer.innerHTML = '';
-      qrContainer.appendChild(img);
+      qrContainer.replaceChildren(img);
       
       mostrarMensagem("QR Code gerado. Escaneie com WhatsApp", 'info');
     } else {
@@ -211,7 +213,10 @@ async function gerarQRCode() {
     }
   } catch (error) {
     console.error("Erro ao gerar QR Code:", error);
-    qrContainer.innerHTML = '<p style="color: red;">Erro ao gerar QR Code</p>';
+    const errorMsg = document.createElement('p');
+    errorMsg.textContent = 'Erro ao gerar QR Code';
+    errorMsg.style.color = 'red';
+    qrContainer.replaceChildren(errorMsg);
     mostrarMensagem(`Erro: ${error.message}`, 'error');
   }
 }
@@ -239,6 +244,7 @@ async function enviarMensagemEvolution() {
     return;
   }
   
+  // WhatsApp message length limit enforced by Evolution API
   if (mensagem.length > 4096) {
     mostrarMensagem("Mensagem muito longa (máx. 4096 caracteres)", 'error');
     return;
