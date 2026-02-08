@@ -4023,6 +4023,17 @@ XML: Estrutura hierárquica de elementos
         }
         
         async function enviarMensagemMassa() {
+            // Carregar contatos automaticamente se estiverem vazios
+            if (!contatosCarregados || contatosCarregados.length === 0) {
+                console.log('📥 Carregando contatos automaticamente...');
+                await carregarContatosGoogleSheets();
+                if (!contatosCarregados || contatosCarregados.length === 0) {
+                    alert('⚠️ Não foi possível carregar os contatos. Clique em "Atualizar Contatos" primeiro.');
+                    return;
+                }
+                console.log('✅ Contatos carregados:', contatosCarregados.length);
+            }
+            
             if (envioEmAndamento) {
                 alert('⚠️ Já existe um envio em andamento!');
                 return;
