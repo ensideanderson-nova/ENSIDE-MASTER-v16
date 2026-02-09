@@ -5799,14 +5799,44 @@ ${filtros.join('\n') || 'Nenhum filtro'}
                 
                 console.log(`📋 ${listasNaPlanilha.length} listas encontradas na planilha`);
                 
-                // Importar listas da planilha que não existem no sistema
+                // Importar ou ATUALIZAR listas da planilha
                 let importadas = 0;
+                let atualizadas = 0;
                 listasNaPlanilha.forEach(listaPlanilha => {
-                    const existeNoSistema = listasTransmissao.some(l => 
+                    const listaExistente = listasTransmissao.find(l => 
                         l.nome.toLowerCase() === listaPlanilha.nome.toLowerCase()
                     );
                     
-                    if (!existeNoSistema && listaPlanilha.nome) {
+                    // Se a lista já existe, ATUALIZAR os contatos
+                    if (listaExistente && listaPlanilha.nome) {
+                        // Filtrar contatos baseado na categoria e subcategoria
+                        let contatosFiltrados = [...contatosGoogleSheets];
+                        
+                        // Filtrar por CATEGORIA
+                        if (listaPlanilha.categoria && listaPlanilha.categoria.toLowerCase() !== 'todos') {
+                            contatosFiltrados = contatosFiltrados.filter(c => 
+                                c.categoria && c.categoria.toLowerCase() === listaPlanilha.categoria.toLowerCase()
+                            );
+                        }
+                        
+                        // Filtrar por SUBCATEGORIA
+                        if (listaPlanilha.filtroUF && listaPlanilha.filtroUF !== 'TODOS' && listaPlanilha.filtroUF !== 'todos') {
+                            contatosFiltrados = contatosFiltrados.filter(c => 
+                                (c.subcategoria && c.subcategoria.toLowerCase().includes(listaPlanilha.filtroUF.toLowerCase())) ||
+                                (c.uf && c.uf.toLowerCase() === listaPlanilha.filtroUF.toLowerCase())
+                            );
+                        }
+                        
+                        // Atualizar a lista existente
+                        const maxContatos = Math.min(listaPlanilha.totalContatos || contatosFiltrados.length, 256 * (listaPlanilha.lotes || 10));
+                        listaExistente.contatos = contatosFiltrados.slice(0, maxContatos);
+                        listaExistente.total = listaExistente.contatos.length;
+                        listaExistente.status = 'sincronizada';
+                        atualizadas++;
+                        console.log(`🔄 Lista "${listaExistente.nome}" atualizada com ${listaExistente.total} contatos`);
+                    }
+                    // Se não existe, criar nova lista
+                    else if (!listaExistente && listaPlanilha.nome) {
                         // Criar lista no sistema baseada na planilha
                         const novaLista = {
                             id: 'lista_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
@@ -5849,28 +5879,26 @@ ${filtros.join('\n') || 'Nenhum filtro'}
                     }
                 });
                 
-                if (importadas > 0) {
+                if (importadas > 0 || atualizadas > 0) {
                     localStorage.setItem('listasTransmissao', JSON.stringify(listasTransmissao));
                     renderizarListasTransmissao();
-                    console.log(`✅ ${importadas} listas importadas da planilha`);
+                    console.log(`✅ ${importadas} listas importadas, ${atualizadas} listas atualizadas`);
                 }
                 
                 // Mostrar resumo
                 const totalSistema = listasTransmissao.length;
                 const totalPlanilha = listasNaPlanilha.length;
+                const totalContatos = listasTransmissao.reduce((sum, l) => sum + (l.contatos?.length || 0), 0);
                 
                 alert(`🔄 Sincronização Concluída!
 
 📊 Listas na Planilha: ${totalPlanilha}
 💻 Listas no Sistema: ${totalSistema}
-📥 Importadas agora: ${importadas}
+📥 Importadas: ${importadas}
+🔄 Atualizadas: ${atualizadas}
+👥 Total de Contatos: ${totalContatos}
 
-✅ Sistema sincronizado com Google Sheets!
-
-💡 Para adicionar novas listas à planilha:
-1. Crie a lista no sistema
-2. Adicione manualmente na aba LISTAS_TRANSMISSAO
-   ou use o botão "Exportar para Planilha"`);
+✅ Sistema sincronizado com Google Sheets!`);
                 
             } catch (error) {
                 console.error('Erro ao sincronizar listas:', error);
