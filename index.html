@@ -5803,15 +5803,22 @@ ${filtros.join('\n') || 'Nenhum filtro'}
                             sincronizadaDaPlanilha: true
                         };
                         
-                        // Filtrar contatos baseado na categoria e UF
+                        // Filtrar contatos baseado na categoria e subcategoria
                         let contatosFiltrados = [...contatosGoogleSheets];
+                        
+                        // Filtrar por CATEGORIA (FORNECEDOR, CLIENTE, TRANSPORTADOR)
                         if (novaLista.categoria && novaLista.categoria !== 'todos') {
                             contatosFiltrados = contatosFiltrados.filter(c => 
-                                c.categoria && c.categoria.toLowerCase().includes(novaLista.categoria.toLowerCase())
+                                c.categoria && c.categoria.toLowerCase() === novaLista.categoria.toLowerCase()
                             );
                         }
+                        
+                        // Filtrar por SUBCATEGORIA (Varejo, Atacado, Mouroes, etc.) - está no campo uf
                         if (novaLista.uf && novaLista.uf !== 'TODOS' && novaLista.uf !== 'todos') {
-                            contatosFiltrados = contatosFiltrados.filter(c => c.uf === novaLista.uf);
+                            contatosFiltrados = contatosFiltrados.filter(c => 
+                                (c.subcategoria && c.subcategoria.toLowerCase().includes(novaLista.uf.toLowerCase())) ||
+                                (c.uf && c.uf.toLowerCase() === novaLista.uf.toLowerCase())
+                            );
                         }
                         
                         // Limitar ao total especificado ou 256 por lote
