@@ -17,9 +17,9 @@ const EVOLUTION_CONFIG = {
     // ==================== AMBIENTE 2: LOCAL (DOCKER) ====================
     local: {
         apiUrl: 'http://localhost:8080',
-        apiKey: '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6',
-        instanceName: 'enside',
-        managerUrl: 'http://localhost:8080/manager/enside'
+        apiKey: 'B6D711FCDE4D4FD5936544120E713976',
+        instanceName: 'enside-whatsapp',
+        managerUrl: 'http://localhost:8080/manager/enside-whatsapp'
     },
     
     // ==================== AMBIENTE 3: VERCEL (FRONTEND) ====================

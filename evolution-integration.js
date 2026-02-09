@@ -11,8 +11,8 @@ const EVOLUTION_CONFIG = {
   // Docker (Local - Desenvolvimento)
   local: {
     url: 'http://localhost:8080',
-    apiKey: 'ENSIDE_MADEIRAS_2024_KEY',
-    instance: 'enside'
+    apiKey: 'B6D711FCDE4D4FD5936544120E713976',
+    instance: 'enside-whatsapp'
   }
 };
 
