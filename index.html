@@ -4013,7 +4013,14 @@ XML: Estrutura hierárquica de elementos
             }
         }
 
-        // ==================== ENVIO EM MASSA CORRIGIDO ====================
+        // ==================== ENVIO EM MASSA CORRIGIDO - INTEGRAÇÃO GOOGLE SHEETS ====================
+        const GOOGLE_SHEETS_CONFIG = {
+            spreadsheetId: '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE',
+            spreadsheetName: 'EUCALIPTO',
+            contatosGid: '1689968688',
+            listasGid: '1114979046'
+        };
+        
         let contatosCarregados = [];
         let envioEmAndamento = false;
         let enviosConcluidos = 0;
@@ -4024,38 +4031,49 @@ XML: Estrutura hierárquica de elementos
             if (statusEl) statusEl.innerHTML = '⏳ Carregando contatos do Google Sheets...';
             
             try {
-                // Tenta carregar do localStorage primeiro (cache)
-                const cached = localStorage.getItem('enside-contatos-cache');
-                const cacheTime = localStorage.getItem('enside-contatos-cache-time');
-                const agora = Date.now();
+                // Busca direta do Google Sheets via CSV público
+                const sheetId = GOOGLE_SHEETS_CONFIG.spreadsheetId;
+                const gid = GOOGLE_SHEETS_CONFIG.contatosGid;
+                const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
                 
-                // Cache válido por 1 hora
-                if (cached && cacheTime && (agora - parseInt(cacheTime)) < 3600000) {
-                    contatosCarregados = JSON.parse(cached);
-                    if (statusEl) statusEl.innerHTML = `✅ ${contatosCarregados.length} contatos carregados (cache)`;
-                    atualizarSelectListas();
-                    return contatosCarregados;
-                }
+                const response = await fetch(csvUrl);
+                if (!response.ok) throw new Error('Erro ao acessar planilha');
                 
-                // Busca da API do Google Sheets
-                const webAppUrl = 'https://script.google.com/macros/s/AKfycbzlXB43ZA83ZT98KAypV4EEmsyxslyXB1Ya8_b6TtwH9xSZunZhzS0ZcZiDKqUtEsT3/exec';
-                const response = await fetch(`${webAppUrl}?action=getContatos`);
+                const csvText = await response.text();
+                const linhas = csvText.split('\n');
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.contatos && Array.isArray(data.contatos)) {
-                        contatosCarregados = data.contatos.filter(c => c.telefone && c.telefone.length >= 10);
-                        localStorage.setItem('enside-contatos-cache', JSON.stringify(contatosCarregados));
-                        localStorage.setItem('enside-contatos-cache-time', agora.toString());
-                        if (statusEl) statusEl.innerHTML = `✅ ${contatosCarregados.length} contatos carregados`;
-                        atualizarSelectListas();
-                        return contatosCarregados;
+                // Parse CSV - formato: ID, NOME, TELEFONE, CATEGORIA, SUBCATEGORIA, CIDADE, UF
+                contatosCarregados = [];
+                for (let i = 1; i < linhas.length; i++) {
+                    const valores = linhas[i].split(',');
+                    if (valores.length >= 3 && valores[2]) {
+                        let telefone = valores[2].replace(/\D/g, '');
+                        // Adiciona 55 se não tiver
+                        if (telefone.length === 10 || telefone.length === 11) {
+                            telefone = '55' + telefone;
+                        }
+                        
+                        if (telefone.length >= 12) {
+                            contatosCarregados.push({
+                                id: valores[0] || i,
+                                nome: valores[1] || '',
+                                telefone: telefone,
+                                categoria: (valores[3] || 'OUTROS').toUpperCase(),
+                                subcategoria: valores[4] || '',
+                                cidade: valores[5] || '',
+                                uf: valores[6] || 'SP'
+                            });
+                        }
                     }
                 }
                 
-                // Fallback: usa dados locais
-                contatosCarregados = gerarContatosLocais();
-                if (statusEl) statusEl.innerHTML = `✅ ${contatosCarregados.length} contatos (local)`;
+                console.log(`✅ ${contatosCarregados.length} contatos carregados do Google Sheets`);
+                
+                // Salva no cache
+                localStorage.setItem('enside-contatos-cache', JSON.stringify(contatosCarregados));
+                localStorage.setItem('enside-contatos-cache-time', Date.now().toString());
+                
+                if (statusEl) statusEl.innerHTML = `✅ ${contatosCarregados.length} contatos carregados`;
                 atualizarSelectListas();
                 return contatosCarregados;
                 
