@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ENSIDE MASTER v2.1 - WhatsApp Manager</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #667eea;
+        --secondary: #764ba2;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #111827;
+        --light: #f3f4f6;
+        --border: #e5e7eb;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: var(--light);
+        color: var(--dark);
+        overflow-x: hidden;
+      }
+
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--secondary) 100%
+        );
+        color: white;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 25px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+      }
+
+      .sidebar-header h1 {
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+
+      .sidebar-header p {
+        font-size: 12px;
+        opacity: 0.9;
+      }
+
+      .sidebar-nav {
+        flex: 1;
+        padding: 20px 0;
+      }
+
+      .nav-item {
+        padding: 15px 20px;
+        cursor: pointer;
+        border-left: 4px solid transparent;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+      }
+
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-left-color: white;
+      }
+
+      .nav-item.active {
+        background: rgba(255, 255, 255, 0.15);
+        border-left-color: white;
+        font-weight: 600;
+      }
+
+      .nav-icon {
+        font-size: 18px;
+        min-width: 20px;
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .top-bar {
+        background: white;
+        padding: 20px 30px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .top-bar-left {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .top-bar-right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .status-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 15px;
+        background: var(--light);
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--success);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .status-dot.offline {
+        background: var(--danger);
+        animation: none;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--secondary) 100%
+        );
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-secondary {
+        background: var(--light);
+        color: var(--dark);
+        border: 1px solid var(--border);
+      }
+
+      .btn-secondary:hover {
+        background: var(--border);
+      }
+
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border);
+      }
+
+      .card h2 {
+        margin-bottom: 20px;
+        font-size: 20px;
+        color: var(--dark);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--dark);
+      }
+
+      .form-input,
+      .form-textarea {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-input:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .message-item {
+        background: var(--light);
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary);
+        margin-bottom: 10px;
+      }
+
+      .message-item.sent {
+        border-left-color: var(--success);
+      }
+
+      .message-item.error {
+        border-left-color: var(--danger);
+      }
+
+      .message-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .message-text {
+        color: var(--dark);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .alert {
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .alert-success {
+        background: #dcfce7;
+        border-left: 4px solid var(--success);
+        color: #065f46;
+      }
+
+      .alert-warning {
+        background: #fef3c7;
+        border-left: 4px solid var(--warning);
+        color: #92400e;
+      }
+
+      .alert-error {
+        background: #fee2e2;
+        border-left: 4px solid var(--danger);
+        color: #7f1d1d;
+      }
+
+      .alert-info {
+        background: #dbeafe;
+        border-left: 4px solid #3b82f6;
+        color: #1e40af;
+      }
+
+      .contact-list {
+        list-style: none;
+      }
+
+      .contact-item {
+        padding: 12px;
+        background: var(--light);
+        border-radius: 6px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .contact-item:hover {
+        background: var(--border);
+      }
+
+      .contact-name {
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .contact-info {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 3px;
+      }
+
+      .loader {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--primary);
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          max-height: 200px;
+        }
+
+        .sidebar-nav {
+          display: flex;
+          flex-direction: row;
+          overflow-x: auto;
+        }
+
+        .nav-item {
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <h1>🔷 ENSIDE</h1>
+          <p>WhatsApp Manager v2.1</p>
+        </div>
+        <div class="sidebar-nav">
+          <div class="nav-item active" onclick="switchTab('dashboard')">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('send-message')">
+            <span class="nav-icon">✉️</span>
+            <span>Enviar Mensagem</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('contacts')">
+            <span class="nav-icon">👥</span>
+            <span>Contatos</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('instances')">
+            <span class="nav-icon">🔌</span>
+            <span>Instâncias</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('settings')">
+            <span class="nav-icon">⚙️</span>
+            <span>Configurações</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="top-bar">
+          <div class="top-bar-left">
+            <h2>ENSIDE Master Control</h2>
+          </div>
+          <div class="top-bar-right">
+            <div class="status-badge">
+              <div class="status-dot" id="apiStatusDot"></div>
+              <span id="apiStatusText">Verificando...</span>
+            </div>
+            <button class="btn btn-secondary" onclick="checkApiStatus()">
+              🔄 Atualizar
+            </button>
+          </div>
+        </div>
+
+        <div class="content">
+          <!-- Dashboard Tab -->
+          <div id="dashboard" class="tab-content active">
+            <div class="card">
+              <h2>📊 Dashboard Operacional</h2>
+              <div id="dashboardAlert"></div>
+              <div class="grid">
+                <div class="card" style="border: 2px solid var(--primary)">
+                  <h3 style="margin-bottom: 10px">API Status</h3>
+                  <div id="apiStatus" style="font-size: 14px">
+                    <p>
+                      <strong>URL:</strong>
+                      <span id="apiUrl">evolution-rust.vercel.app</span>
+                    </p>
+                    <p>
+                      <strong>Status:</strong>
+                      <span id="apiStatusDetail">Carregando...</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="card" style="border: 2px solid var(--success)">
+                  <h3 style="margin-bottom: 10px">Instância WhatsApp</h3>
+                  <div id="instanceStatus" style="font-size: 14px">
+                    <p><strong>Nome:</strong> enside_whatsapp</p>
+                    <p><strong>Provider:</strong> Baileys</p>
+                  </div>
+                </div>
+                <div class="card" style="border: 2px solid var(--warning)">
+                  <h3 style="margin-bottom: 10px">Configuração</h3>
+                  <div style="font-size: 14px">
+                    <p>
+                      <strong>API Key:</strong>
+                      <code
+                        style="
+                          background: var(--light);
+                          padding: 2px 4px;
+                          border-radius: 3px;
+                        "
+                        >429683C4C...</code
+                      >
+                    </p>
+                    <p><strong>Provider:</strong> Vercel Online</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Send Message Tab -->
+          <div id="send-message" class="tab-content">
+            <div class="card">
+              <h2>✉️ Enviar Mensagem WhatsApp</h2>
+              <div id="sendMessageAlert"></div>
+              <form onsubmit="sendMessage(event)">
+                <div class="form-group">
+                  <label class="form-label">Número do Destinatário</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="phoneNumber"
+                    placeholder="55 (DDD) 9 XXXX-XXXX"
+                    required
+                  />
+                  <small style="color: #6b7280; margin-top: 5px; display: block"
+                    >Formato: código do país + DDD + número</small
+                  >
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Mensagem</label>
+                  <textarea
+                    class="form-textarea"
+                    id="messageText"
+                    placeholder="Digite sua mensagem aqui..."
+                    required
+                  ></textarea>
+                </div>
+                <div style="display: flex; gap: 10px">
+                  <button type="submit" class="btn btn-primary">
+                    📤 Enviar Mensagem
+                  </button>
+                  <button type="reset" class="btn btn-secondary">
+                    🔄 Limpar
+                  </button>
+                </div>
+              </form>
+              <div id="messageHistory" style="margin-top: 30px">
+                <h3 style="margin-bottom: 15px">Histórico de Mensagens</h3>
+                <div id="historyList"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contacts Tab -->
+          <div id="contacts" class="tab-content">
+            <div class="card">
+              <h2>👥 Gerenciar Contatos</h2>
+              <div style="margin-bottom: 20px">
+                <input
+                  type="text"
+                  class="form-input"
+                  id="contactSearch"
+                  placeholder="🔍 Buscar contato..."
+                  onkeyup="filterContacts(this.value)"
+                />
+              </div>
+              <ul class="contact-list" id="contactList">
+                <li class="contact-item">
+                  <div>
+                    <div class="contact-name">📱 Carregando contatos...</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Instances Tab -->
+          <div id="instances" class="tab-content">
+            <div class="card">
+              <h2>🔌 Gerenciar Instâncias</h2>
+              <div class="alert alert-info">
+                <span>ℹ️</span>
+                <div>
+                  <strong>Instância Ativa:</strong> enside_whatsapp<br />
+                  <small>Provider: Baileys (WhatsApp Web)</small>
+                </div>
+              </div>
+              <div style="margin-top: 20px">
+                <h3 style="margin-bottom: 15px">Status da Instância</h3>
+                <div id="instanceDetails" class="grid">
+                  <div class="card">
+                    <p><strong>Nome:</strong> enside_whatsapp</p>
+                    <p>
+                      <strong>Status:</strong>
+                      <span id="instanceStatusDetail">Carregando...</span>
+                    </p>
+                    <p><strong>Criada em:</strong> 12/02/2026</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Tab -->
+          <div id="settings" class="tab-content">
+            <div class="card">
+              <h2>⚙️ Configurações</h2>
+              <div class="alert alert-success">
+                <span>✅</span>
+                <div>
+                  <strong>Sistema Online:</strong> API integrada com Vercel<br />
+                  <small>Usando provider Baileys para WhatsApp Web</small>
+                </div>
+              </div>
+
+              <div style="margin-top: 30px">
+                <h3 style="margin-bottom: 15px">Informações da API</h3>
+                <div class="grid">
+                  <div class="card">
+                    <p><strong>Base URL:</strong></p>
+                    <code
+                      style="
+                        background: var(--light);
+                        padding: 8px;
+                        border-radius: 4px;
+                        display: block;
+                        word-break: break-all;
+                      "
+                    >
+                      https://evolution-rust.vercel.app
+                    </code>
+                  </div>
+                  <div class="card">
+                    <p><strong>Instância:</strong></p>
+                    <code
+                      style="
+                        background: var(--light);
+                        padding: 8px;
+                        border-radius: 4px;
+                        display: block;
+                      "
+                    >
+                      enside_whatsapp
+                    </code>
+                  </div>
+                  <div class="card">
+                    <p><strong>API Key:</strong></p>
+                    <code
+                      style="
+                        background: var(--light);
+                        padding: 8px;
+                        border-radius: 4px;
+                        display: block;
+                        word-break: break-all;
+                      "
+                    >
+                      429683C4C977415CAAFCCE10F7D57E11
+                    </code>
+                  </div>
+                  <div class="card">
+                    <p><strong>Provider:</strong></p>
+                    <code
+                      style="
+                        background: var(--light);
+                        padding: 8px;
+                        border-radius: 4px;
+                        display: block;
+                      "
+                    >
+                      Baileys
+                    </code>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 30px">
+                <h3 style="margin-bottom: 15px">Documentação</h3>
+                <div class="alert alert-info">
+                  <span>📚</span>
+                  <div>
+                    <strong>Evolution API v2.3.7:</strong> WhatsApp management
+                    platform<br />
+                    <small
+                      >Baseado em Baileys para autenticação segura via QR
+                      Code</small
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Configuração da API
+      const API_CONFIG = {
+        BASE_URL_LOCAL: "http://localhost:3000",
+        BASE_URL_VERCEL: "https://evolution-rust.vercel.app",
+        BASE_URL: "http://localhost:3000", // Tenta local primeiro
+        API_KEY: "429683C4C977415CAAFCCE10F7D57E11",
+        INSTANCE: "enside_whatsapp",
+      };
+
+      // Store de mensagens
+      let messageHistory =
+        JSON.parse(localStorage.getItem("messageHistory")) || [];
+
+      // Trocar abas
+      function switchTab(tabName) {
+        // Esconder todas as abas
+        document.querySelectorAll(".tab-content").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        // Mostrar aba selecionada
+        document.getElementById(tabName).classList.add("active");
+
+        // Atualizar nav item
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+        event.currentTarget.classList.add("active");
+      }
+
+      // Verificar status da API
+      async function checkApiStatus() {
+        const statusDot = document.getElementById("apiStatusDot");
+        const statusText = document.getElementById("apiStatusText");
+
+        // Tentar API local primeiro
+        try {
+          const response = await fetch(`${API_CONFIG.BASE_URL_LOCAL}/status`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            timeout: 3000
+          });
+
+          if (response.ok) {
+            API_CONFIG.BASE_URL = API_CONFIG.BASE_URL_LOCAL;
+            statusDot.classList.remove("offline");
+            statusDot.classList.add("online");
+            statusText.textContent = "🟢 API Online (Local)";
+            document.getElementById("apiStatusDetail").innerHTML =
+              '<span style="color: var(--success);">✅ Conectado (Localhost:3000)</span>';
+            document.getElementById("instanceStatusDetail").innerHTML =
+              '<span style="color: var(--success);">✅ Ativo</span>';
+            document.getElementById("apiUrl").textContent = "localhost:3000";
+            return true;
+          }
+        } catch (err) {
+          // API local falhou, tentar Vercel
+        }
+
+        // Tentar API Vercel
+        try {
+          const response = await fetch(`${API_CONFIG.BASE_URL_VERCEL}/status`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            timeout: 5000
+          });
+
+          if (response.ok) {
+            API_CONFIG.BASE_URL = API_CONFIG.BASE_URL_VERCEL;
+            statusDot.classList.remove("offline");
+            statusDot.classList.add("online");
+            statusText.textContent = "🟢 API Online (Vercel)";
+            document.getElementById("apiStatusDetail").innerHTML =
+              '<span style="color: var(--success);">✅ Conectado (Vercel)</span>';
+            document.getElementById("instanceStatusDetail").innerHTML =
+              '<span style="color: var(--success);">✅ Ativo</span>';
+            document.getElementById("apiUrl").textContent = "evolution-rust.vercel.app";
+            return true;
+          }
+        } catch (err) {
+          // Vercel também falhou
+        }
+
+        // Ambas falharam
+        statusDot.classList.add("offline");
+        statusText.textContent = "🔴 API Offline";
+        document.getElementById("apiStatusDetail").innerHTML =
+          '<span style="color: var(--danger);">❌ Desconectado</span>';
+        document.getElementById("instanceStatusDetail").innerHTML =
+          '<span style="color: var(--danger);">❌ Offline</span>';
+        return false;
+      }
+          document.getElementById("apiStatusDetail").innerHTML =
+            '<span style="color: var(--danger);">❌ Desconectado</span>';
+          return false;
+        }
+      }
+
+      // Enviar mensagem
+      async function sendMessage(event) {
+        event.preventDefault();
+
+        const phoneNumber = document.getElementById("phoneNumber").value;
+        const messageText = document.getElementById("messageText").value;
+        const alertDiv = document.getElementById("sendMessageAlert");
+
+        alertDiv.innerHTML =
+          '<div class="alert alert-info"><span class="loader"></span> Enviando mensagem...</div>';
+
+        try {
+          const response = await fetch(
+            `${API_CONFIG.BASE_URL}/message/sendText/${API_CONFIG.INSTANCE}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                apikey: API_CONFIG.API_KEY,
+              },
+              body: JSON.stringify({
+                number: phoneNumber.replace(/\D/g, ""),
+                text: messageText,
+              }),
+            },
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+
+            // Adicionar ao histórico
+            const message = {
+              id: Date.now(),
+              number: phoneNumber,
+              text: messageText,
+              timestamp: new Date().toLocaleString("pt-BR"),
+              status: "sent",
+            };
+
+            messageHistory.unshift(message);
+            localStorage.setItem(
+              "messageHistory",
+              JSON.stringify(messageHistory),
+            );
+
+            alertDiv.innerHTML =
+              '<div class="alert alert-success">✅ Mensagem enviada com sucesso!</div>';
+            document.getElementById("phoneNumber").value = "";
+            document.getElementById("messageText").value = "";
+
+            updateMessageHistory();
+
+            setTimeout(() => {
+              alertDiv.innerHTML = "";
+            }, 5000);
+          } else {
+            const error = await response.json();
+            alertDiv.innerHTML = `<div class="alert alert-error">❌ Erro ao enviar: ${error.message || "Erro desconhecido"}</div>`;
+          }
+        } catch (err) {
+          alertDiv.innerHTML = `<div class="alert alert-error">❌ Erro: ${err.message}</div>`;
+        }
+      }
+
+      // Atualizar histórico de mensagens
+      function updateMessageHistory() {
+        const historyList = document.getElementById("historyList");
+
+        if (messageHistory.length === 0) {
+          historyList.innerHTML =
+            '<p style="color: #6b7280;">Nenhuma mensagem enviada ainda.</p>';
+          return;
+        }
+
+        historyList.innerHTML = messageHistory
+          .map(
+            (msg) => `
+                <div class="message-item ${msg.status}">
+                    <div class="message-header">
+                        <span>📱 ${msg.number}</span>
+                        <span style="color: #6b7280;">${msg.timestamp}</span>
+                    </div>
+                    <div class="message-text">${msg.text}</div>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      // Filtrar contatos
+      function filterContacts(searchTerm) {
+        const contactItems = document.querySelectorAll(".contact-item");
+        contactItems.forEach((item) => {
+          const name = item.textContent.toLowerCase();
+          item.style.display = name.includes(searchTerm.toLowerCase())
+            ? ""
+            : "none";
+        });
+      }
+
+      // Carregar contatos (simulado)
+      function loadContacts() {
+        const contacts = [
+          { name: "João Silva", number: "55 11 99999-0001", status: "online" },
+          {
+            name: "Maria Santos",
+            number: "55 21 99999-0002",
+            status: "online",
+          },
+          {
+            name: "Pedro Oliveira",
+            number: "55 31 99999-0003",
+            status: "offline",
+          },
+          { name: "Ana Costa", number: "55 41 99999-0004", status: "online" },
+        ];
+
+        const contactList = document.getElementById("contactList");
+        contactList.innerHTML = contacts
+          .map(
+            (contact) => `
+                <li class="contact-item">
+                    <div>
+                        <div class="contact-name">👤 ${contact.name}</div>
+                        <div class="contact-info">${contact.number} • ${contact.status === "online" ? "🟢 Online" : "🔴 Offline"}</div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="selectContact('${contact.number}')">Selecionar</button>
+                </li>
+            `,
+          )
+          .join("");
+      }
+
+      // Selecionar contato
+      function selectContact(number) {
+        document.getElementById("phoneNumber").value = number;
+        switchTab("send-message");
+        document.getElementById("messageText").focus();
+      }
+
+      // Inicializar
+      window.addEventListener("load", () => {
+        checkApiStatus();
+        loadContacts();
+        updateMessageHistory();
+
+        // Verificar status a cada 30 segundos
+        setInterval(checkApiStatus, 30000);
+      });
+    </script>
+  </body>
+</html>
