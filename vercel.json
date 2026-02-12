@@ -9,6 +9,10 @@
       "config": {
         "maxLambdaSize": "50mb"
       }
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
     }
   ],
   "env": {
@@ -17,6 +21,14 @@
     "INSTANCE_NAME": "enside_whatsapp"
   },
   "routes": [
+    {
+      "src": "^/api/health$",
+      "dest": "api/health.js"
+    },
+    {
+      "src": "^/api/status$",
+      "dest": "api/status.js"
+    },
     {
       "src": "^/health$",
       "dest": "index.js"
@@ -31,22 +43,6 @@
     },
     {
       "src": "^/evolution-manager$",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/instance/.*",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/send-message$",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/qrcode$",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/webhook.*",
       "dest": "index.js"
     },
     {

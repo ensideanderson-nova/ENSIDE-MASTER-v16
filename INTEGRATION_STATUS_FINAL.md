@@ -19,16 +19,19 @@ A integração completa da Evolution API com Vercel foi **100% CONCLUÍDA** com 
 ## 🚀 ACESSO IMEDIATO
 
 1. **Control Center v2.1** (Dashboard Principal)
+
    ```
    https://evolution-rust.vercel.app/control-center-v21.html
    ```
 
 2. **Evolution Manager** (Gerenciador de Instâncias)
+
    ```
    https://evolution-rust.vercel.app/evolution-manager
    ```
 
 3. **Dashboard v2.1** (Dashboard Secundário)
+
    ```
    https://evolution-rust.vercel.app/enside-master-v21.html
    ```
@@ -42,16 +45,16 @@ A integração completa da Evolution API com Vercel foi **100% CONCLUÍDA** com 
 
 ## ✅ ENDPOINTS DISPONÍVEIS
 
-| Endpoint | Método | Status | Descrição |
-|----------|--------|--------|-----------|
-| `/health` | GET | ✅ | Verificação de disponibilidade |
-| `/status` | GET | ✅ | Status da API |
-| `/api/instances` | GET | ✅ | Lista de instâncias ativas |
-| `/api/sheets` | GET | ✅ | Dados do Google Sheets |
-| `/api/sync-instances` | POST | ✅ | Sincronizar com Sheets |
-| `/evolution-manager` | GET | ✅ | Interface de gerenciamento |
-| `/control-center-v21.html` | GET | ✅ | Dashboard de controle |
-| `/enside-master-v21.html` | GET | ✅ | Dashboard principal |
+| Endpoint                   | Método | Status | Descrição                      |
+| -------------------------- | ------ | ------ | ------------------------------ |
+| `/health`                  | GET    | ✅     | Verificação de disponibilidade |
+| `/status`                  | GET    | ✅     | Status da API                  |
+| `/api/instances`           | GET    | ✅     | Lista de instâncias ativas     |
+| `/api/sheets`              | GET    | ✅     | Dados do Google Sheets         |
+| `/api/sync-instances`      | POST   | ✅     | Sincronizar com Sheets         |
+| `/evolution-manager`       | GET    | ✅     | Interface de gerenciamento     |
+| `/control-center-v21.html` | GET    | ✅     | Dashboard de controle          |
+| `/enside-master-v21.html`  | GET    | ✅     | Dashboard principal            |
 
 ---
 
@@ -112,6 +115,7 @@ e2b0671a - docs: add complete system status documentation
 ## 🎯 PRÓXIMOS PASSOS
 
 1. **Acessar o Control Center:**
+
    ```
    https://evolution-rust.vercel.app/control-center-v21.html
    ```
