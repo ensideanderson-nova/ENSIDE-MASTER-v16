@@ -1,12 +1,29 @@
 import express from 'express';
 import axios from 'axios';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
 
+// Servir arquivos estáticos do /public
+app.use(express.static(path.join(__dirname, 'public')));
+
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution-api.production.vercel.app';
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '429683C4C977415CAAFCCE10F7D57E11';
 const INSTANCE_NAME = process.env.INSTANCE_NAME || 'enside_whatsapp';
+
+// Rotas para files estáticos
+app.get('/enside-config.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'enside-config.js'));
+});
+
+app.get('/index-hub.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index-hub.html'));
+});
 
 // Health check endpoint - extremamente simples, sem dependências
 app.get('/health', (req, res) => {
