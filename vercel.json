@@ -50,12 +50,8 @@
       "dest": "index.js"
     },
     {
-      "src": "^/$",
-      "dest": "/index.html"
-    },
-    {
       "src": "^/.*\\.html$",
-      "dest": "/$1.html"
+      "dest": "index.js"
     },
     {
       "src": "/(.*)",
