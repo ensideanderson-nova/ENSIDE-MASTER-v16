@@ -30,7 +30,7 @@
       "dest": "api/status.js"
     },
     {
-      "src": "^/.*",
+      "src": "/(.*)",
       "dest": "index.js"
     }
   ]

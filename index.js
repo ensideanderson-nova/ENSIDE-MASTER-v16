@@ -1,15 +1,14 @@
 import express from 'express';
 import axios from 'axios';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = join(__filename, '..');
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(express.json());
-app.use(express.static(join(__dirname, 'public')));
+app.use(express.static('public'));
 
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution-api.production.vercel.app';
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '429683C4C977415CAAFCCE10F7D57E11';
@@ -18,37 +17,6 @@ const INSTANCE_NAME = process.env.INSTANCE_NAME || 'enside_whatsapp';
 // Health check endpoint - extremamente simples, sem dependências
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// Servir arquivos HTML específicos
-app.get('/control-center-v21.html', (req, res) => {
-  try {
-    const html = readFileSync(join(__dirname, 'public', 'control-center-v21.html'), 'utf8');
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(html);
-  } catch (error) {
-    res.status(200).send('<h1>Control Center v2.1</h1><p>Loading...</p>');
-  }
-});
-
-app.get('/enside-master-v21.html', (req, res) => {
-  try {
-    const html = readFileSync(join(__dirname, 'public', 'enside-master-v21.html'), 'utf8');
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(html);
-  } catch (error) {
-    res.status(200).send('<h1>Dashboard v2.1</h1><p>Loading...</p>');
-  }
-});
-
-app.get('/api-status.html', (req, res) => {
-  try {
-    const html = readFileSync(join(__dirname, 'public', 'api-status.html'), 'utf8');
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(html);
-  } catch (error) {
-    res.status(200).send('<h1>API Status</h1><p>Loading...</p>');
-  }
 });
 
 app.get('/', (req, res) => {
