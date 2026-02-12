@@ -1,9 +1,12 @@
 {
   "version": 2,
+  "buildCommand": "npm run build || echo 'no build'",
+  "installCommand": "npm install",
   "builds": [
     {
       "src": "index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": { "maxLambdaSize": "50mb" }
     }
   ],
   "env": {
@@ -13,8 +16,36 @@
   },
   "routes": [
     {
+      "src": "^/status$",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/instance/.*",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/send-message$",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/qrcode$",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/webhook.*",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/api/.*",
+      "dest": "index.js"
+    },
+    {
       "src": "^/$",
-      "dest": "/api-status.html"
+      "dest": "/index.html"
+    },
+    {
+      "src": "^/.*\\.html$",
+      "dest": "/$1.html"
     },
     {
       "src": "/(.*)",
