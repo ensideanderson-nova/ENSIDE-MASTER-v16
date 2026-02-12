@@ -1,308 +1,321 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ENSIDE System - Hub Integrado</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
 
-        .container {
-            max-width: 1200px;
-            width: 100%;
-        }
+      .container {
+        max-width: 1200px;
+        width: 100%;
+      }
 
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-        }
+      .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 40px;
+      }
 
-        .header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
+      .header h1 {
+        font-size: 3em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
 
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
+      .header p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
 
-        .status-bar {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
+      .status-bar {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
 
-        .status-item {
-            text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            background: #f8f9fa;
-        }
+      .status-item {
+        text-align: center;
+        padding: 15px;
+        border-radius: 10px;
+        background: #f8f9fa;
+      }
 
-        .status-item h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-        }
+      .status-item h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 0.9em;
+      }
 
-        .status-value {
-            font-weight: bold;
-            color: #333;
-            word-break: break-all;
-            font-size: 0.85em;
-        }
+      .status-value {
+        font-weight: bold;
+        color: #333;
+        word-break: break-all;
+        font-size: 0.85em;
+      }
 
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+      .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
 
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-        }
+      .card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        cursor: pointer;
+      }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
 
-        .card-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
+      .card-icon {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
 
-        .card h2 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.5em;
-        }
+      .card h2 {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 1.5em;
+      }
 
-        .card p {
-            color: #666;
-            margin-bottom: 15px;
-            font-size: 0.9em;
-        }
+      .card p {
+        color: #666;
+        margin-bottom: 15px;
+        font-size: 0.9em;
+      }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            font-weight: 600;
-            font-size: 0.9em;
-        }
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-weight: 600;
+        font-size: 0.9em;
+      }
 
-        .btn:hover {
-            background: #764ba2;
-        }
+      .btn:hover {
+        background: #764ba2;
+      }
 
-        .btn-secondary {
-            background: #764ba2;
-        }
+      .btn-secondary {
+        background: #764ba2;
+      }
 
-        .btn-secondary:hover {
-            background: #667eea;
-        }
+      .btn-secondary:hover {
+        background: #667eea;
+      }
 
-        .footer {
-            text-align: center;
-            color: white;
-            margin-top: 40px;
-            opacity: 0.8;
-        }
+      .footer {
+        text-align: center;
+        color: white;
+        margin-top: 40px;
+        opacity: 0.8;
+      }
 
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            background: #10b981;
-            color: white;
-            border-radius: 20px;
-            font-size: 0.8em;
-            margin-top: 10px;
-        }
+      .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        background: #10b981;
+        color: white;
+        border-radius: 20px;
+        font-size: 0.8em;
+        margin-top: 10px;
+      }
 
-        .badge.warning {
-            background: #f59e0b;
-        }
+      .badge.warning {
+        background: #f59e0b;
+      }
 
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.2em;
-        }
+      .loading {
+        text-align: center;
+        color: white;
+        font-size: 1.2em;
+      }
 
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
+      .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🚀 ENSIDE SYSTEM</h1>
-            <p>Hub Integrado de Gerenciamento WhatsApp + Evolution API</p>
+      <!-- Header -->
+      <div class="header">
+        <h1>🚀 ENSIDE SYSTEM</h1>
+        <p>Hub Integrado de Gerenciamento WhatsApp + Evolution API</p>
+      </div>
+
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <div class="status-item">
+          <h3>🔌 API</h3>
+          <div class="status-value" id="apiStatus">Detectando...</div>
+        </div>
+        <div class="status-item">
+          <h3>💬 Instância</h3>
+          <div class="status-value" id="instanceStatus">enside_whatsapp</div>
+        </div>
+        <div class="status-item">
+          <h3>📊 Google Sheets</h3>
+          <div class="status-value" id="sheetsStatus">EUCALIPTO</div>
+        </div>
+        <div class="status-item">
+          <h3>🌐 Vercel</h3>
+          <div class="status-value" id="vercelStatus">ONLINE</div>
+        </div>
+      </div>
+
+      <!-- Dashboard Principal -->
+      <div class="dashboard">
+        <!-- Card 1: Dashboard v2.1 (PRINCIPAL) -->
+        <div class="card" onclick="ENSIDE.navigateToDashboard()">
+          <div class="card-icon">📱</div>
+          <h2>Dashboard v2.1</h2>
+          <p>Dashboard principal com 5 abas de gerenciamento</p>
+          <button class="btn">Abrir Dashboard</button>
+          <div class="badge">PRINCIPAL</div>
         </div>
 
-        <!-- Status Bar -->
-        <div class="status-bar">
-            <div class="status-item">
-                <h3>🔌 API</h3>
-                <div class="status-value" id="apiStatus">Detectando...</div>
-            </div>
-            <div class="status-item">
-                <h3>💬 Instância</h3>
-                <div class="status-value" id="instanceStatus">enside_whatsapp</div>
-            </div>
-            <div class="status-item">
-                <h3>📊 Google Sheets</h3>
-                <div class="status-value" id="sheetsStatus">EUCALIPTO</div>
-            </div>
-            <div class="status-item">
-                <h3>🌐 Vercel</h3>
-                <div class="status-value" id="vercelStatus">ONLINE</div>
-            </div>
+        <!-- Card 2: Control Center -->
+        <div class="card" onclick="ENSIDE.navigateToControlCenter()">
+          <div class="card-icon">🎛️</div>
+          <h2>Control Center</h2>
+          <p>Centro de controle com sincronização de Sheets</p>
+          <button class="btn btn-secondary">Abrir Control Center</button>
         </div>
 
-        <!-- Dashboard Principal -->
-        <div class="dashboard">
-            <!-- Card 1: Dashboard v2.1 (PRINCIPAL) -->
-            <div class="card" onclick="ENSIDE.navigateToDashboard()">
-                <div class="card-icon">📱</div>
-                <h2>Dashboard v2.1</h2>
-                <p>Dashboard principal com 5 abas de gerenciamento</p>
-                <button class="btn">Abrir Dashboard</button>
-                <div class="badge">PRINCIPAL</div>
-            </div>
-
-            <!-- Card 2: Control Center -->
-            <div class="card" onclick="ENSIDE.navigateToControlCenter()">
-                <div class="card-icon">🎛️</div>
-                <h2>Control Center</h2>
-                <p>Centro de controle com sincronização de Sheets</p>
-                <button class="btn btn-secondary">Abrir Control Center</button>
-            </div>
-
-            <!-- Card 3: Evolution Manager -->
-            <div class="card" onclick="ENSIDE.navigateToManager()">
-                <div class="card-icon">🔧</div>
-                <h2>Evolution Manager</h2>
-                <p>Gerenciador de instâncias e WhatsApp</p>
-                <button class="btn">Abrir Manager</button>
-            </div>
-
-            <!-- Card 4: API Status -->
-            <div class="card" onclick="ENSIDE.openInNewTab('/api-status.html')">
-                <div class="card-icon">📊</div>
-                <h2>API Status</h2>
-                <p>Monitorar status da Evolution API</p>
-                <button class="btn btn-secondary">Ver Status</button>
-            </div>
-
-            <!-- Card 5: Google Sheets -->
-            <div class="card" onclick="ENSIDE.openInNewTab('https://docs.google.com/spreadsheets/d/1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE/edit')">
-                <div class="card-icon">📈</div>
-                <h2>Google Sheets</h2>
-                <p>Planilha EUCALIPTO com 7.055+ contatos</p>
-                <button class="btn">Abrir Sheets</button>
-            </div>
-
-            <!-- Card 6: Documentação -->
-            <div class="card" onclick="ENSIDE.openInNewTab('/api/docs')">
-                <div class="card-icon">📚</div>
-                <h2>Documentação API</h2>
-                <p>Referência completa de endpoints</p>
-                <button class="btn btn-secondary">Ver Docs</button>
-            </div>
+        <!-- Card 3: Evolution Manager -->
+        <div class="card" onclick="ENSIDE.navigateToManager()">
+          <div class="card-icon">🔧</div>
+          <h2>Evolution Manager</h2>
+          <p>Gerenciador de instâncias e WhatsApp</p>
+          <button class="btn">Abrir Manager</button>
         </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>✅ Sistema 100% Integrado no Vercel</p>
-            <p>Evolution API + Google Sheets + WhatsApp Manager</p>
-            <p style="font-size: 0.9em; margin-top: 15px;">🌐 https://evolution-rust.vercel.app</p>
+        <!-- Card 4: API Status -->
+        <div class="card" onclick="ENSIDE.openInNewTab('/api-status.html')">
+          <div class="card-icon">📊</div>
+          <h2>API Status</h2>
+          <p>Monitorar status da Evolution API</p>
+          <button class="btn btn-secondary">Ver Status</button>
         </div>
+
+        <!-- Card 5: Google Sheets -->
+        <div
+          class="card"
+          onclick="ENSIDE.openInNewTab('https://docs.google.com/spreadsheets/d/1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE/edit')"
+        >
+          <div class="card-icon">📈</div>
+          <h2>Google Sheets</h2>
+          <p>Planilha EUCALIPTO com 7.055+ contatos</p>
+          <button class="btn">Abrir Sheets</button>
+        </div>
+
+        <!-- Card 6: Documentação -->
+        <div class="card" onclick="ENSIDE.openInNewTab('/api/docs')">
+          <div class="card-icon">📚</div>
+          <h2>Documentação API</h2>
+          <p>Referência completa de endpoints</p>
+          <button class="btn btn-secondary">Ver Docs</button>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>✅ Sistema 100% Integrado no Vercel</p>
+        <p>Evolution API + Google Sheets + WhatsApp Manager</p>
+        <p style="font-size: 0.9em; margin-top: 15px">
+          🌐 https://evolution-rust.vercel.app
+        </p>
+      </div>
     </div>
 
     <!-- Carrega o módulo de configuração -->
     <script src="/enside-config.js"></script>
 
     <script>
-        // Inicializar e atualizar status
-        async function updateStatus() {
-            // API Status
-            const apiStatus = document.getElementById('apiStatus');
-            try {
-                await ENSIDE.initializeENSIDE();
-                apiStatus.textContent = ENSIDE.config.API.CURRENT === ENSIDE.config.API.LOCAL 
-                    ? '✅ Local (localhost:3000)' 
-                    : '✅ Vercel (Online)';
-            } catch (err) {
-                apiStatus.textContent = '⚠️ Detectando...';
-            }
-
-            // Sheets Status
-            try {
-                const sheets = await ENSIDE.getSheets();
-                if (sheets) {
-                    document.getElementById('sheetsStatus').textContent = 
-                        `✅ ${ENSIDE.config.SHEETS.NAME} (${sheets.totalRows || ENSIDE.config.SHEETS.TOTAL_CONTATOS}+)`;
-                }
-            } catch (err) {
-                console.log("Sheets: " + err.message);
-            }
+      // Inicializar e atualizar status
+      async function updateStatus() {
+        // API Status
+        const apiStatus = document.getElementById("apiStatus");
+        try {
+          await ENSIDE.initializeENSIDE();
+          apiStatus.textContent =
+            ENSIDE.config.API.CURRENT === ENSIDE.config.API.LOCAL
+              ? "✅ Local (localhost:3000)"
+              : "✅ Vercel (Online)";
+        } catch (err) {
+          apiStatus.textContent = "⚠️ Detectando...";
         }
 
-        // Atualizar status ao carregar
-        window.addEventListener('load', updateStatus);
+        // Sheets Status
+        try {
+          const sheets = await ENSIDE.getSheets();
+          if (sheets) {
+            document.getElementById("sheetsStatus").textContent =
+              `✅ ${ENSIDE.config.SHEETS.NAME} (${sheets.totalRows || ENSIDE.config.SHEETS.TOTAL_CONTATOS}+)`;
+          }
+        } catch (err) {
+          console.log("Sheets: " + err.message);
+        }
+      }
 
-        // Auto-reload a cada 30 segundos
-        setInterval(updateStatus, 30000);
+      // Atualizar status ao carregar
+      window.addEventListener("load", updateStatus);
+
+      // Auto-reload a cada 30 segundos
+      setInterval(updateStatus, 30000);
     </script>
-</body>
+  </body>
 </html>
