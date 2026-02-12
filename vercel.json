@@ -9,10 +9,6 @@
       "config": {
         "maxLambdaSize": "50mb"
       }
-    },
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
     }
   ],
   "env": {
@@ -22,12 +18,44 @@
   },
   "routes": [
     {
-      "src": "^/api/health$",
-      "dest": "api/health.js"
+      "src": "^/health$",
+      "dest": "index.js"
     },
     {
-      "src": "^/api/status$",
-      "dest": "api/status.js"
+      "src": "^/status$",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/api/.*",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/evolution-manager$",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/instance/.*",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/send-message$",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/qrcode$",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/webhook.*",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/$",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/.*\\.html$",
+      "dest": "/$1.html"
     },
     {
       "src": "/(.*)",
