@@ -4,9 +4,9 @@ import axios from 'axios';
 const app = express();
 app.use(express.json());
 
-const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'http://localhost:8080';
-const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || 'B6D711FCDE4D4FD5936544120E713976';
-const INSTANCE_NAME = 'ENSIDE2';
+const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution-api.production.vercel.app';
+const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '429683C4C977415CAAFCCE10F7D57E11';
+const INSTANCE_NAME = process.env.INSTANCE_NAME || 'enside_whatsapp';
 
 app.get('/', (req, res) => {
   res.send(`
