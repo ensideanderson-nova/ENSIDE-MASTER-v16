@@ -13,10 +13,6 @@
     {
       "src": "api/**/*.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
     }
   ],
   "env": {
@@ -34,39 +30,7 @@
       "dest": "api/status.js"
     },
     {
-      "src": "^/control-center-v21.html$",
-      "dest": "public/control-center-v21.html"
-    },
-    {
-      "src": "^/enside-master-v21.html$",
-      "dest": "public/enside-master-v21.html"
-    },
-    {
-      "src": "^/api-status.html$",
-      "dest": "public/api-status.html"
-    },
-    {
-      "src": "^/public/(.*)",
-      "dest": "public/$1"
-    },
-    {
-      "src": "^/health$",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/status$",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/api/.*",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/evolution-manager$",
-      "dest": "index.js"
-    },
-    {
-      "src": "/(.*)",
+      "src": "^/.*",
       "dest": "index.js"
     }
   ]
