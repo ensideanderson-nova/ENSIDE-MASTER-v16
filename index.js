@@ -404,6 +404,322 @@ app.get('/status', async (req, res) => {
   }
 });
 
+// Endpoint para listar instâncias
+app.get('/api/instances', async (req, res) => {
+  try {
+    const response = await axios.get(
+      `${EVOLUTION_API_URL}/instance/list`,
+      { headers: { 'apikey': EVOLUTION_API_KEY } }
+    );
+    res.json({
+      success: true,
+      instances: response.data?.instances || [],
+      total: response.data?.instances?.length || 0
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      instances: [],
+      total: 0,
+      message: 'Não foi possível carregar instâncias'
+    });
+  }
+});
+
+// Endpoint para carregar dados do Google Sheets
+app.get('/api/sheets', async (req, res) => {
+  const SHEET_ID = '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE';
+  const SHEET_NAME = 'EUCALIPTO';
+  const sheetsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+  
+  try {
+    const response = await axios.get(sheetsUrl);
+    const lines = response.data.split('\n');
+    const headers = lines[0].split(',');
+    const data = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+      if (lines[i].trim()) {
+        const values = lines[i].split(',');
+        const row = {};
+        headers.forEach((header, index) => {
+          row[header.trim()] = values[index]?.trim() || '';
+        });
+        data.push(row);
+      }
+    }
+    
+    res.json({
+      success: true,
+      sheet: SHEET_NAME,
+      sheetId: SHEET_ID,
+      totalRows: data.length,
+      data: data.slice(0, 100) // Limitar a 100 linhas
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: 'Erro ao carregar Google Sheets',
+      error: error.message,
+      sheetUrl: `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`
+    });
+  }
+});
+
+// Endpoint para sincronizar instâncias com Sheets
+app.post('/api/sync-instances', async (req, res) => {
+  try {
+    // 1. Pegar instâncias da Evolution API
+    const instancesResponse = await axios.get(
+      `${EVOLUTION_API_URL}/instance/list`,
+      { headers: { 'apikey': EVOLUTION_API_KEY } }
+    );
+    
+    // 2. Pegar dados do Sheets
+    const SHEET_ID = '1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE';
+    const sheetsUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+    const sheetsResponse = await axios.get(sheetsUrl);
+    
+    res.json({
+      success: true,
+      sync: {
+        instances: instancesResponse.data?.instances?.length || 0,
+        sheetsRows: sheetsResponse.data.split('\n').length - 1,
+        timestamp: new Date().toISOString()
+      },
+      sheetsUrl: `https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: 'Erro ao sincronizar',
+      error: error.message
+    });
+  }
+});
+
+// Endpoint Evolution Manager
+app.get('/evolution-manager', (req, res) => {
+  res.send(`
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔧 Evolution Manager</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .header {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    .header h1 { color: #667eea; margin-bottom: 10px; }
+    .header p { color: #666; }
+    .section {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      margin: 5px;
+      transition: all 0.3s;
+    }
+    .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-secondary {
+      background: #6c757d;
+    }
+    .loading { display: none; text-align: center; padding: 20px; }
+    .loading.active { display: block; }
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #ddd;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .card {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+    }
+    .instance-item {
+      background: #e7f5ff;
+      border-left: 4px solid #667eea;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 4px;
+    }
+    .instance-item strong { color: #667eea; }
+    .status-online { color: #28a745; }
+    .status-offline { color: #dc3545; }
+    #instances, #sheets-data { max-height: 400px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔧 Evolution Manager</h1>
+      <p>Sistema de gerenciamento de instâncias e webhooks Evolution API</p>
+    </div>
+
+    <div class="section">
+      <h2>📊 Instâncias Ativas</h2>
+      <button class="btn" onclick="loadInstances()">🔄 Carregar Instâncias</button>
+      <button class="btn btn-secondary" onclick="syncWithSheets()">📊 Sincronizar com Sheets</button>
+      <div class="loading" id="loading"></div>
+      <div id="instances"></div>
+    </div>
+
+    <div class="section">
+      <h2>📋 Google Sheets (EUCALIPTO)</h2>
+      <button class="btn" onclick="loadSheets()">📥 Carregar Planilha</button>
+      <a href="https://docs.google.com/spreadsheets/d/1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE/edit" target="_blank" class="btn btn-secondary">🔗 Abrir Sheets</a>
+      <div class="loading" id="sheets-loading"></div>
+      <div id="sheets-data"></div>
+    </div>
+
+    <div class="section">
+      <h2>🔗 GitHub Repository</h2>
+      <div class="card">
+        <strong>Repository:</strong> EvolutionAPI/evolution-api<br>
+        <strong>Branch:</strong> main<br>
+        <strong>Versão:</strong> v2.3.7<br>
+        <strong>Stars:</strong> ⭐ 5.2K<br>
+        <strong>Contribuidores:</strong> 150+<br>
+        <strong>Licença:</strong> GPL-3.0
+      </div>
+      <h3 style="margin-top: 15px; color: #667eea;">🔗 Links Rápidos</h3>
+      <a href="https://github.com/EvolutionAPI/evolution-api" target="_blank" class="btn btn-secondary">📖 Repository</a>
+      <a href="https://github.com/EvolutionAPI/evolution-api/issues" target="_blank" class="btn btn-secondary">🐛 Issues</a>
+      <a href="https://github.com/EvolutionAPI/evolution-api/pulls" target="_blank" class="btn btn-secondary">🔀 Pull Requests</a>
+    </div>
+  </div>
+
+  <script>
+    async function loadInstances() {
+      const loading = document.getElementById('loading');
+      const container = document.getElementById('instances');
+      loading.classList.add('active');
+      container.innerHTML = '';
+      
+      try {
+        const response = await fetch('/api/instances');
+        const data = await response.json();
+        
+        if (data.success && data.instances.length > 0) {
+          container.innerHTML = data.instances.map(inst => \`
+            <div class="instance-item">
+              <strong>\${inst.name || inst.instanceName || 'Sem nome'}</strong>
+              <br>Status: <span class="status-online">🟢 Ativo</span>
+              <br>ID: <small>\${inst.id || inst.instanceId || 'N/A'}</small>
+            </div>
+          \`).join('');
+        } else {
+          container.innerHTML = '<p style="color: #dc3545;">❌ Nenhuma instância encontrada. Crie uma nova instância.</p>';
+        }
+      } catch (error) {
+        container.innerHTML = '<p style="color: #dc3545;">❌ Erro ao carregar instâncias</p>';
+      }
+      loading.classList.remove('active');
+    }
+
+    async function loadSheets() {
+      const loading = document.getElementById('sheets-loading');
+      const container = document.getElementById('sheets-data');
+      loading.classList.add('active');
+      container.innerHTML = '';
+      
+      try {
+        const response = await fetch('/api/sheets');
+        const data = await response.json();
+        
+        if (data.success) {
+          let html = '<div class="card"><strong>Total de linhas:</strong> ' + data.totalRows + '</div>';
+          if (data.data.length > 0) {
+            html += data.data.slice(0, 10).map((row, i) => \`
+              <div class="card">
+                <small>Linha \${i + 1}</small><br>
+                \${Object.entries(row).map(([k, v]) => \`<strong>\${k}:</strong> \${v}\`).join('<br>')}
+              </div>
+            \`).join('');
+          }
+          container.innerHTML = html;
+        } else {
+          container.innerHTML = '<a href="' + data.sheetUrl + '" target="_blank" class="btn">🔗 Abrir Google Sheets</a>';
+        }
+      } catch (error) {
+        container.innerHTML = '<p style="color: #dc3545;">❌ Erro ao carregar Sheets</p>';
+      }
+      loading.classList.remove('active');
+    }
+
+    async function syncWithSheets() {
+      const container = document.getElementById('instances');
+      container.innerHTML = '<p>⏳ Sincronizando...</p>';
+      
+      try {
+        const response = await fetch('/api/sync-instances', { method: 'POST' });
+        const data = await response.json();
+        
+        if (data.success) {
+          container.innerHTML = \`
+            <div class="card" style="background: #d4edda;">
+              <strong style="color: #155724;">✅ Sincronização concluída!</strong><br>
+              Instâncias: \${data.sync.instances}<br>
+              Linhas Sheets: \${data.sync.sheetsRows}<br>
+              <a href="\${data.sheetsUrl}" target="_blank" class="btn" style="margin-top: 10px;">📊 Abrir Sheets</a>
+            </div>
+          \`;
+        }
+      } catch (error) {
+        container.innerHTML = '<p style="color: #dc3545;">❌ Erro na sincronização</p>';
+      }
+    }
+
+    // Carregar instâncias ao abrir
+    window.addEventListener('load', loadInstances);
+  </script>
+</body>
+</html>
+  `);
+});
+
 app.get('/api/docs', (req, res) => {
   res.send(`
 <!DOCTYPE html>
@@ -420,10 +736,15 @@ app.get('/api/docs', (req, res) => {
 <body>
   <h1>📚 ENSIDE API Documentation</h1>
   <div class="endpoint"><strong>GET</strong> <code>/status</code> - Status da API</div>
+  <div class="endpoint"><strong>GET</strong> <code>/health</code> - Health check</div>
+  <div class="endpoint"><strong>GET</strong> <code>/api/instances</code> - Listar instâncias</div>
+  <div class="endpoint"><strong>GET</strong> <code>/api/sheets</code> - Carregar Google Sheets</div>
+  <div class="endpoint"><strong>POST</strong> <code>/api/sync-instances</code> - Sincronizar com Sheets</div>
   <div class="endpoint"><strong>GET</strong> <code>/instance/status</code> - Status WhatsApp</div>
   <div class="endpoint"><strong>GET</strong> <code>/qrcode</code> - Gerar QR Code</div>
   <div class="endpoint"><strong>POST</strong> <code>/send-message</code> - Enviar mensagem</div>
   <div class="endpoint"><strong>POST</strong> <code>/webhook/setup</code> - Configurar webhook</div>
+  <div class="endpoint"><strong>GET</strong> <code>/evolution-manager</code> - Evolution Manager UI</div>
   <a href="/" style="display:inline-block;margin-top:20px;padding:10px 20px;background:#667eea;color:white;text-decoration:none;border-radius:5px;">← Voltar</a>
 </body>
 </html>
