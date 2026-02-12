@@ -370,6 +370,29 @@ app.post('/webhook', (req, res) => {
   res.sendStatus(200);
 });
 
+// Status endpoint para verificar a API
+app.get('/status', async (req, res) => {
+  try {
+    const response = await axios.get(
+      `${EVOLUTION_API_URL}/status`,
+      { headers: { 'apikey': EVOLUTION_API_KEY } }
+    );
+    res.json({ 
+      success: true,
+      status: 'API Online',
+      url: EVOLUTION_API_URL,
+      instance: INSTANCE_NAME
+    });
+  } catch (error) {
+    res.json({ 
+      success: false,
+      status: 'API Offline',
+      error: error.message,
+      url: EVOLUTION_API_URL
+    });
+  }
+});
+
 app.get('/api/docs', (req, res) => {
   res.send(`
 <!DOCTYPE html>
