@@ -784,5 +784,22 @@ app.get('/api/docs', (req, res) => {
 </html>
   `);
 });
-
+// 404 Handler - Rota não encontrada
+app.use((req, res) => {
+  res.status(200).json({ 
+    success: true,
+    message: 'Evolution API Gateway Online',
+    path: req.path,
+    method: req.method,
+    timestamp: new Date().toISOString(),
+    available_endpoints: {
+      health: 'GET /health',
+      status: 'GET /status',
+      instances: 'GET /api/instances',
+      sheets: 'GET /api/sheets',
+      sync: 'POST /api/sync-instances',
+      manager: 'GET /evolution-manager'
+    }
+  });
+});
 export default app;
