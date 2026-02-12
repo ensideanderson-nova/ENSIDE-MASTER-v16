@@ -26,6 +26,14 @@
       "dest": "index.js"
     },
     {
+      "src": "^/api/.*",
+      "dest": "index.js"
+    },
+    {
+      "src": "^/evolution-manager$",
+      "dest": "index.js"
+    },
+    {
       "src": "^/instance/.*",
       "dest": "index.js"
     },
@@ -39,10 +47,6 @@
     },
     {
       "src": "^/webhook.*",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/api/.*",
       "dest": "index.js"
     },
     {
