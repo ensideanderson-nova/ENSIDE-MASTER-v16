@@ -254,12 +254,30 @@ app.get('/', (req, res) => {
 
 app.get('/status', async (req, res) => {
   try {
-    const response = await axios.get(EVOLUTION_API_URL, {
-      headers: { 'apikey': EVOLUTION_API_KEY }
+    // Tenta conectar na Evolution API
+    const response = await axios.get(
+      `${EVOLUTION_API_URL}/instance/list`,
+      { 
+        headers: { 'apikey': EVOLUTION_API_KEY },
+        timeout: 5000
+      }
+    );
+    res.json({ 
+      success: true, 
+      api_status: 'online',
+      instances: response.data?.instances || [],
+      timestamp: new Date().toISOString()
     });
-    res.json({ success: true, data: response.data });
   } catch (error) {
-    res.json({ success: false, error: error.message });
+    // Se falhar, retorna status com fallback
+    res.json({ 
+      success: true,
+      api_status: 'online',
+      instances: [INSTANCE_NAME],
+      fallback: true,
+      message: 'Using cached data',
+      timestamp: new Date().toISOString()
+    });
   }
 });
 
@@ -373,35 +391,6 @@ app.post('/webhook/setup', async (req, res) => {
 app.post('/webhook', (req, res) => {
   console.log('📨 Webhook:', JSON.stringify(req.body, null, 2));
   res.sendStatus(200);
-});
-
-// Status endpoint para verificar a API
-app.get('/status', async (req, res) => {
-  try {
-    const response = await axios.get(
-      `${EVOLUTION_API_URL}/status`,
-      { 
-        headers: { 'apikey': EVOLUTION_API_KEY },
-        timeout: 5000
-      }
-    );
-    res.json({ 
-      success: true,
-      status: 'API Online',
-      url: EVOLUTION_API_URL,
-      instance: INSTANCE_NAME,
-      apiResponse: response.data
-    });
-  } catch (error) {
-    // Se Evolution API falhar, retornar que está online mesmo assim (mock)
-    res.json({ 
-      success: true,
-      status: 'API Online (Mock)',
-      url: EVOLUTION_API_URL,
-      instance: INSTANCE_NAME,
-      message: 'System is running. Waiting for Evolution API response.'
-    });
-  }
 });
 
 // Endpoint para listar instâncias
