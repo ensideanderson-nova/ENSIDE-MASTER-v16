@@ -1,0 +1,2 @@
+var i=Object.defineProperty;var w=(t,a,s)=>a in t?i(t,a,{enumerable:!0,configurable:!0,writable:!0,value:s}):t[a]=s;var n=(t,a)=>i(t,"name",{value:a,configurable:!0});var r=(t,a,s)=>w(t,typeof a!="symbol"?a+"":a,s);var o=class o{constructor(a){r(this,"waMonitor");this.waMonitor=a}async offerCall({instanceName:a},s){return await this.waMonitor.waInstances[a].offerCall(s)}};n(o,"CallController");var c=o;export{c as CallController};
+//# sourceMappingURL=call.controller.mjs.map

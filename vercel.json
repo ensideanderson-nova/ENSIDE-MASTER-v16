@@ -6,7 +6,9 @@
     {
       "src": "index.js",
       "use": "@vercel/node",
-      "config": { "maxLambdaSize": "50mb" }
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     }
   ],
   "env": {
@@ -15,6 +17,10 @@
     "INSTANCE_NAME": "enside_whatsapp"
   },
   "routes": [
+    {
+      "src": "^/health$",
+      "dest": "index.js"
+    },
     {
       "src": "^/status$",
       "dest": "index.js"

@@ -1,0 +1,2 @@
+import{join as o}from"path";var t=process.cwd(),r=o(t,"instances"),c=o(t,"src"),e=o(t,"store","auth"),n=o(t,"store");export{e as AUTH_DIR,r as INSTANCE_DIR,t as ROOT_DIR,c as SRC_DIR,n as STORE_DIR};
+//# sourceMappingURL=path.config.mjs.map

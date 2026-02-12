@@ -1,0 +1,2 @@
+var o=Object.defineProperty;var p=(s,a,e)=>a in s?o(s,a,{enumerable:!0,configurable:!0,writable:!0,value:e}):s[a]=e;var c=(s,a)=>o(s,"name",{value:a,configurable:!0});var l=(s,a,e)=>p(s,typeof a!="symbol"?a+"":a,e);var r=class r{constructor(){l(this,"rejectCall");l(this,"msgCall");l(this,"groupsIgnore");l(this,"alwaysOnline");l(this,"readMessages");l(this,"readStatus");l(this,"syncFullHistory");l(this,"wavoipToken")}};c(r,"SettingsDto");var n=r;export{n as SettingsDto};
+//# sourceMappingURL=settings.dto.mjs.map

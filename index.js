@@ -8,6 +8,11 @@ const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution-ap
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '429683C4C977415CAAFCCE10F7D57E11';
 const INSTANCE_NAME = process.env.INSTANCE_NAME || 'enside_whatsapp';
 
+// Health check endpoint - extremamente simples, sem dependências
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
 app.get('/', (req, res) => {
   res.send(`
 <!DOCTYPE html>

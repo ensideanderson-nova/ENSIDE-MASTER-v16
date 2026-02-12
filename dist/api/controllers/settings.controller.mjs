@@ -1,0 +1,2 @@
+var c=Object.defineProperty;var a=(t,s,e)=>s in t?c(t,s,{enumerable:!0,configurable:!0,writable:!0,value:e}):t[s]=e;var n=(t,s)=>c(t,"name",{value:s,configurable:!0});var r=(t,s,e)=>a(t,typeof s!="symbol"?s+"":s,e);var i=class i{constructor(s){r(this,"settingsService");this.settingsService=s}async createSettings(s,e){return this.settingsService.create(s,e)}async findSettings(s){return this.settingsService.find(s)}};n(i,"SettingsController");var g=i;export{g as SettingsController};
+//# sourceMappingURL=settings.controller.mjs.map

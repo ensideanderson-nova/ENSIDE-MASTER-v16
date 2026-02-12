@@ -1,0 +1,2 @@
+var c=Object.defineProperty;var g=(i,e,s)=>e in i?c(i,e,{enumerable:!0,configurable:!0,writable:!0,value:s}):i[e]=s;var r=(i,e)=>c(i,"name",{value:e,configurable:!0});var a=(i,e,s)=>g(i,typeof e!="symbol"?e+"":e,s);var t=class t{constructor(e){a(this,"s3Service");this.s3Service=e}async getMedia(e,s){return this.s3Service.getMedia(e,s)}async getMediaUrl(e,s){return this.s3Service.getMediaUrl(e,s)}};r(t,"S3Controller");var d=t;export{d as S3Controller};
+//# sourceMappingURL=s3.controller.mjs.map

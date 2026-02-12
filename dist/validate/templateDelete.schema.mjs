@@ -1,0 +1,2 @@
+var i=Object.defineProperty;var r=(e,t)=>i(e,"name",{value:t,configurable:!0});import{v4 as m}from"uuid";var o=r((...e)=>{let t={};return e.forEach(n=>t[n]={minLength:1,description:`The "${n}" cannot be empty`}),{if:{propertyNames:{enum:[...e]}},then:{properties:t}}},"isNotEmpty"),c={$id:m(),type:"object",properties:{name:{type:"string"},hsmId:{type:"string"}},required:["name"],...o("name")};export{c as templateDeleteSchema};
+//# sourceMappingURL=templateDelete.schema.mjs.map

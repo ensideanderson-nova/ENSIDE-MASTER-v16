@@ -1,0 +1,2 @@
+var m=Object.defineProperty;var I=(s,r,d)=>r in s?m(s,r,{enumerable:!0,configurable:!0,writable:!0,value:d}):s[r]=d;var i=(s,r)=>m(s,"name",{value:r,configurable:!0});var c=(s,r,d)=>I(s,typeof r!="symbol"?r+"":r,d);var p=class p{constructor(){c(this,"id");c(this,"name");c(this,"color");c(this,"predefinedId")}};i(p,"LabelDto");var n=p,e=class e{constructor(){c(this,"number");c(this,"labelId");c(this,"action")}};i(e,"HandleLabelDto");var x=e;export{x as HandleLabelDto,n as LabelDto};
+//# sourceMappingURL=label.dto.mjs.map

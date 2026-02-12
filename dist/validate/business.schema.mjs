@@ -1,0 +1,2 @@
+var e={type:"object",properties:{number:{type:"string"},limit:{type:"number"}}},t={type:"object",properties:{number:{type:"string"},limit:{type:"number"}}};export{e as catalogSchema,t as collectionsSchema};
+//# sourceMappingURL=business.schema.mjs.map

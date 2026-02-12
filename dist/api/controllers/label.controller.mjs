@@ -1,0 +1,2 @@
+var c=Object.defineProperty;var h=(t,a,s)=>a in t?c(t,a,{enumerable:!0,configurable:!0,writable:!0,value:s}):t[a]=s;var e=(t,a)=>c(t,"name",{value:a,configurable:!0});var i=(t,a,s)=>h(t,typeof a!="symbol"?a+"":a,s);var n=class n{constructor(a){i(this,"waMonitor");this.waMonitor=a}async fetchLabels({instanceName:a}){return await this.waMonitor.waInstances[a].fetchLabels()}async handleLabel({instanceName:a},s){return await this.waMonitor.waInstances[a].handleLabel(s)}};e(n,"LabelController");var w=n;export{w as LabelController};
+//# sourceMappingURL=label.controller.mjs.map

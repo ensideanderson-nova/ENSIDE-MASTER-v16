@@ -1,0 +1,2 @@
+var y=Object.defineProperty;var l=(e,s,r)=>s in e?y(e,s,{enumerable:!0,configurable:!0,writable:!0,value:r}):e[s]=r;var c=(e,s)=>y(e,"name",{value:s,configurable:!0});var p=(e,s,r)=>l(e,typeof s!="symbol"?s+"":s,r);var x=class x{constructor(){p(this,"id");p(this,"type");p(this,"messageId");p(this,"expiry")}};c(x,"MediaDto");var g=x;export{g as MediaDto};
+//# sourceMappingURL=media.dto.mjs.map

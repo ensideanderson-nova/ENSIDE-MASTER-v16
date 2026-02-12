@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Status - ENSIDE WhatsApp</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        width: 100%;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        animation: slideIn 0.5s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .content {
+        padding: 30px 20px;
+      }
+
+      .status-box {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 4px solid #667eea;
+      }
+
+      .status-indicator {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .status-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin-right: 10px;
+        animation: pulse 2s infinite;
+      }
+
+      .status-dot.online {
+        background-color: #10b981;
+      }
+
+      .status-dot.offline {
+        background-color: #ef4444;
+        animation: none;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .info-item {
+        background: white;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .info-label {
+        font-size: 12px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+      }
+
+      .info-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111827;
+        word-break: break-all;
+      }
+
+      .button-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-secondary {
+        background: #e5e7eb;
+        color: #111827;
+      }
+
+      .btn-secondary:hover {
+        background: #d1d5db;
+        transform: translateY(-2px);
+      }
+
+      .alert {
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-size: 14px;
+      }
+
+      .alert-info {
+        background: #dbeafe;
+        border-left: 4px solid #3b82f6;
+        color: #1e40af;
+      }
+
+      .alert-success {
+        background: #dcfce7;
+        border-left: 4px solid #10b981;
+        color: #065f46;
+      }
+
+      .alert-warning {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        color: #92400e;
+      }
+
+      .loader {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        border-radius: 50%;
+        border-top-color: #667eea;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .footer {
+        background: #f3f4f6;
+        padding: 20px;
+        font-size: 12px;
+        color: #6b7280;
+        text-align: center;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      @media (max-width: 600px) {
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .button-group {
+          grid-template-columns: 1fr;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔷 ENSIDE WhatsApp</h1>
+        <p>Status da API Evolution</p>
+      </div>
+
+      <div class="content">
+        <div id="alertContainer"></div>
+
+        <div class="status-box">
+          <div class="status-indicator">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Verificando...</span>
+          </div>
+          <div
+            id="statusDetail"
+            style="font-size: 13px; color: #6b7280; margin-top: 10px"
+          ></div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Chave API</div>
+            <div class="info-value" id="apiKey">
+              429683C4C977415CAAFCCE10F7D57E11
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Instância</div>
+            <div class="info-value" id="instance">enside_whatsapp</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">URL Local</div>
+            <div class="info-value" id="localUrl">http://localhost:8080</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">URL Produção</div>
+            <div class="info-value" id="prodUrl">evolution-rust.vercel.app</div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <a href="/enside-master-v21.html" class="btn btn-primary">
+            📱 Dashboard Principal
+          </a>
+          <button class="btn btn-secondary" onclick="location.reload()">
+            🔄 Atualizar Status
+          </button>
+        </div>
+
+        <div id="instructionsContainer" style="margin-top: 20px"></div>
+      </div>
+
+      <div class="footer">
+        <p>ENSIDE Sistema v2.0 | Evolution API Integration</p>
+        <p style="margin-top: 5px; opacity: 0.7">
+          Última atualização: <span id="timestamp">agora</span>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const API_KEY = "429683C4C977415CAAFCCE10F7D57E11";
+      const INSTANCE = "enside_whatsapp";
+      const LOCAL_API_URL = "http://localhost:8080";
+      const VERCEL_API_URL = "https://evolution-rust.vercel.app";
+
+      async function checkApiStatus() {
+        const statusDot = document.getElementById("statusDot");
+        const statusText = document.getElementById("statusText");
+        const statusDetail = document.getElementById("statusDetail");
+        const alertContainer = document.getElementById("alertContainer");
+        const instructionsContainer = document.getElementById(
+          "instructionsContainer",
+        );
+        const timestamp = document.getElementById("timestamp");
+
+        // Atualizar timestamp
+        const now = new Date().toLocaleTimeString("pt-BR");
+        timestamp.textContent = now;
+
+        // Tentar API local primeiro
+        try {
+          const response = await fetch(`${LOCAL_API_URL}/status`, {
+            method: "GET",
+            timeout: 3000,
+          });
+
+          if (response.ok) {
+            // API Local está online
+            statusDot.classList.remove("offline");
+            statusDot.classList.add("online");
+            statusText.textContent = "🟢 API Online (Local)";
+            statusDetail.textContent = `Conectado em ${LOCAL_API_URL}`;
+
+            alertContainer.innerHTML = `
+                        <div class="alert alert-success">
+                            ✅ <strong>Sistema Operacional!</strong><br>
+                            A API Evolution está rodando localmente e pronta para usar.
+                        </div>
+                    `;
+
+            instructionsContainer.innerHTML = `
+                        <div class="alert alert-info">
+                            <strong>📲 Próximos Passos:</strong>
+                            <ol style="margin-left: 20px; margin-top: 10px;">
+                                <li>Acesse o <a href="/enside-master-v21.html" style="color: #1e40af; text-decoration: underline;">Dashboard Principal</a></li>
+                                <li>Conecte sua conta WhatsApp</li>
+                                <li>Comece a enviar mensagens via API</li>
+                            </ol>
+                        </div>
+                    `;
+
+            return;
+          }
+        } catch (err) {
+          // API local não respondeu, tentar Vercel
+        }
+
+        // Tentar API no Vercel
+        try {
+          const response = await fetch(`${VERCEL_API_URL}/status`, {
+            method: "GET",
+            timeout: 3000,
+          });
+
+          if (response.ok) {
+            // Vercel está respondendo
+            statusDot.classList.remove("offline");
+            statusDot.classList.add("online");
+            statusText.textContent = "🟡 API Online (Vercel)";
+            statusDetail.textContent = `Conectado em ${VERCEL_API_URL}`;
+
+            alertContainer.innerHTML = `
+                        <div class="alert alert-success">
+                            ✅ <strong>Sistema Online!</strong><br>
+                            A API Evolution está respondendo via Vercel.
+                        </div>
+                    `;
+
+            instructionsContainer.innerHTML = `
+                        <div class="alert alert-warning">
+                            <strong>⚠️ Atenção:</strong><br>
+                            Você está usando a API via Vercel (Produção). Para melhor performance, inicie a API localmente.
+                        </div>
+                    `;
+
+            return;
+          }
+        } catch (err) {
+          // Ambas as URLs falharam
+        }
+
+        // API Offline
+        statusDot.classList.remove("online");
+        statusDot.classList.add("offline");
+        statusText.textContent = "🔴 API Offline";
+        statusDetail.textContent = "Nenhuma API respondendo";
+
+        alertContainer.innerHTML = `
+                <div class="alert alert-warning">
+                    ❌ <strong>API Indisponível</strong><br>
+                    A API Evolution não está respondendo em nenhuma das URLs.
+                </div>
+            `;
+
+        instructionsContainer.innerHTML = `
+                <div class="alert alert-info">
+                    <strong>🔧 Para colocar online:</strong>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>Execute: <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 3px;">npm run dev:server</code></li>
+                        <li>Aguarde a inicialização (2-3 segundos)</li>
+                        <li>Recarregue esta página</li>
+                    </ol>
+                </div>
+            `;
+      }
+
+      // Verificar status ao carregar
+      checkApiStatus();
+
+      // Verificar status a cada 10 segundos
+      setInterval(checkApiStatus, 10000);
+    </script>
+  </body>
+</html>

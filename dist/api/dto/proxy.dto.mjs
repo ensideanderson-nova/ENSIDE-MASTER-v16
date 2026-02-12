@@ -1,0 +1,2 @@
+var o=Object.defineProperty;var d=(e,s,p)=>s in e?o(e,s,{enumerable:!0,configurable:!0,writable:!0,value:p}):e[s]=p;var r=(e,s)=>o(e,"name",{value:s,configurable:!0});var a=(e,s,p)=>d(e,typeof s!="symbol"?s+"":s,p);var l=class l{constructor(){a(this,"enabled");a(this,"host");a(this,"port");a(this,"protocol");a(this,"username");a(this,"password")}};r(l,"ProxyDto");var c=l;export{c as ProxyDto};
+//# sourceMappingURL=proxy.dto.mjs.map

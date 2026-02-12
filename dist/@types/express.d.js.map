@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/@types/express.d.ts"],"sourcesContent":["import { Multer } from 'multer';\n\ndeclare global {\n  namespace Express {\n    interface Request {\n      file?: Multer.File;\n    }\n  }\n}\n"],"mappings":"kWAAA,IAAAA,EAAA,kBAAAC,EAAAD","names":["express_d_exports","__toCommonJS"]}

@@ -1,0 +1,2 @@
+var r=Object.defineProperty;var b=(c,s,i)=>s in c?r(c,s,{enumerable:!0,configurable:!0,writable:!0,value:i}):c[s]=i;var x=(c,s)=>r(c,"name",{value:s,configurable:!0});var n=(c,s,i)=>b(c,typeof s!="symbol"?s+"":s,i);var o=class o{constructor(){n(this,"number")}};x(o,"Metadata");var e=o,p=class p extends e{constructor(){super(...arguments);n(this,"isVideo");n(this,"callDuration")}};x(p,"OfferCallDto");var u=p;export{e as Metadata,u as OfferCallDto};
+//# sourceMappingURL=call.dto.mjs.map

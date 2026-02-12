@@ -1,0 +1,2 @@
+var r=Object.defineProperty;var u=(e,t,s)=>t in e?r(e,t,{enumerable:!0,configurable:!0,writable:!0,value:s}):e[t]=s;var c=(e,t)=>r(e,"name",{value:t,configurable:!0});var a=(e,t,s)=>u(e,typeof t!="symbol"?t+"":t,s);var d=class d{constructor(){a(this,"remoteJid");a(this,"sessionId");a(this,"status");a(this,"createdAt");a(this,"updateAt")}};c(d,"Session");var l=d,p=class p{constructor(){a(this,"remoteJid");a(this,"action")}};c(p,"IgnoreJidDto");var m=p;export{m as IgnoreJidDto,l as Session};
+//# sourceMappingURL=chatbot.dto.mjs.map
