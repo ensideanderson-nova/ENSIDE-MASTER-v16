@@ -1,23 +1,199 @@
 #!/bin/bash
-# ENSIDE START - Inicia tudo com um comando
 
-cd /Users/andersonenside/evolution/public 2>/dev/null || cd /Users/andersonenside/evolution/public
+#################################
+# ENSIDE - Sistema Completo v19.0
+# Inicializa Docker, APIs e Interface Web
+#################################
 
-# Para servidor antigo
-pkill -9 -f "http.server" 2>/dev/null || true
-sleep 1
+set -e
 
-# Inicia servidor
-python3 -m http.server 9999 > /tmp/web.log 2>&1 &
+PROJECT_DIR="/Users/andersonenside/evolution"
+API_URL="http://localhost:8080"
+WEB_URL="http://localhost:9999"
+DOCKER_TIMEOUT=120
+
+# Cores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}🚀 ENSIDE MASTER v19.0 - INICIANDO SISTEMA${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"
+echo ""
+
+cd "$PROJECT_DIR"
+
+# 1. VERIFICAR DOCKER
+echo -e "${YELLOW}1️⃣  Verificando Docker...${NC}"
+if ! command -v docker &> /dev/null; then
+  echo -e "${RED}❌ Docker não está instalado${NC}"
+  echo "   Instale Docker em: https://www.docker.com/products/docker-desktop"
+  exit 1
+fi
+
+# 2. INICIAR DOCKER SE NÃO ESTIVER RODANDO
+echo -e "${YELLOW}2️⃣  Iniciando Docker Desktop...${NC}"
+if ! docker info > /dev/null 2>&1; then
+  echo "   ⏳ Docker não está rodando, iniciando..."
+  open -a Docker
+  sleep 10
+fi
+
+# 3. VERIFICAR E PARAR CONTAINERS ANTIGOS
+echo -e "${YELLOW}3️⃣  Limpando containers antigos...${NC}"
+docker-compose down 2>/dev/null || true
 sleep 2
 
-# Abre Chrome
-open -a "Google Chrome" "http://localhost:9999/evolution-manager.html" 2>/dev/null || true
-sleep 0.5
-open -a "Google Chrome" "http://localhost:9999/ENSIDE_MASTER_v19.0_INTEGRADO.html" 2>/dev/null || true
-sleep 0.5
-open -a "Google Chrome" "http://localhost:9999/ENSIDE_MASTER_v20.0_UNIFICADO.html" 2>/dev/null || true
-sleep 0.5
-open -a "Google Chrome" "http://localhost:9999/centro-controle.html" 2>/dev/null || true
+# 4. INICIAR DOCKER COMPOSE
+echo -e "${YELLOW}4️⃣  Iniciando serviços Docker...${NC}"
+echo "   📦 PostgreSQL (5432)"
+echo "   📦 Redis (6379)"
+echo "   📦 Evolution API (8080)"
+echo "   📦 RabbitMQ (5672/15672)"
+echo ""
 
-echo "✅ Sistema iniciado - Acesse http://localhost:9999"
+docker-compose up -d
+
+echo -e "${GREEN}✅ Containers iniciados${NC}"
+
+# 5. AGUARDAR SERVIÇOS
+echo ""
+echo -e "${YELLOW}5️⃣  Aguardando serviços ficarem saudáveis...${NC}"
+
+COUNTER=0
+while [ $COUNTER -lt $DOCKER_TIMEOUT ]; do
+  # Verificar PostgreSQL
+  if docker exec evolution_postgres pg_isready -U evolution > /dev/null 2>&1; then
+    echo -e "${GREEN}✅ PostgreSQL online${NC}"
+    break
+  fi
+  
+  COUNTER=$((COUNTER + 2))
+  if [ $((COUNTER % 10)) -eq 0 ]; then
+    echo "   ⏳ Aguardando... ($COUNTER/$DOCKER_TIMEOUT segundos)"
+  fi
+  sleep 2
+done
+
+sleep 5
+
+# Verificar Redis
+if docker exec evolution_redis redis-cli ping > /dev/null 2>&1; then
+  echo -e "${GREEN}✅ Redis online${NC}"
+else
+  echo -e "${YELLOW}⚠️  Redis ainda inicializando...${NC}"
+fi
+
+# Verificar API
+COUNTER=0
+while [ $COUNTER -lt 60 ]; do
+  if curl -s "$API_URL/health" > /dev/null 2>&1; then
+    echo -e "${GREEN}✅ Evolution API online${NC}"
+    break
+  fi
+  COUNTER=$((COUNTER + 2))
+  if [ $((COUNTER % 10)) -eq 0 ]; then
+    echo "   ⏳ Aguardando API... ($COUNTER/60 segundos)"
+  fi
+  sleep 2
+done
+
+# 6. INICIAR SERVIDOR WEB LOCAL
+echo ""
+echo -e "${YELLOW}6️⃣  Iniciando servidor web local (porta 9999)...${NC}"
+
+cd "$PROJECT_DIR/public"
+
+# Parar servidor antigo
+pkill -f "python3.*http.server.*9999" 2>/dev/null || true
+sleep 1
+
+# Iniciar novo servidor
+python3 -m http.server 9999 > /tmp/web_server.log 2>&1 &
+WEB_PID=$!
+
+sleep 2
+
+if kill -0 $WEB_PID 2>/dev/null; then
+  echo -e "${GREEN}✅ Servidor web iniciado (PID: $WEB_PID)${NC}"
+else
+  echo -e "${RED}❌ Erro ao iniciar servidor web${NC}"
+  exit 1
+fi
+
+# 7. STATUS DOS SERVIÇOS
+echo ""
+echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"
+echo -e "${GREEN}✅ SISTEMA ENSIDE COMPLETAMENTE INICIADO!${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"
+echo ""
+
+echo -e "${YELLOW}📊 SERVIÇOS DISPONÍVEIS:${NC}"
+echo ""
+echo -e "  ${GREEN}✅ PostgreSQL${NC}        → localhost:5432"
+echo -e "  ${GREEN}✅ Redis${NC}             → localhost:6379"
+echo -e "  ${GREEN}✅ RabbitMQ${NC}          → localhost:5672 (admin: 15672)"
+echo -e "  ${GREEN}✅ Evolution API${NC}     → $API_URL"
+echo -e "  ${GREEN}✅ Servidor Web${NC}      → $WEB_URL"
+echo ""
+
+echo -e "${YELLOW}🌐 ACESSAR INTERFACE:${NC}"
+echo ""
+echo -e "  ${BLUE}http://localhost:9999/public/index-v19-funcional.html${NC}"
+echo ""
+
+# 8. ABRIR NO NAVEGADOR
+echo -e "${YELLOW}7️⃣  Abrindo navegador...${NC}"
+
+# Tentar Firefox
+if command -v firefox &> /dev/null; then
+  open -a Firefox "$WEB_URL/public/index-v19-funcional.html" 2>/dev/null || true
+# Tentar Chrome
+elif command -v "Google Chrome" &> /dev/null; then
+  open -a "Google Chrome" "$WEB_URL/public/index-v19-funcional.html" 2>/dev/null || true
+# Safari como fallback
+else
+  open "$WEB_URL/public/index-v19-funcional.html" 2>/dev/null || true
+fi
+
+sleep 1
+
+# 9. RESUMO
+echo ""
+echo -e "${YELLOW}📋 INFORMAÇÕES DE ACESSO:${NC}"
+echo ""
+echo "  API Evolution:"
+echo "    • URL: http://localhost:8080"
+echo "    • Health: http://localhost:8080/health"
+echo ""
+echo "  Banco de Dados:"
+echo "    • Host: localhost"
+echo "    • Porta: 5432"
+echo "    • User: evolution"
+echo "    • Password: evolution_password"
+echo ""
+echo "  Redis Cache:"
+echo "    • Host: localhost"
+echo "    • Porta: 6379"
+echo ""
+echo "  RabbitMQ:"
+echo "    • URL: amqp://localhost:5672"
+echo "    • Admin: http://localhost:15672"
+echo "    • User: guest"
+echo "    • Password: guest"
+echo ""
+
+echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"
+echo -e "${GREEN}✨ Sistema pronto! Enjoy! 🚀${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"
+echo ""
+
+# 10. MANTER SCRIPT RODANDO COM LOGS
+echo -e "${YELLOW}📝 Monitorando logs (pressione Ctrl+C para parar):${NC}"
+echo ""
+
+# Mostrar logs do Docker
+docker-compose logs -f --tail=50
