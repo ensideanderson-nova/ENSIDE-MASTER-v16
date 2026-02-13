@@ -4,6 +4,10 @@
   "installCommand": "npm install",
   "builds": [
     {
+      "src": "public/**",
+      "use": "@vercel/static"
+    },
+    {
       "src": "index.js",
       "use": "@vercel/node",
       "config": {
@@ -17,6 +21,10 @@
     "INSTANCE_NAME": "enside_whatsapp"
   },
   "routes": [
+    {
+      "src": "^/public/(.*)$",
+      "dest": "public/$1"
+    },
     {
       "src": "^/health$",
       "dest": "index.js"
