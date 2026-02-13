@@ -25,6 +25,7 @@ enside
 ```
 
 Este comando:
+
 - ✅ Verifica Docker
 - ✅ Inicia docker-compose (API, Manager, Redis, PostgreSQL)
 - ✅ Inicia servidor web local
@@ -33,11 +34,13 @@ Este comando:
 ### 2. Acessar a Interface Web
 
 **Localmente:**
+
 ```
 http://localhost:9999/public/index-v19-funcional.html
 ```
 
 **Via Vercel (produção):**
+
 ```
 https://enside-sistema.vercel.app/public/index-v19-funcional.html
 ```
@@ -70,6 +73,7 @@ https://enside-sistema.vercel.app/public/index-v19-funcional.html
 ## 🔧 Troubleshooting
 
 **Se `enside` não funcionar:**
+
 ```bash
 # Recarregar shell
 source ~/.zshrc
@@ -79,6 +83,7 @@ enside
 ```
 
 **Se porta estiver ocupada:**
+
 ```bash
 # Matar processo antigo
 pkill -f "http.server" || pkill -f "python3"

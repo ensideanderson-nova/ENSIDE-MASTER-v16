@@ -5,8 +5,6 @@
 # Inicializa Docker, APIs e Interface Web
 #################################
 
-set -e
-
 PROJECT_DIR="/Users/andersonenside/evolution"
 API_URL="http://localhost:8080"
 WEB_URL="http://localhost:9999"
@@ -105,22 +103,24 @@ done
 echo ""
 echo -e "${YELLOW}6️⃣  Iniciando servidor web local (porta 9999)...${NC}"
 
-cd "$PROJECT_DIR/public"
+cd "$PROJECT_DIR"
 
-# Parar servidor antigo
-pkill -f "python3.*http.server.*9999" 2>/dev/null || true
-sleep 1
-
-# Iniciar novo servidor
-python3 -m http.server 9999 > /tmp/web_server.log 2>&1 &
-WEB_PID=$!
-
+# Parar servidor antigo na porta 9999
+lsof -ti :9999 | xargs kill -9 2>/dev/null || true
 sleep 2
 
-if kill -0 $WEB_PID 2>/dev/null; then
+# Iniciar novo servidor
+python3 -m http.server 9999 --directory "$PROJECT_DIR" > /tmp/web_server.log 2>&1 &
+WEB_PID=$!
+
+sleep 3
+
+# Verificar se servidor respondeu
+if curl -s http://localhost:9999 > /dev/null 2>&1; then
   echo -e "${GREEN}✅ Servidor web iniciado (PID: $WEB_PID)${NC}"
 else
   echo -e "${RED}❌ Erro ao iniciar servidor web${NC}"
+  cat /tmp/web_server.log
   exit 1
 fi
 

@@ -37,10 +37,11 @@ services:
       timeout: 5s
       retries: 5
 
-  # Evolution API - Servidor Principal
+  # Evolution API - Servidor Principal (usando Node.js)
   evolution_api:
-    image: atendai/evolution:latest
+    image: node:18-alpine
     container_name: evolution_api
+    working_dir: /app
     environment:
       # Configuração Base
       NODE_ENV: production
