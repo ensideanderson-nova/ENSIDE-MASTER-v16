@@ -36,8 +36,11 @@ fi
 echo -e "${YELLOW}2️⃣  Iniciando Docker Desktop...${NC}"
 if ! docker info > /dev/null 2>&1; then
   echo "   ⏳ Docker não está rodando, iniciando..."
+  echo "   🐳 Abrindo Docker Desktop..."
   open -a Docker
-  sleep 10
+  sleep 15
+else
+  echo -e "${GREEN}✅ Docker já está rodando${NC}"
 fi
 
 # 3. VERIFICAR E PARAR CONTAINERS ANTIGOS
@@ -87,9 +90,11 @@ fi
 
 # Verificar API
 COUNTER=0
+API_READY=false
 while [ $COUNTER -lt 60 ]; do
   if curl -s "$API_URL/health" > /dev/null 2>&1; then
     echo -e "${GREEN}✅ Evolution API online${NC}"
+    API_READY=true
     break
   fi
   COUNTER=$((COUNTER + 2))
@@ -98,6 +103,11 @@ while [ $COUNTER -lt 60 ]; do
   fi
   sleep 2
 done
+
+# Se API não respondeu, avisa mas continua
+if [ "$API_READY" = false ]; then
+  echo -e "${YELLOW}⚠️  API Evolution não respondeu ainda (pode estar inicializando)${NC}"
+fi
 
 # 6. INICIAR SERVIDOR WEB LOCAL
 echo ""
@@ -133,57 +143,108 @@ echo ""
 
 echo -e "${YELLOW}📊 SERVIÇOS DISPONÍVEIS:${NC}"
 echo ""
-echo -e "  ${GREEN}✅ PostgreSQL${NC}        → localhost:5432"
+echo -e "  ${GREEN}✅ PostgreSQL${NC}        → localhost:5432 (evolution/evolution_password)"
 echo -e "  ${GREEN}✅ Redis${NC}             → localhost:6379"
-echo -e "  ${GREEN}✅ RabbitMQ${NC}          → localhost:5672 (admin: 15672)"
+echo -e "  ${GREEN}✅ RabbitMQ${NC}          → localhost:5672 (Admin: 15672)"
 echo -e "  ${GREEN}✅ Evolution API${NC}     → $API_URL"
 echo -e "  ${GREEN}✅ Servidor Web${NC}      → $WEB_URL"
+echo ""
+
+# 8. BUSCAR INFORMAÇÕES DE INSTÂNCIAS E REDIS
+echo -e "${YELLOW}📡 INFORMAÇÕES DE CONEXÃO:${NC}"
+echo ""
+
+# Redis Info
+if docker exec evolution_redis redis-cli PING > /dev/null 2>&1; then
+  REDIS_MEMORY=$(docker exec evolution_redis redis-cli INFO memory | grep used_memory_human | cut -d: -f2 | tr -d '\r')
+  REDIS_KEYS=$(docker exec evolution_redis redis-cli DBSIZE | awk '{print $2}')
+  echo -e "  ${GREEN}Redis${NC}:"
+  echo "    • Memória: $REDIS_MEMORY"
+  echo "    • Chaves: $REDIS_KEYS"
+fi
+
+# PostgreSQL Info
+if docker exec evolution_postgres pg_isready -U evolution > /dev/null 2>&1; then
+  POSTGRES_DBS=$(docker exec evolution_postgres psql -U evolution -l 2>/dev/null | grep evolution | wc -l)
+  echo -e "  ${GREEN}PostgreSQL${NC}:"
+  echo "    • Bancos: $POSTGRES_DBS"
+  echo "    • User: evolution"
+fi
+
+# Evolution API Instances (se API estiver pronta)
+if [ "$API_READY" = true ]; then
+  echo -e "  ${GREEN}Evolution API${NC}:"
+  echo "    • Status: ✅ Online"
+  echo "    • URL: http://localhost:8080"
+  INSTANCES=$(curl -s "$API_URL/instances" 2>/dev/null | grep -o '"key"' | wc -l)
+  if [ $INSTANCES -gt 0 ]; then
+    echo "    • Instâncias: $INSTANCES"
+  fi
+fi
+
 echo ""
 
 echo -e "${YELLOW}🌐 ACESSAR INTERFACE:${NC}"
 echo ""
 echo -e "  ${BLUE}http://localhost:9999/public/index-v19-funcional.html${NC}"
 echo ""
+echo -e "${YELLOW}🔧 FERRAMENTAS ADMINISTRATIVAS:${NC}"
+echo ""
+echo -e "  RabbitMQ Admin:  ${BLUE}http://localhost:15672${NC} (guest/guest)"
+echo -e "  Evolution API:   ${BLUE}http://localhost:8080${NC}"
+echo ""
 
-# 8. ABRIR NO NAVEGADOR
-echo -e "${YELLOW}7️⃣  Abrindo navegador...${NC}"
+# 8. ABRIR NO NAVEGADOR (INTERFACE PRINCIPAL)
+echo -e "${YELLOW}7️⃣  Abrindo interface no navegador...${NC}"
 
-# Tentar Firefox
+MAIN_URL="$WEB_URL/public/index-v19-funcional.html"
+
+echo -e "   🌐 ${BLUE}$MAIN_URL${NC}"
+echo ""
+
+# Tentar abrir em Firefox
 if command -v firefox &> /dev/null; then
-  open -a Firefox "$WEB_URL/public/index-v19-funcional.html" 2>/dev/null || true
+  firefox "$MAIN_URL" > /dev/null 2>&1 &
+  echo -e "   ${GREEN}✅ Firefox aberto${NC}"
 # Tentar Chrome
-elif command -v "Google Chrome" &> /dev/null; then
-  open -a "Google Chrome" "$WEB_URL/public/index-v19-funcional.html" 2>/dev/null || true
-# Safari como fallback
+elif command -v google-chrome &> /dev/null; then
+  google-chrome "$MAIN_URL" > /dev/null 2>&1 &
+  echo -e "   ${GREEN}✅ Chrome aberto${NC}"
+# Tentar Safari (macOS)
+elif command -v open &> /dev/null; then
+  open -a Safari "$MAIN_URL" 2>/dev/null &
+  echo -e "   ${GREEN}✅ Safari aberto${NC}"
+# Fallback genérico
 else
-  open "$WEB_URL/public/index-v19-funcional.html" 2>/dev/null || true
+  open "$MAIN_URL" 2>/dev/null &
+  echo -e "   ${GREEN}✅ Navegador padrão aberto${NC}"
 fi
 
-sleep 1
+sleep 2
 
 # 9. RESUMO
 echo ""
-echo -e "${YELLOW}📋 INFORMAÇÕES DE ACESSO:${NC}"
+echo -e "${YELLOW}📋 CREDENCIAIS E CONFIGURAÇÕES:${NC}"
 echo ""
-echo "  API Evolution:"
-echo "    • URL: http://localhost:8080"
-echo "    • Health: http://localhost:8080/health"
-echo ""
-echo "  Banco de Dados:"
-echo "    • Host: localhost"
-echo "    • Porta: 5432"
+echo "  📦 PostgreSQL:"
+echo "    • Host: localhost:5432"
+echo "    • Database: evolution_db"
 echo "    • User: evolution"
 echo "    • Password: evolution_password"
 echo ""
-echo "  Redis Cache:"
-echo "    • Host: localhost"
-echo "    • Porta: 6379"
+echo "  ⚡ Redis:"
+echo "    • Host: localhost:6379"
+echo "    • Sem senha"
 echo ""
-echo "  RabbitMQ:"
-echo "    • URL: amqp://localhost:5672"
-echo "    • Admin: http://localhost:15672"
+echo "  🐰 RabbitMQ:"
+echo "    • Host: localhost:5672"
+echo "    • Admin URL: http://localhost:15672"
 echo "    • User: guest"
 echo "    • Password: guest"
+echo ""
+echo "  🌐 Evolution API:"
+echo "    • Base URL: http://localhost:8080"
+echo "    • Health Check: http://localhost:8080/health"
 echo ""
 
 echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"
@@ -192,7 +253,7 @@ echo -e "${BLUE}═════════════════════�
 echo ""
 
 # 10. MANTER SCRIPT RODANDO COM LOGS
-echo -e "${YELLOW}📝 Monitorando logs (pressione Ctrl+C para parar):${NC}"
+echo -e "${YELLOW}📝 Monitorando logs em tempo real - pressione Ctrl+C para parar${NC}"
 echo ""
 
 # Mostrar logs do Docker
