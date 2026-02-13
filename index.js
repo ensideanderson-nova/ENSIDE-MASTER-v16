@@ -9,21 +9,53 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
-// Servir arquivos estáticos do /public
+// ===== IMPORTANTE: Servir HTMLs ANTES de outras rotas =====
 app.use(express.static(path.join(__dirname, 'public')));
 
-const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution-api.production.vercel.app';
-const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '429683C4C977415CAAFCCE10F7D57E11';
-const INSTANCE_NAME = process.env.INSTANCE_NAME || 'enside_whatsapp';
+// Rotas explícitas para HTMLs principais
+app.get('/index-v19-funcional.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index-v19-funcional.html'));
+});
 
-// Rotas para files estáticos
-app.get('/enside-config.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'enside-config.js'));
+app.get('/v19', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index-v19-funcional.html'));
+});
+
+app.get('/enside-master-v21.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'enside-master-v21.html'));
+});
+
+app.get('/ENSIDE_MASTER_v19.0_INTEGRADO.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'ENSIDE_MASTER_v19.0_INTEGRADO.html'));
+});
+
+app.get('/control-center-v21.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'control-center-v21.html'));
 });
 
 app.get('/index-hub.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index-hub.html'));
 });
+
+app.get('/api-status.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'api-status.html'));
+});
+
+app.get('/evolution-manager.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'evolution-manager.html'));
+});
+
+app.get('/evolution-manager', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'evolution-manager.html'));
+});
+
+app.get('/enside-config.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'enside-config.js'));
+});
+
+const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution-api.production.vercel.app';
+const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '429683C4C977415CAAFCCE10F7D57E11';
+const INSTANCE_NAME = process.env.INSTANCE_NAME || 'enside_whatsapp';
 
 // Health check endpoint - extremamente simples, sem dependências
 app.get('/health', (req, res) => {

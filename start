@@ -1,0 +1,23 @@
+#!/bin/bash
+# ENSIDE START - Inicia tudo com um comando
+
+cd /Users/andersonenside/evolution/public 2>/dev/null || cd /Users/andersonenside/evolution/public
+
+# Para servidor antigo
+pkill -9 -f "http.server" 2>/dev/null || true
+sleep 1
+
+# Inicia servidor
+python3 -m http.server 9999 > /tmp/web.log 2>&1 &
+sleep 2
+
+# Abre Chrome
+open -a "Google Chrome" "http://localhost:9999/evolution-manager.html" 2>/dev/null || true
+sleep 0.5
+open -a "Google Chrome" "http://localhost:9999/ENSIDE_MASTER_v19.0_INTEGRADO.html" 2>/dev/null || true
+sleep 0.5
+open -a "Google Chrome" "http://localhost:9999/ENSIDE_MASTER_v20.0_UNIFICADO.html" 2>/dev/null || true
+sleep 0.5
+open -a "Google Chrome" "http://localhost:9999/centro-controle.html" 2>/dev/null || true
+
+echo "✅ Sistema iniciado - Acesse http://localhost:9999"

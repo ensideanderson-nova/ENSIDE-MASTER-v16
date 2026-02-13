@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evolution Manager - ENSIDE</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+      header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+      header p {
+        font-size: 1.1em;
+        opacity: 0.9;
+      }
+      .content {
+        padding: 40px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+      .card {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        border-color: #667eea;
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+        transform: translateY(-5px);
+      }
+      .card h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+      .card p {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 15px;
+      }
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .btn:hover {
+        background: #764ba2;
+        transform: scale(1.05);
+      }
+      .status-box {
+        background: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 5px;
+      }
+      .status-box h3 {
+        color: #2e7d32;
+        margin-bottom: 10px;
+      }
+      .status-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #c8e6c9;
+      }
+      .status-item:last-child {
+        border-bottom: none;
+      }
+      .status-item .label {
+        color: #555;
+        font-weight: 500;
+      }
+      .status-item .value {
+        color: #2e7d32;
+        font-weight: bold;
+      }
+      footer {
+        background: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        border-top: 1px solid #e9ecef;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🚀 Evolution Manager</h1>
+        <p>Gerenciador de Instâncias WhatsApp - ENSIDE</p>
+      </header>
+
+      <div class="content">
+        <div class="status-box">
+          <h3>✅ Sistema Operacional</h3>
+          <div class="status-item">
+            <span class="label">API Evolution:</span>
+            <span class="value">http://localhost:8080</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Instância:</span>
+            <span class="value">enside_whatsapp</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Provider:</span>
+            <span class="value">Baileys (WhatsApp Web)</span>
+          </div>
+          <div class="status-item">
+            <span class="label">Status:</span>
+            <span class="value">🟢 CONECTADO</span>
+          </div>
+        </div>
+
+        <h2 style="margin-bottom: 20px; color: #333">
+          📱 Interfaces Disponíveis
+        </h2>
+        <div class="grid">
+          <div class="card">
+            <h3>📊 v19 Integrada</h3>
+            <p>Interface principal com todas as features</p>
+            <a href="./ENSIDE_MASTER_v19.0_INTEGRADO.html" class="btn">Abrir</a>
+          </div>
+
+          <div class="card">
+            <h3>📊 v20 Unificada</h3>
+            <p>Dashboard unificado e otimizado</p>
+            <a href="./ENSIDE_MASTER_v20.0_UNIFICADO.html" class="btn">Abrir</a>
+          </div>
+
+          <div class="card">
+            <h3>🎛️ Centro de Controle</h3>
+            <p>Painel de controle centralizado</p>
+            <a href="./centro-controle.html" class="btn">Abrir</a>
+          </div>
+
+          <div class="card">
+            <h3>📈 Control Center v21</h3>
+            <p>Dashboard avançado com gráficos</p>
+            <a href="./control-center-v21.html" class="btn">Abrir</a>
+          </div>
+
+          <div class="card">
+            <h3>🔍 API Status</h3>
+            <p>Monitoramento da API em tempo real</p>
+            <a href="./api-status.html" class="btn">Abrir</a>
+          </div>
+
+          <div class="card">
+            <h3>🏠 Hub Principal</h3>
+            <p>Hub de navegação centralizado</p>
+            <a href="./index-hub.html" class="btn">Abrir</a>
+          </div>
+        </div>
+
+        <h2 style="margin: 30px 0 20px 0; color: #333">🔐 Credenciais</h2>
+        <div
+          class="status-box"
+          style="background: #fff3e0; border-left-color: #ff9800"
+        >
+          <h3 style="color: #e65100">⚙️ Configuração Ativa</h3>
+          <div class="status-item">
+            <span class="label">API Key:</span>
+            <span class="value" style="color: #ff6f00"
+              >429683C4C977415CAAFCCE10F7D57E11</span
+            >
+          </div>
+          <div class="status-item">
+            <span class="label">Instância:</span>
+            <span class="value" style="color: #ff6f00">enside_whatsapp</span>
+          </div>
+          <div class="status-item">
+            <span class="label">API URL:</span>
+            <span class="value" style="color: #ff6f00"
+              >http://localhost:8080</span
+            >
+          </div>
+        </div>
+
+        <h2 style="margin: 30px 0 20px 0; color: #333">🌐 Produção (Vercel)</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>🚀 Vercel</h3>
+            <p>Acesso à versão em produção</p>
+            <a
+              href="https://evolution-rust.vercel.app"
+              class="btn"
+              target="_blank"
+              >Abrir Vercel</a
+            >
+          </div>
+
+          <div class="card">
+            <h3>📱 GitHub</h3>
+            <p>Repositório do projeto</p>
+            <a href="https://github.com" class="btn" target="_blank"
+              >Ver GitHub</a
+            >
+          </div>
+
+          <div class="card">
+            <h3>📊 Google Sheets</h3>
+            <p>Dados sincronizados</p>
+            <a
+              href="https://docs.google.com/spreadsheets"
+              class="btn"
+              target="_blank"
+              >Ver Sheets</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>
+          🎯 ENSIDE Evolution API Manager v1.0 | © 2026 | Sistema 100%
+          Operacional ✅
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Script para abrir integração completa v19 + v21 com Evolution
+# Uso: ./abrir-v21-integrado [url_base]
+# Padrão: Vercel (https://evolution-rust.vercel.app)
+
+BASE_URL="${1:-https://evolution-rust.vercel.app}"
+
+echo "🚀 Abrindo ENSIDE MASTER v19 + v21 de: $BASE_URL"
+echo ""
+
+# Função para abrir URLs
+abrir_url() {
+    local url="$1"
+    local nome="$2"
+    echo "📱 Abrindo $nome..."
+    if command -v open &> /dev/null; then
+        open "$url" 2>/dev/null &
+    elif command -v xdg-open &> /dev/null; then
+        xdg-open "$url" 2>/dev/null &
+    fi
+    sleep 1
+}
+
+# Abrir interface principal v19 (contém v21 integrado)
+abrir_url "$BASE_URL/ENSIDE_MASTER_v19.0_INTEGRADO.html" "ENSIDE MASTER v19.0 (com v21 integrado)"
+
+echo ""
+echo "✅ Sistema v19 + v21 aberto com sucesso!"
+echo ""
+echo "📌 Interface Principal:"
+echo "   • ENSIDE MASTER v19.0: $BASE_URL/ENSIDE_MASTER_v19.0_INTEGRADO.html"
+echo "     └─ Contém: WhatsApp v21, Control v21, Evolution Manager"
+echo ""
+echo "📌 URLs diretas (se necessário):"
+echo "   • WhatsApp v21: $BASE_URL/enside-master-v21.html"
+echo "   • Control v21: $BASE_URL/control-center-v21.html"
+echo "   • Evolution Manager: $BASE_URL/evolution-manager"
+echo ""
+echo "🌐 Ambientes:"
+echo "   • Vercel (padrão): ./abrir-v21-integrado"
+echo "   • Local: ./abrir-v21-integrado http://localhost:3000"

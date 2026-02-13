@@ -1,0 +1,142 @@
+#!/bin/bash
+
+###############################################################################
+#                                                                             #
+#        🎯 ENSIDE START - SISTEMA COMPLETO EM UM COMANDO 🎯                #
+#                                                                             #
+#  Executa TUDO em sequência:                                                #
+#  1. Mata processos antigos                                                 #
+#  2. Inicia Web Server (Python)                                             #
+#  3. Abre 4 interfaces no Chrome                                            #
+#                                                                             #
+###############################################################################
+
+# Cores
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+clear
+
+echo "╔═══════════════════════════════════════════════════════════════════════════╗"
+echo "║                                                                           ║"
+echo "║         🎯 ENSIDE START - INICIANDO SISTEMA COMPLETO 🎯                  ║"
+echo "║                                                                           ║"
+echo "║         Web Server + 4 Interfaces + Chrome Automático                     ║"
+echo "║                                                                           ║"
+echo "╚═══════════════════════════════════════════════════════════════════════════╝"
+echo ""
+
+EVOLUTION_DIR="/Users/andersonenside/evolution"
+PUBLIC_DIR="$EVOLUTION_DIR/public"
+WEB_PORT=9999
+
+# ============================================================================
+# FASE 1: Parar processos antigos
+# ============================================================================
+
+echo -e "${CYAN}[FASE 1/3] 🧹 Parando processos antigos...${NC}"
+pkill -9 -f "python3.*http.server" 2>/dev/null || true
+sleep 1
+echo -e "${GREEN}✅ Processos limpos${NC}"
+echo ""
+
+# ============================================================================
+# FASE 2: Iniciar Web Server
+# ============================================================================
+
+echo -e "${CYAN}[FASE 2/3] 🌐 Iniciando Web Server...${NC}"
+cd "$PUBLIC_DIR" || exit 1
+
+python3 -m http.server $WEB_PORT > /tmp/web-server.log 2>&1 &
+WEB_PID=$!
+echo $WEB_PID > /tmp/web-server.pid
+
+sleep 2
+
+if ps -p $WEB_PID > /dev/null 2>&1; then
+    echo -e "${GREEN}✅ Web Server rodando na porta $WEB_PORT (PID: $WEB_PID)${NC}"
+else
+    echo -e "${RED}❌ Erro ao iniciar Web Server!${NC}"
+    cat /tmp/web-server.log
+    exit 1
+fi
+echo ""
+
+# ============================================================================
+# FASE 3: Abrir interfaces no Chrome
+# ============================================================================
+
+echo -e "${CYAN}[FASE 3/3] 📖 Abrindo interfaces no Chrome...${NC}"
+echo ""
+
+# URLs dos 4 HTMLs principais (com caminhos relativos corrigidos)
+declare -a urls=(
+    "http://localhost:$WEB_PORT/evolution-manager.html"
+    "http://localhost:$WEB_PORT/ENSIDE_MASTER_v19.0_INTEGRADO.html"
+    "http://localhost:$WEB_PORT/ENSIDE_MASTER_v20.0_UNIFICADO.html"
+    "http://localhost:$WEB_PORT/centro-controle.html"
+)
+
+declare -a names=(
+    "Evolution Manager"
+    "Interface v19"
+    "Interface v20"
+    "Centro de Controle"
+)
+
+# Abrir cada URL no Chrome
+for i in "${!urls[@]}"; do
+    url="${urls[$i]}"
+    name="${names[$i]}"
+    
+    echo -e "  ${GREEN}✅${NC} Abrindo: $name"
+    echo "     URL: $url"
+    
+    open -a "Google Chrome" "$url" 2>/dev/null || open "$url" 2>/dev/null || true
+    sleep 1
+done
+
+echo ""
+echo "╔═══════════════════════════════════════════════════════════════════════════╗"
+echo "║                                                                           ║"
+echo "║                 ✅ SISTEMA PRONTO E OPERACIONAL! ✅                     ║"
+echo "║                                                                           ║"
+echo "╚═══════════════════════════════════════════════════════════════════════════╝"
+echo ""
+
+echo -e "${CYAN}📍 ACESSOS DISPONÍVEIS:${NC}"
+echo ""
+echo "  LOCAL (Seu computador):"
+echo "    🌐 Evolution Manager:     http://localhost:$WEB_PORT/evolution-manager.html"
+echo "    📱 Interface v19:         http://localhost:$WEB_PORT/ENSIDE_MASTER_v19.0_INTEGRADO.html"
+echo "    📱 Interface v20:         http://localhost:$WEB_PORT/ENSIDE_MASTER_v20.0_UNIFICADO.html"
+echo "    🎛️  Centro de Controle:    http://localhost:$WEB_PORT/centro-controle.html"
+echo ""
+echo "  PRODUÇÃO (Vercel - Online):"
+echo "    🚀 API:                   https://evolution-rust.vercel.app"
+echo ""
+
+echo -e "${CYAN}🔐 CREDENCIAIS CONFIGURADAS:${NC}"
+echo ""
+echo "    API Key:  429683C4C977415CAAFCCE10F7D57E11"
+echo "    Instância: enside_whatsapp"
+echo "    Provider: Baileys (WhatsApp Web)"
+echo ""
+
+echo -e "${YELLOW}💡 COMANDOS ÚTEIS:${NC}"
+echo ""
+echo "  Abrir interfaces novamente:"
+echo "    ${CYAN}$ enside-start${NC}"
+echo ""
+echo "  Ver status completo:"
+echo "    ${CYAN}$ enside-status${NC}"
+echo ""
+echo "  Parar Web Server:"
+echo "    ${CYAN}$ pkill -f 'http.server'${NC}"
+echo ""
+echo "  Ver logs:"
+echo "    ${CYAN}$ tail -f /tmp/web-server.log${NC}"
+echo ""

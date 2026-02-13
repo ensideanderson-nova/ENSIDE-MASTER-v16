@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ENSIDE Sistema - Índice de Interfaces</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        color: white;
+        margin-bottom: 50px;
+        padding: 30px 0;
+      }
+
+      header h1 {
+        font-size: 3em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      header p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 50px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+      }
+
+      .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .card-icon {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
+
+      .card-title {
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+
+      .card-version {
+        font-size: 0.85em;
+        opacity: 0.8;
+      }
+
+      .card-body {
+        padding: 20px;
+      }
+
+      .card-description {
+        color: #666;
+        margin-bottom: 15px;
+        line-height: 1.6;
+        font-size: 0.95em;
+      }
+
+      .card-features {
+        margin: 15px 0;
+        padding: 10px 0;
+      }
+
+      .card-features li {
+        list-style: none;
+        padding: 5px 0;
+        color: #555;
+        font-size: 0.9em;
+      }
+
+      .card-features li:before {
+        content: "✓ ";
+        color: #10b981;
+        font-weight: bold;
+        margin-right: 8px;
+      }
+
+      .card-footer {
+        padding: 15px;
+        background: #f9f9f9;
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.9em;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #764ba2;
+      }
+
+      .btn-secondary {
+        background: #e5e7eb;
+        color: #333;
+      }
+
+      .btn-secondary:hover {
+        background: #d1d5db;
+      }
+
+      .status-badge {
+        display: inline-block;
+        background: #10b981;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .footer {
+        text-align: center;
+        color: white;
+        padding: 20px;
+        margin-top: 50px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+      }
+
+      .quick-access {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .quick-access h2 {
+        margin-bottom: 15px;
+      }
+
+      .quick-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .quick-links a {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .quick-links a:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: white;
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🚀 ENSIDE SISTEMA</h1>
+        <p>Centro Integrado de Controle - Evolution API v2.1</p>
+      </header>
+
+      <div class="quick-access">
+        <h2>⚡ Acesso Rápido</h2>
+        <div class="quick-links">
+          <a href="ENSIDE_MASTER_v19.0_INTEGRADO.html"
+            >🎯 Hub Principal v19.0</a
+          >
+          <a href="enside-master-v21.html">💬 WhatsApp Manager</a>
+          <a href="control-center-v21.html">⚙️ Control Center</a>
+          <a href="api-status.html">📈 Status API</a>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- ENSIDE MASTER v19.0 -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🎯</div>
+            <div class="card-title">ENSIDE MASTER</div>
+            <div class="card-version">v19.0 - Hub Integrado</div>
+          </div>
+          <div class="card-body">
+            <p class="card-description">
+              Centro de controle unificado com todas as interfaces do sistema
+              integradas em um único painel.
+            </p>
+            <ul class="card-features">
+              <li>Dashboard Principal</li>
+              <li>Integração com WhatsApp v21</li>
+              <li>Control Center v21</li>
+              <li>Evolution Manager</li>
+              <li>Integrações e Status</li>
+            </ul>
+            <div class="status-badge">✅ PRINCIPAL</div>
+          </div>
+          <div class="card-footer">
+            <a href="ENSIDE_MASTER_v19.0_INTEGRADO.html" class="btn btn-primary"
+              >Abrir</a
+            >
+          </div>
+        </div>
+
+        <!-- WhatsApp Manager v21 -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">💬</div>
+            <div class="card-title">WhatsApp Manager</div>
+            <div class="card-version">v2.1 - Baileys</div>
+          </div>
+          <div class="card-body">
+            <p class="card-description">
+              Interface avançada para gerenciamento completo de instâncias
+              WhatsApp com Baileys (WhatsApp Web).
+            </p>
+            <ul class="card-features">
+              <li>Gerenciar Instâncias</li>
+              <li>Baileys Integration</li>
+              <li>Envio de Mensagens</li>
+              <li>Monitoramento em Tempo Real</li>
+              <li>Webhooks Configuráveis</li>
+            </ul>
+            <div class="status-badge">✅ ATIVO</div>
+          </div>
+          <div class="card-footer">
+            <a href="enside-master-v21.html" class="btn btn-primary">Abrir</a>
+          </div>
+        </div>
+
+        <!-- Control Center v21 -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">⚙️</div>
+            <div class="card-title">Control Center</div>
+            <div class="card-version">v2.1 - Sistema</div>
+          </div>
+          <div class="card-body">
+            <p class="card-description">
+              Centro de controle completo para monitoramento, configuração e
+              gerenciamento de todos os componentes do sistema.
+            </p>
+            <ul class="card-features">
+              <li>Monitoramento de Sistema</li>
+              <li>Configurações Avançadas</li>
+              <li>Logs em Tempo Real</li>
+              <li>Gerenciamento de Usuários</li>
+              <li>Estatísticas Detalhadas</li>
+            </ul>
+            <div class="status-badge">✅ ATIVO</div>
+          </div>
+          <div class="card-footer">
+            <a href="control-center-v21.html" class="btn btn-primary">Abrir</a>
+          </div>
+        </div>
+
+        <!-- Evolution Manager -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🔄</div>
+            <div class="card-title">Evolution Manager</div>
+            <div class="card-version">API 2.1</div>
+          </div>
+          <div class="card-body">
+            <p class="card-description">
+              Gerenciador especializado para a API Evolution com controle de
+              instâncias, configurações e integrações.
+            </p>
+            <ul class="card-features">
+              <li>Gerenciar Instâncias API</li>
+              <li>Configuração de Webhooks</li>
+              <li>Autenticação OAuth 2.0</li>
+              <li>Documentação API</li>
+              <li>Gerenciar Chaves de Acesso</li>
+            </ul>
+            <div class="status-badge">✅ ATIVO</div>
+          </div>
+          <div class="card-footer">
+            <a href="evolution-manager.html" class="btn btn-primary">Abrir</a>
+          </div>
+        </div>
+
+        <!-- Status API -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">📈</div>
+            <div class="card-title">Status API</div>
+            <div class="card-version">Sistema</div>
+          </div>
+          <div class="card-body">
+            <p class="card-description">
+              Painel de monitoramento em tempo real com status de todos os
+              serviços, APIs e componentes do sistema.
+            </p>
+            <ul class="card-features">
+              <li>Status em Tempo Real</li>
+              <li>Gráficos de Performance</li>
+              <li>Histórico de Uptime</li>
+              <li>Alertas de Falhas</li>
+              <li>Relatórios</li>
+            </ul>
+            <div class="status-badge">✅ OPERACIONAL</div>
+          </div>
+          <div class="card-footer">
+            <a href="api-status.html" class="btn btn-primary">Abrir</a>
+          </div>
+        </div>
+
+        <!-- Centro de Controle -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">🎛️</div>
+            <div class="card-title">Centro Controle</div>
+            <div class="card-version">Sistema</div>
+          </div>
+          <div class="card-body">
+            <p class="card-description">
+              Painel complementar de controle com funcionalidades adicionais de
+              gerenciamento e monitoramento do sistema.
+            </p>
+            <ul class="card-features">
+              <li>Gerenciamento Avançado</li>
+              <li>Automações</li>
+              <li>Relatórios Customizados</li>
+              <li>Backup e Restore</li>
+              <li>Análise de Dados</li>
+            </ul>
+            <div class="status-badge">✅ ATIVO</div>
+          </div>
+          <div class="card-footer">
+            <a href="centro-controle.html" class="btn btn-primary">Abrir</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <h3>🎯 ENSIDE SISTEMA - Versão 19.0</h3>
+        <p>
+          Centro de Controle Unificado com Evolution API 2.1 + WhatsApp Manager
+          v21
+        </p>
+        <p style="margin-top: 15px; font-size: 0.9em">
+          © 2026 | Sistema 100% Operacional ✅ | Uptime: 99.9% | Status: 🟢
+          ONLINE
+        </p>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log(
+          "%cENSIDE SISTEMA v19.0",
+          "font-size: 18px; color: #667eea; font-weight: bold;",
+        );
+        console.log("Todas as interfaces carregadas e disponíveis:");
+        console.log("✅ Hub Integrado (ENSIDE MASTER v19.0)");
+        console.log("✅ WhatsApp Manager (v2.1)");
+        console.log("✅ Control Center (v2.1)");
+        console.log("✅ Evolution Manager (API 2.1)");
+        console.log("✅ Status API");
+        console.log("✅ Centro de Controle");
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+###############################################################################
+#                                                                             #
+#        🎯 ENSIDE OPEN - ABRE TUDO NO CHROME 🎯                            #
+#                                                                             #
+#  Abre as 4 interfaces principais com Evolution API já configurada          #
+#                                                                             #
+###############################################################################
+
+# Cores
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+clear
+
+echo "╔═══════════════════════════════════════════════════════════════════════════╗"
+echo "║                                                                           ║"
+echo "║           🎯 ENSIDE OPEN - ABRINDO INTERFACES NO CHROME 🎯               ║"
+echo "║                                                                           ║"
+echo "╚═══════════════════════════════════════════════════════════════════════════╝"
+echo ""
+
+echo -e "${CYAN}🌐 Abrindo 4 interfaces...${NC}"
+echo ""
+
+# URLs dos 4 HTMLs principais
+urls=(
+    "http://localhost:9999/evolution-manager.html"
+    "http://localhost:9999/ENSIDE_MASTER_v19.0_INTEGRADO.html"
+    "http://localhost:9999/ENSIDE_MASTER_v20.0_UNIFICADO.html"
+    "http://localhost:9999/centro-controle.html"
+)
+
+names=(
+    "Evolution Manager"
+    "Interface v19"
+    "Interface v20"
+    "Centro de Controle"
+)
+
+# Abrir cada URL no Chrome
+for i in "${!urls[@]}"; do
+    url="${urls[$i]}"
+    name="${names[$i]}"
+    
+    echo -e "  ${GREEN}✅ Abrindo: $name${NC}"
+    open -a "Google Chrome" "$url" 2>/dev/null || open "$url" 2>/dev/null || true
+    sleep 1
+done
+
+echo ""
+echo -e "${GREEN}✅ Todas as interfaces foram abertas!${NC}"
+echo ""
+echo "📍 Acesse também:"
+echo "  • Control Center v21: http://localhost:9999/control-center-v21.html"
+echo "  • API Status:         http://localhost:9999/api-status.html"
+echo "  • Hub Principal:      http://localhost:9999/index-hub.html"
+echo ""
+echo -e "${GREEN}🚀 Sistema 100% Operacional!${NC}"
+echo ""
