@@ -3,6 +3,7 @@
 ## ✅ Verificação Concluída
 
 ### Código Está Correto
+
 - ✅ index.js: aprendizadosRoutes integrada (linha 6 + 853)
 - ✅ vercel.json: rotas configuradas corretamente
 - ✅ routes/aprendizados.js: endpoints prontos
@@ -10,6 +11,7 @@
 - ✅ Git: 111 commits sincronizados
 
 ### Problema Identificado
+
 - ❌ Limite Vercel: 100 deploys/dia (máximo atingido)
 - Efeito: Não pode fazer novo deploy hoje
 - Solução: Deploy amanhã quando limite reseta
@@ -19,27 +21,32 @@
 ## 🎯 PLANO AMANHÃ (15/02) - SUPER RÁPIDO
 
 ### Horário
+
 **UTC:** 00:00 em diante (qualquer hora após meia-noite UTC)  
 **Brasília:** 21:00 de hoje / 03:00 de amanhã (madrugada)
 
 ### 3 Comandos Simples (5 minutos total)
 
 #### 1️⃣ Ir para diretório
+
 ```bash
 cd /Users/andersonenside/ENSIDE_SISTEMA_UNIFICADO
 ```
 
 #### 2️⃣ Deploy (2-3 minutos aguardando)
+
 ```bash
 vercel deploy --prod --force
 ```
 
 #### 3️⃣ Validar (30 segundos)
+
 ```bash
 bash /Users/andersonenside/Desktop/ENSIDE-MASTER-v16/sistema-terminal
 ```
 
 ### Resultado Esperado
+
 ```
 ✅ GET /api/aprendizados              HTTP 200
 ✅ GET /api/aprendizados/stats/info   HTTP 200
@@ -65,6 +72,7 @@ bash /Users/andersonenside/Desktop/ENSIDE-MASTER-v16/sistema-terminal
 ## 🎉 Depois do Deploy
 
 ### Sistema Estará 100% Pronto
+
 - ✅ Frontend: Online
 - ✅ API: Respondendo
 - ✅ Modal: Com dados
@@ -72,6 +80,7 @@ bash /Users/andersonenside/Desktop/ENSIDE-MASTER-v16/sistema-terminal
 - ✅ Inteligência: Ativa
 
 ### Próxima Fase
+
 1. Testar full end-to-end
 2. Implementar Google Sheets
 3. Integrar WhatsApp
@@ -83,7 +92,7 @@ bash /Users/andersonenside/Desktop/ENSIDE-MASTER-v16/sistema-terminal
 
 ❌ Tentar novo deploy (vai dar erro de limite)  
 ❌ Criar nova conta Vercel (limite é por projeto)  
-❌ Esperar que resete sozinho (reseta só amanhã)  
+❌ Esperar que resete sozinho (reseta só amanhã)
 
 ---
 
@@ -109,7 +118,7 @@ bash /Users/andersonenside/Desktop/ENSIDE-MASTER-v16/sistema-terminal
 
 **Tudo está pronto!**  
 **Código está correto!**  
-**Apenas limite técnico é o bloqueio!**  
+**Apenas limite técnico é o bloqueio!**
 
 Amanhã: **1 comando** = **Sistema 100% pronto** 🚀
 

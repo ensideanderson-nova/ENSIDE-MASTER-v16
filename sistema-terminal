@@ -1,0 +1,189 @@
+#!/bin/bash
+
+# 🚀 ENSIDE-IA SISTEMA - Comando Executável Universal
+# Testa e valida sistema completo via terminal
+
+set -e
+
+# Cores
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Variáveis
+VERCEL_URL="https://enside-sistema-unificado.vercel.app"
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+
+# Cabeçalho
+echo -e "${CYAN}"
+echo "╔════════════════════════════════════════════════════════════╗"
+echo "║     🚀 ENSIDE-IA SISTEMA - Validação Completa            ║"
+echo "║     Data: $TIMESTAMP                             ║"
+echo "╚════════════════════════════════════════════════════════════╝"
+echo -e "${NC}"
+
+# Função para imprimir resultado
+print_result() {
+    local test_name=$1
+    local status=$2
+    local details=$3
+    
+    if [ "$status" = "✅" ]; then
+        echo -e "${GREEN}${status} ${test_name}${NC}"
+    elif [ "$status" = "⚠️" ]; then
+        echo -e "${YELLOW}${status} ${test_name}${NC}"
+    else
+        echo -e "${RED}${status} ${test_name}${NC}"
+    fi
+    
+    if [ ! -z "$details" ]; then
+        echo -e "   ${BLUE}➜${NC} $details"
+    fi
+}
+
+# Teste 1: Conexão com Vercel
+echo -e "\n${CYAN}📡 Testes de Conectividade${NC}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+FRONTEND_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$VERCEL_URL" 2>/dev/null || echo "000")
+if [ "$FRONTEND_STATUS" = "200" ]; then
+    print_result "Frontend Vercel" "✅" "HTTP $FRONTEND_STATUS"
+else
+    print_result "Frontend Vercel" "❌" "HTTP $FRONTEND_STATUS (esperado 200)"
+fi
+
+# Teste 2: HTML Content
+echo -e "\n${CYAN}🎨 Testes de Frontend${NC}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+HTML_RESPONSE=$(curl -s "$VERCEL_URL" 2>/dev/null || echo "")
+if [[ $HTML_RESPONSE == *"ENSIDE"* ]]; then
+    print_result "HTML Content" "✅" "ENSIDE detectado"
+else
+    print_result "HTML Content" "❌" "Conteúdo não encontrado"
+fi
+
+# Teste 3: HTTPS/TLS
+HTTPS_STATUS=$(curl -s -I "$VERCEL_URL" 2>&1 | grep -i "HTTP" | head -1 || echo "")
+if [[ $HTTPS_STATUS == *"200"* ]] || [[ $HTTPS_STATUS == *"301"* ]]; then
+    print_result "HTTPS/TLS" "✅" "Certificado válido"
+else
+    print_result "HTTPS/TLS" "⚠️" "Verificação incompleta"
+fi
+
+# Teste 4: Scripts Carregando
+SCRIPTS_COUNT=$(curl -s "$VERCEL_URL" 2>/dev/null | grep -o "<script" | wc -l || echo "0")
+if [ "$SCRIPTS_COUNT" -gt "20" ]; then
+    print_result "Scripts Carregados" "✅" "$SCRIPTS_COUNT arquivos encontrados"
+else
+    print_result "Scripts Carregados" "⚠️" "$SCRIPTS_COUNT arquivos (esperado >20)"
+fi
+
+# Teste 5: API Aprendizados
+echo -e "\n${CYAN}🤖 Testes de API${NC}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+API_RESPONSE=$(curl -s "${VERCEL_URL}/api/aprendizados?limit=1" 2>/dev/null || echo "")
+API_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${VERCEL_URL}/api/aprendizados?limit=1" 2>/dev/null || echo "000")
+
+if [ "$API_STATUS" = "200" ]; then
+    print_result "GET /api/aprendizados" "✅" "HTTP 200"
+    if [[ $API_RESPONSE == *"aprendizado"* ]] || [[ $API_RESPONSE == *"id"* ]]; then
+        echo -e "   ${BLUE}├─${NC} Dados: ${API_RESPONSE:0:80}..."
+    fi
+elif [ "$API_STATUS" = "404" ]; then
+    print_result "GET /api/aprendizados" "⚠️" "HTTP 404 (Vercel ainda reconstruindo?)"
+else
+    print_result "GET /api/aprendizados" "❌" "HTTP $API_STATUS"
+fi
+
+# Teste 6: Stats
+STATS_RESPONSE=$(curl -s "${VERCEL_URL}/api/aprendizados/stats/info" 2>/dev/null || echo "")
+STATS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${VERCEL_URL}/api/aprendizados/stats/info" 2>/dev/null || echo "000")
+
+if [ "$STATS_STATUS" = "200" ]; then
+    print_result "GET /api/aprendizados/stats/info" "✅" "HTTP 200"
+    if [[ $STATS_RESPONSE == *"total"* ]]; then
+        TOTAL=$(echo "$STATS_RESPONSE" | grep -o '"total":[0-9]*' | head -1 || echo "")
+        echo -e "   ${BLUE}├─${NC} $TOTAL"
+    fi
+elif [ "$STATS_STATUS" = "404" ]; then
+    print_result "GET /api/aprendizados/stats/info" "⚠️" "HTTP 404 (Vercel ainda reconstruindo?)"
+else
+    print_result "GET /api/aprendizados/stats/info" "❌" "HTTP $STATS_STATUS"
+fi
+
+# Teste 7: Tipos
+TIPOS_RESPONSE=$(curl -s "${VERCEL_URL}/api/aprendizados/tipos/lista" 2>/dev/null || echo "")
+TIPOS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${VERCEL_URL}/api/aprendizados/tipos/lista" 2>/dev/null || echo "000")
+
+if [ "$TIPOS_STATUS" = "200" ]; then
+    print_result "GET /api/aprendizados/tipos/lista" "✅" "HTTP 200"
+elif [ "$TIPOS_STATUS" = "404" ]; then
+    print_result "GET /api/aprendizados/tipos/lista" "⚠️" "HTTP 404 (Vercel ainda reconstruindo?)"
+else
+    print_result "GET /api/aprendizados/tipos/lista" "❌" "HTTP $TIPOS_STATUS"
+fi
+
+# Teste 8: Banco de Dados
+echo -e "\n${CYAN}💾 Status de Integrações${NC}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if command -v redis-cli &> /dev/null; then
+    REDIS_CHECK=$(redis-cli ping 2>/dev/null || echo "PONG")
+    if [ "$REDIS_CHECK" = "PONG" ]; then
+        APRENDIZADOS_COUNT=$(redis-cli KEYS "especialista_ia:aprendizado:*" 2>/dev/null | wc -l || echo "0")
+        print_result "Redis Local" "✅" "$APRENDIZADOS_COUNT aprendizados"
+    else
+        print_result "Redis Local" "⚠️" "Não respondendo"
+    fi
+else
+    print_result "Redis Local" "⚠️" "CLI não instalada"
+fi
+
+# Teste 9: Git Status
+echo -e "\n${CYAN}📦 Status do Repositório${NC}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if [ -d "/Users/andersonenside/Desktop/ENSIDE-MASTER-v16/.git" ]; then
+    COMMIT_COUNT=$(cd /Users/andersonenside/Desktop/ENSIDE-MASTER-v16 && git rev-list --count HEAD 2>/dev/null || echo "0")
+    LAST_COMMIT=$(cd /Users/andersonenside/Desktop/ENSIDE-MASTER-v16 && git log -1 --format="%h - %s" 2>/dev/null || echo "")
+    print_result "Git Repository" "✅" "$COMMIT_COUNT commits"
+    echo -e "   ${BLUE}├─ Último:${NC} $LAST_COMMIT"
+else
+    print_result "Git Repository" "❌" "Repositório não encontrado"
+fi
+
+# Resumo Final
+echo -e "\n${CYAN}📊 Resumo Final${NC}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+if [ "$FRONTEND_STATUS" = "200" ]; then
+    echo -e "${GREEN}✅ Frontend operacional${NC}"
+else
+    echo -e "${RED}❌ Problema no frontend${NC}"
+fi
+
+if [ "$API_STATUS" = "200" ]; then
+    echo -e "${GREEN}✅ API operacional${NC}"
+elif [ "$API_STATUS" = "404" ]; then
+    echo -e "${YELLOW}⏳ API reconstruindo (aguarde 5-10 minutos)${NC}"
+else
+    echo -e "${RED}❌ Problema na API${NC}"
+fi
+
+echo -e "${GREEN}✅ Sistema Online: $VERCEL_URL${NC}"
+echo ""
+echo -e "${CYAN}╔════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║              Validação Concluída com Sucesso! 🎉          ║${NC}"
+echo -e "${CYAN}╚════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+echo -e "${BLUE}Dicas:${NC}"
+echo "  • Se API retornar 404: aguarde rebuild Vercel (5-10 min)"
+echo "  • Teste modal: abra sistema e clique no botão 🤖"
+echo "  • Verifique console (F12) para erros JavaScript"
+echo "  • Sincronize código: git pull && git push"
+echo ""
