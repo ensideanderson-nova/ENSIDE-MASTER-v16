@@ -16,9 +16,9 @@
     }
   ],
   "env": {
-    "EVOLUTION_API_URL": "https://evolution-api.production.vercel.app",
-    "EVOLUTION_API_KEY": "429683C4C977415CAAFCCE10F7D57E11",
-    "INSTANCE_NAME": "enside_whatsapp"
+    "EVOLUTION_API_URL": "https://evolution-api-enside.onrender.com",
+    "EVOLUTION_API_KEY": "919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6",
+    "EVOLUTION_INSTANCE": "enside"
   },
   "routes": [
     {

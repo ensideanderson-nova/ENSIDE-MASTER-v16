@@ -53,9 +53,9 @@ app.get('/enside-config.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'enside-config.js'));
 });
 
-const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution-api.production.vercel.app';
-const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '429683C4C977415CAAFCCE10F7D57E11';
-const INSTANCE_NAME = process.env.INSTANCE_NAME || 'enside_whatsapp';
+const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution-api-enside.onrender.com';
+const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '919AA333-AE59-4B06-B1EF-C9A9F9C8C0F6';
+const INSTANCE_NAME = process.env.INSTANCE_NAME || 'enside';
 
 // Health check endpoint - extremamente simples, sem dependências
 app.get('/health', (req, res) => {
