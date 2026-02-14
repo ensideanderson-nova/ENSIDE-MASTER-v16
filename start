@@ -202,25 +202,12 @@ MAIN_URL="$WEB_URL/public/index-v19-funcional.html"
 echo -e "   🌐 ${BLUE}$MAIN_URL${NC}"
 echo ""
 
-# Tentar abrir em Firefox
-if command -v firefox &> /dev/null; then
-  firefox "$MAIN_URL" > /dev/null 2>&1 &
-  echo -e "   ${GREEN}✅ Firefox aberto${NC}"
-# Tentar Chrome
-elif command -v google-chrome &> /dev/null; then
-  google-chrome "$MAIN_URL" > /dev/null 2>&1 &
-  echo -e "   ${GREEN}✅ Chrome aberto${NC}"
-# Tentar Safari (macOS)
-elif command -v open &> /dev/null; then
-  open -a Safari "$MAIN_URL" 2>/dev/null &
-  echo -e "   ${GREEN}✅ Safari aberto${NC}"
-# Fallback genérico
-else
-  open "$MAIN_URL" 2>/dev/null &
-  echo -e "   ${GREEN}✅ Navegador padrão aberto${NC}"
-fi
+# Executar script de abertura do navegador em background
+bash "$PROJECT_DIR/open-browser.sh" "$MAIN_URL" 3 &
+BROWSER_PID=$!
+echo -e "   ${GREEN}✅ Navegador será aberto em segundos...${NC}"
 
-sleep 2
+sleep 1
 
 # 9. RESUMO
 echo ""
