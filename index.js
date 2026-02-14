@@ -3,6 +3,7 @@ import axios from 'axios';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import aprendizadosRoutes from './routes/aprendizados.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -846,6 +847,10 @@ app.get('/api/docs', (req, res) => {
 });
 
 // Vercel serverless function handler
+
+// 🤖 Integrar Rotas de Aprendizados ESPECIALISTA-IA
+import redis from "redis";
+aprendizadosRoutes(app, redis);
 export default app;
 
 // Para desenvolvimento local
