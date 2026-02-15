@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import aprendizadosRoutes from './routes/aprendizados.js';
+import chatRoutes from './routes/chat.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -110,6 +111,9 @@ app.post('/api/evolution/*', async (req, res) => {
 // ===== ESPECIALISTA-IA ROUTES =====
 // 🤖 Registrar rotas de aprendizados
 aprendizadosRoutes(app);
+
+// 🧠 Registrar rotas de chat/IA
+chatRoutes(app);
 
 // 404 Handler - deve estar no final
 app.use((req, res) => {
