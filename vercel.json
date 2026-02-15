@@ -1,16 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npm run build || echo 'no build'",
-  "installCommand": "npm install",
-  "builds": [
-    {
-      "src": "public",
-      "use": "@vercel/static",
-      "config": {
-        "maxAge": 3600
-      }
-    }
-  ],
   "env": {
     "EVOLUTION_API_URL": "https://evolution-api.production.vercel.app",
     "EVOLUTION_API_KEY": "429683C4C977415CAAFCCE10F7D57E11",
@@ -18,29 +7,8 @@
   },
   "routes": [
     {
-      "src": "/(.*\\.html)$",
-      "dest": "/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=3600"
-      }
-    },
-    {
-      "src": "/(.*\\.js)$",
-      "dest": "/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=86400"
-      }
-    },
-    {
-      "src": "/(.*\\.css)$",
-      "dest": "/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=86400"
-      }
-    },
-    {
-      "src": "^/$",
-      "dest": "/index.html"
+      "src": "^/(.*)$",
+      "dest": "/$1"
     }
   ]
 }
