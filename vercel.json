@@ -4,14 +4,10 @@
   "installCommand": "npm install",
   "builds": [
     {
-      "src": "public/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "index.js",
-      "use": "@vercel/node",
+      "src": "public",
+      "use": "@vercel/static",
       "config": {
-        "maxLambdaSize": "50mb"
+        "maxAge": 3600
       }
     }
   ],
@@ -22,52 +18,30 @@
   },
   "routes": [
     {
-      "src": "^/public/(.*)$",
-      "dest": "public/$1"
+      "src": "/(.*\\.html)$",
+      "dest": "/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      }
     },
     {
-      "src": "^/health$",
-      "dest": "index.js"
+      "src": "/(.*\\.js)$",
+      "dest": "/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
     },
     {
-      "src": "^/status$",
-      "dest": "index.js"
+      "src": "/(.*\\.css)$",
+      "dest": "/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=86400"
+      }
     },
     {
-      "src": "^/api/.*",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/evolution-manager$",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/instance/.*",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/send-message$",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/qrcode$",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/webhook.*",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/$",
-      "dest": "index.js"
-    },
-    {
-      "src": "^/.*\\.html$",
-      "dest": "/$1.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "index.js"
+      "src": "^/(.*)$",
+      "dest": "/index.html",
+      "status": 200
     }
   ]
 }
