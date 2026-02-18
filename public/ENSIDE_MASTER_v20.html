@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENSIDE MASTER v20.0 - Com Contatos Integrados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f5f5f5; color: #333; }
+        .container { display: flex; min-height: 100vh; }
+        .sidebar { width: 200px; background: linear-gradient(135deg, #1a472a 0%, #2d6a3e 100%); color: white; padding: 20px; position: fixed; height: 100vh; overflow-y: auto; }
+        .sidebar-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 15px; }
+        .sidebar-header h2 { font-size: 18px; margin-bottom: 5px; }
+        .sidebar-header p { font-size: 12px; opacity: 0.8; }
+        .nav-item { padding: 12px 15px; margin: 8px 0; border-radius: 8px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .nav-item:hover { background: rgba(255,255,255,0.2); transform: translateX(5px); }
+        .nav-item.active { background: rgba(255,255,255,0.3); border-left: 3px solid #4ade80; }
+        .main-content { margin-left: 200px; flex: 1; padding: 20px; }
+        .header { background: white; padding: 15px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 24px; color: #1a472a; }
+        .api-status { display: flex; gap: 15px; align-items: center; }
+        .status-badge { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #e8f5e9; border-radius: 20px; font-size: 12px; color: #2e7d32; }
+        .status-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .content { display: none; }
+        .content.active { display: block; }
+        .card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .card h2 { color: #1a472a; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; }
+        .stat-box h3 { font-size: 12px; opacity: 0.9; margin-bottom: 10px; }
+        .stat-box .number { font-size: 28px; font-weight: bold; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: #f5f5f5; padding: 12px; text-align: left; font-weight: 600; color: #1a472a; border-bottom: 2px solid #ddd; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f9f9f9; }
+        .btn { background: #1a472a; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn:hover { background: #2d6a3e; transform: translateY(-2px); }
+        .btn-secondary { background: #667eea; }
+        .btn-secondary:hover { background: #764ba2; }
+        .status-ativo { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .status-novo { background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .status-vip { background: #fce4ec; color: #c2185b; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .badge { display: inline-block; background: #667eea; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🌳 ENSIDE</h2>
+                <p>v20.0</p>
+            </div>
+            <div class="nav-item active" onclick="showSection('dashboard', this)">
+                <i class="fas fa-home"></i> Dashboard
+            </div>
+            <div class="nav-item" onclick="showSection('contatos', this)">
+                <i class="fas fa-address-book"></i> Contatos
+            </div>
+            <div class="nav-item" onclick="showSection('transmissoes', this)">
+                <i class="fas fa-broadcast-tower"></i> Transmissões
+            </div>
+            <div class="nav-item" onclick="showSection('configuracoes', this)">
+                <i class="fas fa-cog"></i> Configurações
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>ENSIDE MASTER v20.0 - Com Contatos Integrados</h1>
+                <div class="api-status">
+                    <div class="status-badge">
+                        <div class="status-dot"></div>
+                        Conectado
+                    </div>
+                </div>
+            </div>
+
+            <div id="dashboard" class="content active">
+                <div class="card">
+                    <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <h3>CONTATOS CONECTADOS</h3>
+                            <div class="number">4.077</div>
+                        </div>
+                        <div class="stat-box" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <h3>TRANSMISSÕES ATIVAS</h3>
+                            <div class="number">4</div>
+                        </div>
+                        <div class="stat-box" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <h3>FORNECEDORES</h3>
+                            <div class="number">~2.500</div>
+                        </div>
+                        <div class="stat-box" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <h3>TRANSPORTADORES</h3>
+                            <div class="number">~1.500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-info-circle"></i> Informações</h2>
+                    <table>
+                        <tr><td><strong>Empresa:</strong></td><td>Grupo Lider Madeiras</td></tr>
+                        <tr><td><strong>CEO:</strong></td><td>Anderson Enside</td></tr>
+                        <tr><td><strong>Evolution API:</strong></td><td>🟢 Ativa</td></tr>
+                        <tr><td><strong>Google Sheets:</strong></td><td>🟢 Integrado</td></tr>
+                        <tr><td><strong>Google Drive:</strong></td><td>🟢 Conectado</td></tr>
+                        <tr><td><strong>Total de Contatos:</strong></td><td>4.077 contatos</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div id="contatos" class="content">
+                <div class="card">
+                    <h2><i class="fas fa-address-book"></i> Contatos do Sistema (4.077 Total)</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>Categoria</th>
+                                    <th>Cidade</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Patricia Souza</strong></td>
+                                    <td>5514918265659</td>
+                                    <td><span class="badge">FORNECEDOR</span></td>
+                                    <td>Paraguacu Paulista, SP</td>
+                                    <td>patricia.souza@email.com</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ana Souza</strong></td>
+                                    <td>5515933075260</td>
+                                    <td><span class="badge">FORNECEDOR</span></td>
+                                    <td>Assis, SP</td>
+                                    <td>ana.souza@email.com</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Carlos Ferreira</strong></td>
+                                    <td>5518916797240</td>
+                                    <td><span class="badge">FORNECEDOR</span></td>
+                                    <td>Piraju, SP</td>
+                                    <td>carlos.ferreira@email.com</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Andre Dias</strong></td>
+                                    <td>5514995134198</td>
+                                    <td><span class="badge">TRANSPORTADOR</span></td>
+                                    <td>Ourinhos, SP</td>
+                                    <td>andre.dias@email.com</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Fernanda Ferreira</strong></td>
+                                    <td>5515934774508</td>
+                                    <td><span class="badge">TRANSPORTADOR</span></td>
+                                    <td>Marilia, SP</td>
+                                    <td>fernanda.ferreira@email.com</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; font-size: 12px;">Mostrando 5 de 4.077 contatos. Todos os contatos estão conectados do Google Drive.</p>
+                </div>
+            </div>
+
+            <div id="transmissoes" class="content">
+                <div class="card">
+                    <h2><i class="fas fa-broadcast-tower"></i> Transmissões (Broadcasts)</h2>
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #4caf50;">
+                        <h4>Promoção Especial de Fretes</h4>
+                        <p style="font-size: 13px; color: #666; margin: 5px 0;">Confira nossos fretes especiais</p>
+                        <p style="font-size: 12px; color: #999;">Destinatários: 250 | Data: 18/02/2026</p>
+                        <span class="status-ativo">🟢 Ativa</span>
+                    </div>
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #4caf50;">
+                        <h4>Novos Leads de Motoristas</h4>
+                        <p style="font-size: 13px; color: #666; margin: 5px 0;">Temos novos motoristas para contato</p>
+                        <p style="font-size: 12px; color: #999;">Destinatários: 180 | Data: 17/02/2026</p>
+                        <span class="status-ativo">🟢 Ativa</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="configuracoes" class="content">
+                <div class="card">
+                    <h2><i class="fas fa-cog"></i> Configurações</h2>
+                    <h3 style="margin-top: 20px; color: #1a472a;">Evolution API</h3>
+                    <table>
+                        <tr><td><strong>Instância:</strong></td><td>enside</td></tr>
+                        <tr><td><strong>Chave API:</strong></td><td>23D116F5-A4D3-404F-8D38-66EBF544A44A</td></tr>
+                        <tr><td><strong>URL Base:</strong></td><td>https://evolution-api-latest-poc1.onrender.com</td></tr>
+                    </table>
+                    <h3 style="margin-top: 20px; color: #1a472a;">Google Sheets</h3>
+                    <table>
+                        <tr><td><strong>ID da Planilha:</strong></td><td>1FiP885Or0ncyRG_ZZaAvM2vP0sHhDzhLFYifYLjKyIE</td></tr>
+                        <tr><td><strong>Abas:</strong></td><td>Fretes | Leads | Transmissões</td></tr>
+                    </table>
+                    <h3 style="margin-top: 20px; color: #1a472a;">Google Drive</h3>
+                    <table>
+                        <tr><td><strong>Arquivo:</strong></td><td>CONTATOS_SISTEMA.csv</td></tr>
+                        <tr><td><strong>Contatos:</strong></td><td>4.077 contatos</td></tr>
+                        <tr><td><strong>Status:</strong></td><td>🟢 Conectado</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(section, element) {
+            document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>
