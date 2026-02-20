@@ -6,18 +6,37 @@
     <title>ENSIDE MASTER v19.0 - Sistema Completo Integrado</title>
     <!-- Tailwind CSS do código ULTRA -->
     <script src="https://cdn.tailwindcss.com">
-// ✅ MAPEAMENTO CORRETO DE GIDS DO GOOGLE SHEETS - ATUALIZADO 10/01/2026
+// ✅ MAPEAMENTO COMPLETO DE TODAS AS 20 ABAS DO GOOGLE SHEETS - ATUALIZADO 19/02/2026
 const SHEET_GIDS = {
+  // === ABAS PRINCIPAIS ===
   "CONTATOS": "1689968688",              // ✅ Aba principal com 7.055+ contatos
   "FRETES_DISPONIVEIS": "1716433489",    // ✅ Fretes disponíveis
   "CAPTACAO_FRETES": "1335082895",       // ✅ Captação de fretes
-  "LISTAS_TRANSMISSAO": "1114979046",    // ⭐ Aba PRINCIPAL - 10 listas WhatsApp
-  "Leads_Motoristas": "0",               // ⚠️ GID não coletado ainda
-  "MINHAS_LISTAS": "0",                  // ⚠️ GID não coletado ainda
-  "RESUMO_EXECUTIVO": "0",               // ⚠️ GID não coletado ainda
-  "PARAMETROS": "0",                     // ⚠️ GID não coletado ainda
-  "ANALISE_CUSTOS": "0",                 // ⚠️ GID não coletado ainda
-  "TRATAMENTO_CCA": "0"                  // ⚠️ GID não coletado ainda
+  "Leads_Motoristas": "961123584",       // ✅ Leads de motoristas
+  "LISTAS_TRANSMISSAO": "1114979046",    // ✅ Listas de transmissão WhatsApp
+  "MINHAS_LISTAS": "250132552",          // ✅ Minhas listas de transmissão
+  
+  // === RELATÓRIOS E ANÁLISES ===
+  "RESUMO_EXECUTIVO": "1707733664",      // ✅ Resumo executivo
+  "PARAMETROS": "604351812",             // ✅ Parâmetros do sistema
+  "ANALISE_CUSTOS": "1081938874",        // ✅ Análise detalhada de custos
+  "RELATORIO": "2085464626",             // ✅ Relatório geral
+  
+  // === TABELAS DE PREÇOS ===
+  "TRATAMENTO_CCA": "1558700568",        // ✅ Tabela de custos tratamento CCA
+  "ATACADO": "773407069",                // ✅ Tabela de preços atacado
+  "VAREJO": "2046460774",                // ✅ Tabela de preços varejo
+  "CUSTOS_SERRAGEM": "2118458555",       // ✅ Custos de serragem
+  
+  // === FERRAMENTAS ===
+  "SIMULADOR": "85954134",               // ✅ Simulador de preços
+  "ESTADOS_CIDADES": "1784972020",       // ✅ Estados e cidades
+  "PROPOSTAS": "2135374310",             // ✅ Propostas comerciais
+  
+  // === AUXILIARES ===
+  "Tabela_dinamica_1": "1142513380",     // ✅ Tabela dinâmica
+  "Detalhe1": "1183996076",              // ✅ Detalhes
+  "GLOSSARIO": "1656119291"              // ✅ Glossário de termos
 };
 
 function abrirAbaGoogleSheets(nomeAba) {
@@ -1960,13 +1979,21 @@ window.addEventListener('DOMContentLoaded', () => {
                 
                 <!-- Abas da Planilha -->
                 <div style="display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap;">
-                    <button onclick="mudarAbaPlanilha('0')" class="planilha-tab active" data-gid="0">📋 Resumo Executivo</button>
-                    <button onclick="mudarAbaPlanilha('1114979046')" class="planilha-tab" data-gid="1114979046">👥 Contatos</button>
-                    <button onclick="mudarAbaPlanilha('1707733664')" class="planilha-tab" data-gid="1707733664">📝 Listas Transmissão</button>
-                    <button onclick="mudarAbaPlanilha('parametros')" class="planilha-tab" data-gid="parametros">⚙️ Parâmetros</button>
-                    <button onclick="mudarAbaPlanilha('atacado')" class="planilha-tab" data-gid="atacado">💰 Atacado</button>
-                    <button onclick="mudarAbaPlanilha('varejo')" class="planilha-tab" data-gid="varejo">🛒 Varejo</button>
-                    <button onclick="mudarAbaPlanilha('custos')" class="planilha-tab" data-gid="custos">📊 Custos Serragem</button>
+                    <button onclick="mudarAbaPlanilha('1707733664')" class="planilha-tab active" data-gid="1707733664">📋 Resumo Executivo</button>
+                    <button onclick="mudarAbaPlanilha('1689968688')" class="planilha-tab" data-gid="1689968688">👥 Contatos</button>
+                    <button onclick="mudarAbaPlanilha('1114979046')" class="planilha-tab" data-gid="1114979046">📝 Listas Transmissão</button>
+                    <button onclick="mudarAbaPlanilha('604351812')" class="planilha-tab" data-gid="604351812">⚙️ Parâmetros</button>
+                    <button onclick="mudarAbaPlanilha('773407069')" class="planilha-tab" data-gid="773407069">💰 Atacado</button>
+                    <button onclick="mudarAbaPlanilha('2046460774')" class="planilha-tab" data-gid="2046460774">🛒 Varejo</button>
+                    <button onclick="mudarAbaPlanilha('2118458555')" class="planilha-tab" data-gid="2118458555">📊 Custos Serragem</button>
+                    <button onclick="mudarAbaPlanilha('1716433489')" class="planilha-tab" data-gid="1716433489">🚚 Fretes Disponíveis</button>
+                    <button onclick="mudarAbaPlanilha('1335082895')" class="planilha-tab" data-gid="1335082895">📦 Captação Fretes</button>
+                    <button onclick="mudarAbaPlanilha('961123584')" class="planilha-tab" data-gid="961123584">🚗 Leads Motoristas</button>
+                    <button onclick="mudarAbaPlanilha('250132552')" class="planilha-tab" data-gid="250132552">📋 Minhas Listas</button>
+                    <button onclick="mudarAbaPlanilha('1081938874')" class="planilha-tab" data-gid="1081938874">📊 Análise Custos</button>
+                    <button onclick="mudarAbaPlanilha('1558700568')" class="planilha-tab" data-gid="1558700568">🧪 Tratamento CCA</button>
+                    <button onclick="mudarAbaPlanilha('85954134')" class="planilha-tab" data-gid="85954134">🧮 Simulador</button>
+                    <button onclick="mudarAbaPlanilha('2085464626')" class="planilha-tab" data-gid="2085464626">📈 Relatório</button>
                 </div>
                 
                 <!-- Container do iframe -->
@@ -5631,8 +5658,8 @@ ${filtros.join('\n') || 'Nenhum filtro'}
             if (!mensagem) return;
             
             // Usar URL do Render como padrão (configuração correta)
-            const url = document.getElementById('evolutionUrl')?.value || 'https://evolution-api-latest-poc1.onrender.com';
-            const apiKey = document.getElementById('evolutionApiKey')?.value || '23D116F5-A4D3-404F-8D38-66EBF544A44A';
+            const url = document.getElementById('evolutionUrl')?.value || 'https://evolution-api-enside.onrender.com';
+            const apiKey = document.getElementById('evolutionApiKey')?.value || 'evolution-api-enside-2024-secret';
             const instance = document.getElementById('evolutionInstance')?.value || 'ENSIDE';
             
             const progressEl = document.getElementById('progressoEnvio');
